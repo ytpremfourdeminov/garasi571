@@ -22,7 +22,15 @@ import {
   buildCarInquiryMessage,
   buildWhatsAppUrl,
 } from "@/data/showroom"
+import {
+  buildBreadcrumbJsonLd,
+  buildCanonicalLink,
+  buildCarProductJsonLd,
+  buildSocialMeta,
+  serializeJsonLd,
+} from "@/lib/seo"
 import { CarGallery } from "@/components/car-gallery"
+import { CarAnswerSummary } from "@/components/car-answer-summary"
 import { CarCard } from "@/components/car-card"
 import { useCompare } from "@/components/compare-context"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
@@ -48,15 +56,46 @@ export const Route = createFileRoute("/mobil/$slug")({
       car.creditPrice !== null
         ? `Harga cash ${formatRupiah(car.cashPrice)} dan harga kredit ${formatRupiah(car.creditPrice)}.`
         : `Special Price cash ${formatRupiah(car.cashPrice)}.`
+    const title = `${car.name} (${car.year}) | Garasi 571 Surakarta`
+    const description = `${car.name} tahun ${car.year}, ${car.transmission}, warna ${car.color}, ${car.location}. ${priceText} Inspeksi langsung di showroom Garasi 571 Surakarta.`
+    const coverImage = car.images.at(0)
+    const carPath = `/mobil/${car.slug}`
 
     return {
+      links: [buildCanonicalLink(carPath)],
       meta: [
         {
-          title: `${car.name} (${car.year}) | Garasi 571 Surakarta`,
+          title,
         },
         {
           name: "description",
-          content: `${car.name} tahun ${car.year}, ${car.transmission}, warna ${car.color}, ${car.location}. ${priceText} Inspeksi langsung di showroom Garasi 571 Surakarta.`,
+          content: description,
+        },
+        ...buildSocialMeta({
+          title,
+          description,
+          path: carPath,
+          imagePath: coverImage?.src,
+          imageWidth: coverImage?.width,
+          imageHeight: coverImage?.height,
+          imageAlt: coverImage?.alt,
+          type: "product",
+        }),
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: serializeJsonLd(buildCarProductJsonLd(car)),
+        },
+        {
+          type: "application/ld+json",
+          children: serializeJsonLd(
+            buildBreadcrumbJsonLd([
+              { name: "Beranda", path: "/" },
+              { name: car.categoryLabel, path: `/?kategori=${car.category}` },
+              { name: car.shortName, path: carPath },
+            ]),
+          ),
         },
       ],
     }
@@ -282,6 +321,7 @@ function CarDetailPage() {
       <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
         <div className="min-w-0 space-y-8 lg:col-span-7">
           <CarGallery images={car.images} carName={car.name} />
+          <CarAnswerSummary car={car} />
 
           <section aria-labelledby="specs-heading" className="space-y-4">
             <h2
