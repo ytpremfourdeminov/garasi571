@@ -36,6 +36,11 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { getCategoryLabel, slugifyCarName } from "@/lib/domain/formatters"
 import type { CarUpsertInput } from "@/lib/domain/schemas"
 import type {
@@ -386,37 +391,54 @@ function StringListEditor({
                     className="flex-1"
                   />
                   <div className="flex shrink-0 items-center gap-1">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      disabled={disabled || index === 0}
-                      aria-label={`Pindahkan poin ${index + 1} ke atas`}
-                      onClick={() => handleMove(index, -1)}
-                    >
-                      <ArrowUp className="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      disabled={disabled || index === items.length - 1}
-                      aria-label={`Pindahkan poin ${index + 1} ke bawah`}
-                      onClick={() => handleMove(index, 1)}
-                    >
-                      <ArrowDown className="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      disabled={disabled}
-                      aria-label={`Hapus poin ${index + 1}`}
-                      onClick={() => handleRemoveAt(index)}
-                      className="text-muted-foreground hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <Trash2 className="size-4" aria-hidden="true" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger render={<span className="inline-flex" />}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          disabled={disabled || index === 0}
+                          aria-label={`Pindahkan poin ${index + 1} ke atas`}
+                          onClick={() => handleMove(index, -1)}
+                        >
+                          <ArrowUp className="size-4" aria-hidden="true" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Pindah ke atas</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger render={<span className="inline-flex" />}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          disabled={disabled || index === items.length - 1}
+                          aria-label={`Pindahkan poin ${index + 1} ke bawah`}
+                          onClick={() => handleMove(index, 1)}
+                        >
+                          <ArrowDown className="size-4" aria-hidden="true" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Pindah ke bawah</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger render={<span className="inline-flex" />}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          disabled={disabled}
+                          aria-label={`Hapus poin ${index + 1}`}
+                          onClick={() => handleRemoveAt(index)}
+                          className="text-muted-foreground hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 className="size-4" aria-hidden="true" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Hapus poin</TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
                 {itemError ? (

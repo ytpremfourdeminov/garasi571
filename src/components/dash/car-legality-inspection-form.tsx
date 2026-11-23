@@ -25,6 +25,11 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { formatRupiah } from "@/lib/domain/formatters"
 import type { CarUpsertInput } from "@/lib/domain/schemas"
 import type {
@@ -1588,17 +1593,24 @@ export function CarLegalityInspectionForm({
                         aria-label={`Peremajaan part nomor ${index + 1}`}
                         aria-invalid={Boolean(itemError)}
                       />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        disabled={disabled}
-                        onClick={() => handleRemoveMaintenanceItem(index)}
-                        aria-label={`Hapus peremajaan part nomor ${index + 1}`}
-                        className="shrink-0 text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="size-4" aria-hidden={true} />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={<span className="inline-flex shrink-0" />}
+                        >
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            disabled={disabled}
+                            onClick={() => handleRemoveMaintenanceItem(index)}
+                            aria-label={`Hapus peremajaan part nomor ${index + 1}`}
+                            className="text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="size-4" aria-hidden={true} />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Hapus catatan</TooltipContent>
+                      </Tooltip>
                     </div>
                     <FieldError message={itemError} />
                   </li>

@@ -687,16 +687,23 @@ function DashCarsPage() {
             )}
             <p className="font-medium">{feedback.message}</p>
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => setFeedback(null)}
-            aria-label="Tutup notifikasi"
-            className="shrink-0"
-          >
-            <X className="size-4" aria-hidden="true" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setFeedback(null)}
+                  aria-label="Tutup notifikasi"
+                  className="shrink-0"
+                />
+              }
+            >
+              <X className="size-4" aria-hidden="true" />
+            </TooltipTrigger>
+            <TooltipContent>Tutup notifikasi</TooltipContent>
+          </Tooltip>
         </div>
       ) : null}
 
@@ -722,14 +729,21 @@ function DashCarsPage() {
                 className="pr-11 pl-9"
               />
               {searchQuery ? (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  aria-label="Hapus kata kunci pencarian"
-                  className="absolute top-0 right-0 inline-flex size-11 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <X className="size-4" aria-hidden="true" />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery("")}
+                        aria-label="Hapus kata kunci pencarian"
+                        className="absolute top-0 right-0 inline-flex size-11 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                      />
+                    }
+                  >
+                    <X className="size-4" aria-hidden="true" />
+                  </TooltipTrigger>
+                  <TooltipContent>Hapus pencarian</TooltipContent>
+                </Tooltip>
               ) : null}
             </div>
           </div>
@@ -795,19 +809,23 @@ function DashCarsPage() {
           </div>
 
           <div className="flex items-end md:col-span-1">
-            <Button
-              type="button"
-              variant="outline"
-              size="default"
-              disabled={!hasActiveFilters}
-              onClick={resetFilters}
-              aria-label="Reset semua filter"
-              title="Reset semua filter"
-              className="w-full px-3"
-            >
-              <RotateCcw className="size-4" aria-hidden="true" />
-              <span className="md:sr-only">Reset Filter</span>
-            </Button>
+            <Tooltip>
+              <TooltipTrigger render={<span className="inline-flex w-full" />}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="default"
+                  disabled={!hasActiveFilters}
+                  onClick={resetFilters}
+                  aria-label="Reset semua filter"
+                  className="w-full px-3"
+                >
+                  <RotateCcw className="size-4" aria-hidden="true" />
+                  <span className="md:sr-only">Reset Filter</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Reset semua filter</TooltipContent>
+            </Tooltip>
           </div>
         </div>
 

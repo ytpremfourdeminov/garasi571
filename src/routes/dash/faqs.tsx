@@ -28,6 +28,11 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { slugifyText } from "@/lib/domain/formatters"
 import { faqUpsertSchema } from "@/lib/domain/schemas"
 import type { ShowroomFaqItem } from "@/lib/domain/types"
@@ -566,31 +571,46 @@ function DashFaqsPage() {
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        disabled={isBusy || isFiltered || index === 0}
-                        onClick={() => void handleMoveFaq(index, "up")}
-                        aria-label={`Naikkan urutan FAQ: ${faq.question}`}
-                        title="Pindah ke atas"
-                      >
-                        <ChevronUp className="size-4" aria-hidden="true" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={<span className="inline-flex" />}
+                        >
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon-sm"
+                            disabled={isBusy || isFiltered || index === 0}
+                            onClick={() => void handleMoveFaq(index, "up")}
+                            aria-label={`Naikkan urutan FAQ: ${faq.question}`}
+                          >
+                            <ChevronUp className="size-4" aria-hidden="true" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Pindah ke atas</TooltipContent>
+                      </Tooltip>
 
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        disabled={
-                          isBusy || isFiltered || index === faqs.length - 1
-                        }
-                        onClick={() => void handleMoveFaq(index, "down")}
-                        aria-label={`Turunkan urutan FAQ: ${faq.question}`}
-                        title="Pindah ke bawah"
-                      >
-                        <ChevronDown className="size-4" aria-hidden="true" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={<span className="inline-flex" />}
+                        >
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon-sm"
+                            disabled={
+                              isBusy || isFiltered || index === faqs.length - 1
+                            }
+                            onClick={() => void handleMoveFaq(index, "down")}
+                            aria-label={`Turunkan urutan FAQ: ${faq.question}`}
+                          >
+                            <ChevronDown
+                              className="size-4"
+                              aria-hidden="true"
+                            />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Pindah ke bawah</TooltipContent>
+                      </Tooltip>
 
                       <Button
                         type="button"
@@ -603,17 +623,24 @@ function DashFaqsPage() {
                         <span>Edit</span>
                       </Button>
 
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        disabled={isBusy}
-                        onClick={() => setDeleteTarget(faq)}
-                        aria-label={`Hapus FAQ: ${faq.question}`}
-                        className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-[#991B1B]"
-                      >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={<span className="inline-flex" />}
+                        >
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon-sm"
+                            disabled={isBusy}
+                            onClick={() => setDeleteTarget(faq)}
+                            aria-label={`Hapus FAQ: ${faq.question}`}
+                            className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-[#991B1B]"
+                          >
+                            <Trash2 className="size-3.5" aria-hidden="true" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Hapus FAQ</TooltipContent>
+                      </Tooltip>
                     </div>
                   </div>
                 </div>

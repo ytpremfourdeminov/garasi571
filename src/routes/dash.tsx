@@ -49,7 +49,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { TruncatedTooltip } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TruncatedTooltip,
+} from "@/components/ui/tooltip"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import type { StaffProfile } from "@/lib/domain/types"
@@ -676,18 +681,28 @@ function DashLayout() {
               </SheetContent>
             </Sheet>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarCollapsed((prev) => !prev)}
-              aria-label={sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
-              aria-expanded={!sidebarCollapsed}
-              title={sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
-              className="-ml-3.5 hidden shrink-0 lg:inline-flex"
-            >
-              <PanelLeft className="size-4" aria-hidden="true" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSidebarCollapsed((prev) => !prev)}
+                    aria-label={
+                      sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"
+                    }
+                    aria-expanded={!sidebarCollapsed}
+                    className="-ml-3.5 hidden shrink-0 lg:inline-flex"
+                  />
+                }
+              >
+                <PanelLeft className="size-4" aria-hidden="true" />
+              </TooltipTrigger>
+              <TooltipContent>
+                {sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
+              </TooltipContent>
+            </Tooltip>
 
             <span
               aria-hidden="true"

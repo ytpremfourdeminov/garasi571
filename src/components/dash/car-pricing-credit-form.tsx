@@ -31,7 +31,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { TruncatedTooltip } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TruncatedTooltip,
+} from "@/components/ui/tooltip"
 
 export interface CarPricingCreditFormProps {
   value: CarUpsertInput
@@ -1026,42 +1031,65 @@ export function CarPricingCreditForm({
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            disabled={disabled || index === 0}
-                            onClick={() => handleMoveSimulation(index, -1)}
-                            aria-label={`Pindahkan paket ${index + 1} ke atas`}
-                            title="Pindah ke atas"
-                          >
-                            <ArrowUp className="size-4" aria-hidden="true" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            disabled={
-                              disabled || index === simulations.length - 1
-                            }
-                            onClick={() => handleMoveSimulation(index, 1)}
-                            aria-label={`Pindahkan paket ${index + 1} ke bawah`}
-                            title="Pindah ke bawah"
-                          >
-                            <ArrowDown className="size-4" aria-hidden="true" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            disabled={disabled}
-                            onClick={() => handleRemoveSimulation(index)}
-                            aria-label={`Hapus paket simulasi ${index + 1}`}
-                            title="Hapus simulasi"
-                            className="text-destructive hover:border-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="size-4" aria-hidden="true" />
-                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={<span className="inline-flex" />}
+                            >
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                disabled={disabled || index === 0}
+                                onClick={() => handleMoveSimulation(index, -1)}
+                                aria-label={`Pindahkan paket ${index + 1} ke atas`}
+                              >
+                                <ArrowUp className="size-4" aria-hidden="true" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Pindah ke atas</TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={<span className="inline-flex" />}
+                            >
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                disabled={
+                                  disabled || index === simulations.length - 1
+                                }
+                                onClick={() => handleMoveSimulation(index, 1)}
+                                aria-label={`Pindahkan paket ${index + 1} ke bawah`}
+                              >
+                                <ArrowDown
+                                  className="size-4"
+                                  aria-hidden="true"
+                                />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Pindah ke bawah</TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={<span className="inline-flex" />}
+                            >
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                disabled={disabled}
+                                onClick={() => handleRemoveSimulation(index)}
+                                aria-label={`Hapus paket simulasi ${index + 1}`}
+                                className="text-destructive hover:border-destructive hover:bg-destructive/10"
+                              >
+                                <Trash2 className="size-4" aria-hidden="true" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Hapus simulasi</TooltipContent>
+                          </Tooltip>
                         </div>
                       </div>
 

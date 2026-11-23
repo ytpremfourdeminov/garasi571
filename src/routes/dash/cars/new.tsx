@@ -25,6 +25,11 @@ import { CarPricingCreditForm } from "@/components/dash/car-pricing-credit-form"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { getCategoryLabel } from "@/lib/domain/formatters"
 import { carUpsertSchema, type CarUpsertInput } from "@/lib/domain/schemas"
 import type { CarStatus, CompletenessTabKey } from "@/lib/domain/types"
@@ -410,16 +415,23 @@ function NewCarPage() {
               </div>
             </div>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setSubmitError(null)}
-              aria-label="Tutup pesan error"
-              className="shrink-0 text-[#991B1B]"
-            >
-              <X className="size-4" aria-hidden="true" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSubmitError(null)}
+                    aria-label="Tutup pesan error"
+                    className="shrink-0 text-[#991B1B]"
+                  />
+                }
+              >
+                <X className="size-4" aria-hidden="true" />
+              </TooltipTrigger>
+              <TooltipContent>Tutup pesan error</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       ) : null}

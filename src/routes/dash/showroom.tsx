@@ -35,6 +35,11 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { buildWhatsAppUrl, slugifyText } from "@/lib/domain/formatters"
 import {
   salesContactUpsertSchema,
@@ -1232,31 +1237,51 @@ function DashShowroomPage() {
                       </div>
 
                       <div className="flex items-center gap-1.5">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon-sm"
-                          disabled={!isAdmin || isBusy || index === 0}
-                          onClick={() => void handleMoveSales(index, "up")}
-                          aria-label={`Naikkan urutan ${contact.name}`}
-                          title="Pindah ke atas"
-                        >
-                          <ChevronUp className="size-4" aria-hidden="true" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon-sm"
+                              disabled={!isAdmin || isBusy || index === 0}
+                              onClick={() => void handleMoveSales(index, "up")}
+                              aria-label={`Naikkan urutan ${contact.name}`}
+                            >
+                              <ChevronUp
+                                className="size-4"
+                                aria-hidden="true"
+                              />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Pindah ke atas</TooltipContent>
+                        </Tooltip>
 
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon-sm"
-                          disabled={
-                            !isAdmin || isBusy || index === sales.length - 1
-                          }
-                          onClick={() => void handleMoveSales(index, "down")}
-                          aria-label={`Turunkan urutan ${contact.name}`}
-                          title="Pindah ke bawah"
-                        >
-                          <ChevronDown className="size-4" aria-hidden="true" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon-sm"
+                              disabled={
+                                !isAdmin || isBusy || index === sales.length - 1
+                              }
+                              onClick={() =>
+                                void handleMoveSales(index, "down")
+                              }
+                              aria-label={`Turunkan urutan ${contact.name}`}
+                            >
+                              <ChevronDown
+                                className="size-4"
+                                aria-hidden="true"
+                              />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Pindah ke bawah</TooltipContent>
+                        </Tooltip>
 
                         <Button
                           type="button"
@@ -1269,17 +1294,24 @@ function DashShowroomPage() {
                           <span>Edit</span>
                         </Button>
 
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon-sm"
-                          disabled={!isAdmin || isBusy}
-                          onClick={() => setDeleteTarget(contact)}
-                          aria-label={`Hapus kontak sales ${contact.name}`}
-                          className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-[#991B1B]"
-                        >
-                          <Trash2 className="size-3.5" aria-hidden="true" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon-sm"
+                              disabled={!isAdmin || isBusy}
+                              onClick={() => setDeleteTarget(contact)}
+                              aria-label={`Hapus kontak sales ${contact.name}`}
+                              className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-[#991B1B]"
+                            >
+                              <Trash2 className="size-3.5" aria-hidden="true" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Hapus kontak sales</TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                   </li>

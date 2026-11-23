@@ -30,6 +30,11 @@ import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { carUpsertSchema, type CarUpsertInput } from "@/lib/domain/schemas"
 import type {
   CarImage,
@@ -561,16 +566,23 @@ function EditCarPage() {
             />
             <p className="font-medium">{saveSuccess}</p>
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => setSaveSuccess(null)}
-            aria-label="Tutup notifikasi sukses"
-            className="shrink-0 text-emerald-900"
-          >
-            <X className="size-4" aria-hidden="true" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSaveSuccess(null)}
+                  aria-label="Tutup notifikasi sukses"
+                  className="shrink-0 text-emerald-900"
+                />
+              }
+            >
+              <X className="size-4" aria-hidden="true" />
+            </TooltipTrigger>
+            <TooltipContent>Tutup notifikasi</TooltipContent>
+          </Tooltip>
         </div>
       ) : null}
 
@@ -610,16 +622,23 @@ function EditCarPage() {
               </div>
             </div>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setSaveError(null)}
-              aria-label="Tutup pesan error"
-              className="shrink-0 text-[#991B1B]"
-            >
-              <X className="size-4" aria-hidden="true" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSaveError(null)}
+                    aria-label="Tutup pesan error"
+                    className="shrink-0 text-[#991B1B]"
+                  />
+                }
+              >
+                <X className="size-4" aria-hidden="true" />
+              </TooltipTrigger>
+              <TooltipContent>Tutup pesan error</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       ) : null}

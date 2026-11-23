@@ -24,6 +24,11 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import type { CarUpsertInput } from "@/lib/domain/schemas"
 import type { CreatorInsights, EvSpecs, FuelType } from "@/lib/domain/types"
 
@@ -964,16 +969,21 @@ export function CarEvInsightsForm({
               )}
 
               {value.videoWalkaroundUrl ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  disabled={disabled}
-                  aria-label="Hapus tautan video"
-                  onClick={() => onChange({ videoWalkaroundUrl: null })}
-                >
-                  <X className="size-4" aria-hidden="true" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger render={<span className="inline-flex" />}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      disabled={disabled}
+                      aria-label="Hapus tautan video"
+                      onClick={() => onChange({ videoWalkaroundUrl: null })}
+                    >
+                      <X className="size-4" aria-hidden="true" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Hapus tautan video</TooltipContent>
+                </Tooltip>
               ) : null}
             </div>
           </div>

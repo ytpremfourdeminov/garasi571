@@ -26,7 +26,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TruncatedTooltip } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TruncatedTooltip,
+} from "@/components/ui/tooltip"
 import type { CarImage, ImageAngleTag } from "@/lib/domain/types"
 import { compressImageToWebP } from "@/lib/image-compress"
 import {
@@ -1338,17 +1343,25 @@ export function CarMediaManager({
                           }
                           className="flex-1"
                         />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          disabled={isBusy || isDeletingThis}
-                          onClick={() => handleAutoFillAlt(index)}
-                          title="Isi otomatis dari nama mobil dan sudut foto"
-                          aria-label={`Isi otomatis teks alternatif foto #${index + 1}`}
-                        >
-                          <Sparkles className="size-4" aria-hidden />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              disabled={isBusy || isDeletingThis}
+                              onClick={() => handleAutoFillAlt(index)}
+                              aria-label={`Isi otomatis teks alternatif foto #${index + 1}`}
+                            >
+                              <Sparkles className="size-4" aria-hidden />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            Isi otomatis dari nama mobil dan sudut foto
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                       {isAltMissing ? (
                         <p className="mt-1 text-sm text-[#991B1B]">
@@ -1377,48 +1390,68 @@ export function CarMediaManager({
                       </Button>
 
                       <div className="flex items-center gap-1">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          disabled={isBusy || isDeletingThis || index === 0}
-                          onClick={() => handleMoveImage(index, -1)}
-                          title="Geser naik"
-                          aria-label={`Geser naik foto #${index + 1}`}
-                        >
-                          <ArrowUp className="size-4" aria-hidden />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          disabled={
-                            isBusy ||
-                            isDeletingThis ||
-                            index === draftImages.length - 1
-                          }
-                          onClick={() => handleMoveImage(index, 1)}
-                          title="Geser turun"
-                          aria-label={`Geser turun foto #${index + 1}`}
-                        >
-                          <ArrowDown className="size-4" aria-hidden />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          disabled={isBusy || isDeletingThis || !img.id}
-                          onClick={() =>
-                            setConfirmDeleteId(
-                              isConfirmingDelete ? null : cardKey
-                            )
-                          }
-                          title="Hapus foto"
-                          aria-label={`Hapus foto #${index + 1}`}
-                          className="text-destructive hover:border-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              disabled={isBusy || isDeletingThis || index === 0}
+                              onClick={() => handleMoveImage(index, -1)}
+                              aria-label={`Geser naik foto #${index + 1}`}
+                            >
+                              <ArrowUp className="size-4" aria-hidden />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Geser naik</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              disabled={
+                                isBusy ||
+                                isDeletingThis ||
+                                index === draftImages.length - 1
+                              }
+                              onClick={() => handleMoveImage(index, 1)}
+                              aria-label={`Geser turun foto #${index + 1}`}
+                            >
+                              <ArrowDown className="size-4" aria-hidden />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Geser turun</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger
+                            render={<span className="inline-flex" />}
+                          >
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              disabled={isBusy || isDeletingThis || !img.id}
+                              onClick={() =>
+                                setConfirmDeleteId(
+                                  isConfirmingDelete ? null : cardKey
+                                )
+                              }
+                              aria-label={`Hapus foto #${index + 1}`}
+                              className="text-destructive hover:border-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="size-4" aria-hidden />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Hapus foto</TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
 
