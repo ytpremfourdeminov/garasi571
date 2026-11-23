@@ -7,7 +7,6 @@ import {
   redirect,
   useRouter,
   useRouterState,
-  type LinkProps,
 } from "@tanstack/react-router"
 import {
   Car,
@@ -242,7 +241,7 @@ function SidebarContent({
             return (
               <li key={item.to}>
                 <Link
-                  to={item.to as LinkProps["to"]}
+                  to={item.to}
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(

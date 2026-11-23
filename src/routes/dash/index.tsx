@@ -308,7 +308,7 @@ function DashOverviewPage() {
           </Link>
 
           <Link
-            to={"/dash/showroom" as LinkProps["to"]}
+            to="/dash/showroom"
             className="group flex min-h-14 items-center justify-between gap-3 border border-border bg-card px-4 py-3.5 text-foreground no-underline transition-colors hover:border-foreground/50 hover:bg-secondary/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             <div className="flex min-w-0 items-center gap-3">
