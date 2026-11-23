@@ -94,12 +94,6 @@ function DashFaqsPending() {
         <Skeleton className="h-10 w-36" />
       </div>
 
-      <div className="grid grid-cols-3 gap-3 sm:max-w-lg">
-        {[0, 1, 2].map((idx) => (
-          <Skeleton key={idx} className="h-20 w-full border border-border" />
-        ))}
-      </div>
-
       <Skeleton className="h-18 w-full border border-border" />
 
       <div className="space-y-3">
@@ -361,33 +355,6 @@ function DashFaqsPage() {
           <Plus className="size-4" aria-hidden="true" />
           <span>Tambah FAQ</span>
         </Button>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3 sm:max-w-lg">
-        <div className="border border-border bg-card px-4 py-3">
-          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
-            Total FAQ
-          </p>
-          <p className="mt-1 font-heading text-2xl font-bold text-foreground tabular-nums">
-            {faqs.length}
-          </p>
-        </div>
-        <div className="border border-border bg-card px-4 py-3">
-          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
-            Publik
-          </p>
-          <p className="mt-1 font-heading text-2xl font-bold text-emerald-800 tabular-nums">
-            {publishedCount}
-          </p>
-        </div>
-        <div className="border border-border bg-card px-4 py-3">
-          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
-            Draft
-          </p>
-          <p className="mt-1 font-heading text-2xl font-bold text-muted-foreground tabular-nums">
-            {draftCount}
-          </p>
-        </div>
       </div>
 
       {feedback ? (
