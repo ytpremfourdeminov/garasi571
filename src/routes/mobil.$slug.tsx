@@ -646,24 +646,19 @@ function CarDetailPage() {
           className="mt-14 border-t border-border pt-10"
         >
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-primary uppercase">
-                Rekomendasi Stok
-              </p>
-              <h2
-                id="similar-cars-heading"
-                className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground"
-              >
-                Unit Serupa Lainnya
-              </h2>
-            </div>
+            <h2
+              id="similar-cars-heading"
+              className="font-heading text-2xl font-bold tracking-tight text-foreground"
+            >
+              Unit Serupa
+            </h2>
 
             <Link
               to="/"
               hash="stok"
               className="inline-flex min-h-11 items-center text-sm font-semibold text-foreground underline underline-offset-4 transition-colors hover:text-primary"
             >
-              Lihat semua stok
+              Lihat semua unit
             </Link>
           </div>
 

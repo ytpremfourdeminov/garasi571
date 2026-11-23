@@ -12,9 +12,15 @@ import {
 } from "@/data/cars"
 import { Button } from "@/components/ui/button"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -64,6 +70,32 @@ const CATEGORY_LABELS: Record<"all" | CarCategory, string> = {
   keluarga: "Keluarga 7-Seater",
   harian: "Harian & City Car",
   "hobi-eropa": "Hobi & Eropa",
+}
+
+const DESKTOP_BUDGET_ITEMS: Record<BudgetBand, string> = {
+  all: "Semua Budget",
+  "under-120": "Di bawah Rp120 jt",
+  "120-200": "Rp120 jt - Rp200 jt",
+  "over-200": "Di atas Rp200 jt",
+}
+
+const DESKTOP_TRANSMISSION_ITEMS: Record<"all" | TransmissionGroup, string> = {
+  all: "Semua",
+  manual: "Manual",
+  automatic: "Automatic",
+}
+
+const DESKTOP_PAYMENT_ITEMS: Record<"all" | PaymentMode, string> = {
+  all: "Semua",
+  "cash-credit": "Cash & Kredit",
+  "cash-only": "Khusus Cash",
+}
+
+const SORT_LABELS: Record<"default" | SortOption, string> = {
+  default: "Urutan Showroom",
+  "harga-terendah": "Harga Terendah",
+  "harga-tertinggi": "Harga Tertinggi",
+  "tahun-terbaru": "Tahun Terbaru",
 }
 
 export function CatalogSection({
@@ -148,53 +180,46 @@ export function CatalogSection({
       className="scroll-mt-20 bg-background"
     >
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <svg
-                width="20"
-                height="14"
-                viewBox="0 0 20 14"
-                fill="none"
-                aria-hidden="true"
-                className="shrink-0"
-              >
-                <path
-                  d="M5 1L1 13"
-                  stroke="#B91C1C"
-                  strokeWidth="2"
-                  strokeLinecap="square"
-                />
-                <path
-                  d="M12 1L8 13"
-                  stroke="#B91C1C"
-                  strokeWidth="2"
-                  strokeLinecap="square"
-                />
-                <path
-                  d="M19 1L15 13"
-                  stroke="#B91C1C"
-                  strokeWidth="2"
-                  strokeLinecap="square"
-                />
-              </svg>
-              <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
-                01 / Stok Showroom
-              </span>
-            </div>
-
-            <h2
-              id="catalog-heading"
-              className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+        <div>
+          <div className="flex items-center gap-2.5">
+            <svg
+              width="20"
+              height="14"
+              viewBox="0 0 20 14"
+              fill="none"
+              aria-hidden="true"
+              className="shrink-0"
             >
-              Stok Mobil Tersedia di Surakarta
-            </h2>
+              <path
+                d="M5 1L1 13"
+                stroke="#B91C1C"
+                strokeWidth="2"
+                strokeLinecap="square"
+              />
+              <path
+                d="M12 1L8 13"
+                stroke="#B91C1C"
+                strokeWidth="2"
+                strokeLinecap="square"
+              />
+              <path
+                d="M19 1L15 13"
+                stroke="#B91C1C"
+                strokeWidth="2"
+                strokeLinecap="square"
+              />
+            </svg>
+            <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+              01 / Katalog
+            </span>
           </div>
 
-          <p className="max-w-md text-sm text-muted-foreground">
-            Filter berdasarkan kategori, rentang budget, transmisi, atau opsi
-            pembayaran. Pilih hingga 3 unit untuk perbandingan langsung.
-          </p>
+          <h2
+            id="catalog-heading"
+            className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+          >
+            Unit Tersedia
+          </h2>
         </div>
 
         {/* Desktop controls */}
@@ -271,22 +296,29 @@ export function CatalogSection({
                 >
                   Budget
                 </label>
-                <select
-                  id="catalog-budget-desktop"
+                <Select
+                  items={DESKTOP_BUDGET_ITEMS}
                   value={activeBudget}
-                  onChange={(event) => {
-                    const value = event.target.value as BudgetBand
+                  onValueChange={(value) => {
+                    if (!value) return
                     onChangeFilters({
                       budget: value === "all" ? undefined : value,
                     })
                   }}
-                  className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
-                  <option value="all">Semua Budget</option>
-                  <option value="under-120">Di bawah Rp120 jt</option>
-                  <option value="120-200">Rp120 jt - Rp200 jt</option>
-                  <option value="over-200">Di atas Rp200 jt</option>
-                </select>
+                  <SelectTrigger
+                    id="catalog-budget-desktop"
+                    className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua Budget</SelectItem>
+                    <SelectItem value="under-120">Di bawah Rp120 jt</SelectItem>
+                    <SelectItem value="120-200">Rp120 jt - Rp200 jt</SelectItem>
+                    <SelectItem value="over-200">Di atas Rp200 jt</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="md:col-span-3 lg:col-span-2">
@@ -296,21 +328,28 @@ export function CatalogSection({
                 >
                   Transmisi
                 </label>
-                <select
-                  id="catalog-transmisi-desktop"
+                <Select
+                  items={DESKTOP_TRANSMISSION_ITEMS}
                   value={activeTransmisi}
-                  onChange={(event) => {
-                    const value = event.target.value as "all" | TransmissionGroup
+                  onValueChange={(value) => {
+                    if (!value) return
                     onChangeFilters({
                       transmisi: value === "all" ? undefined : value,
                     })
                   }}
-                  className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
-                  <option value="all">Semua</option>
-                  <option value="manual">Manual</option>
-                  <option value="automatic">Automatic</option>
-                </select>
+                  <SelectTrigger
+                    id="catalog-transmisi-desktop"
+                    className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua</SelectItem>
+                    <SelectItem value="manual">Manual</SelectItem>
+                    <SelectItem value="automatic">Automatic</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="md:col-span-3 lg:col-span-2">
@@ -320,21 +359,30 @@ export function CatalogSection({
                 >
                   Pembayaran
                 </label>
-                <select
-                  id="catalog-bayar-desktop"
+                <Select
+                  items={DESKTOP_PAYMENT_ITEMS}
                   value={activeBayar}
-                  onChange={(event) => {
-                    const value = event.target.value as "all" | PaymentMode
+                  onValueChange={(value) => {
+                    if (!value) return
                     onChangeFilters({
                       bayar: value === "all" ? undefined : value,
                     })
                   }}
-                  className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
-                  <option value="all">Semua</option>
-                  <option value="cash-credit">Cash &amp; Kredit</option>
-                  <option value="cash-only">Khusus Cash</option>
-                </select>
+                  <SelectTrigger
+                    id="catalog-bayar-desktop"
+                    className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua</SelectItem>
+                    <SelectItem value="cash-credit">
+                      Cash &amp; Kredit
+                    </SelectItem>
+                    <SelectItem value="cash-only">Khusus Cash</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="md:col-span-3 lg:col-span-2">
@@ -344,22 +392,34 @@ export function CatalogSection({
                 >
                   Urutkan
                 </label>
-                <select
-                  id="catalog-urut-desktop"
-                  value={activeUrut ?? ""}
-                  onChange={(event) => {
-                    const value = event.target.value as "" | SortOption
+                <Select
+                  items={SORT_LABELS}
+                  value={activeUrut ?? "default"}
+                  onValueChange={(value) => {
+                    if (!value) return
                     onChangeFilters({
-                      urut: value === "" ? undefined : value,
+                      urut:
+                        value === "default" ? undefined : (value as SortOption),
                     })
                   }}
-                  className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
-                  <option value="">Urutan Showroom</option>
-                  <option value="harga-terendah">Harga Terendah</option>
-                  <option value="harga-tertinggi">Harga Tertinggi</option>
-                  <option value="tahun-terbaru">Tahun Terbaru</option>
-                </select>
+                  <SelectTrigger
+                    id="catalog-urut-desktop"
+                    className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Urutan Showroom</SelectItem>
+                    <SelectItem value="harga-terendah">
+                      Harga Terendah
+                    </SelectItem>
+                    <SelectItem value="harga-tertinggi">
+                      Harga Tertinggi
+                    </SelectItem>
+                    <SelectItem value="tahun-terbaru">Tahun Terbaru</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -450,11 +510,7 @@ export function CatalogSection({
 
             <SheetContent side="bottom" closeLabel="Tutup panel filter">
               <SheetHeader>
-                <SheetTitle>Filter &amp; Urutkan Stok</SheetTitle>
-                <SheetDescription>
-                  Sesuaikan budget, transmisi, skema pembayaran, dan urutan
-                  tampilan unit.
-                </SheetDescription>
+                <SheetTitle>Filter &amp; Urutkan Unit</SheetTitle>
               </SheetHeader>
 
               <div className="mt-5 space-y-4">
@@ -465,22 +521,35 @@ export function CatalogSection({
                   >
                     Rentang Budget
                   </label>
-                  <select
-                    id="catalog-budget-mobile"
+                  <Select
+                    items={BUDGET_LABELS}
                     value={activeBudget}
-                    onChange={(event) => {
-                      const value = event.target.value as BudgetBand
+                    onValueChange={(value) => {
+                      if (!value) return
                       onChangeFilters({
                         budget: value === "all" ? undefined : value,
                       })
                     }}
-                    className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground"
                   >
-                    <option value="all">Semua Budget</option>
-                    <option value="under-120">Di bawah Rp120 juta</option>
-                    <option value="120-200">Rp120 juta - Rp200 juta</option>
-                    <option value="over-200">Di atas Rp200 juta</option>
-                  </select>
+                    <SelectTrigger
+                      id="catalog-budget-mobile"
+                      className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Semua Budget</SelectItem>
+                      <SelectItem value="under-120">
+                        Di bawah Rp120 juta
+                      </SelectItem>
+                      <SelectItem value="120-200">
+                        Rp120 juta - Rp200 juta
+                      </SelectItem>
+                      <SelectItem value="over-200">
+                        Di atas Rp200 juta
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -490,23 +559,28 @@ export function CatalogSection({
                   >
                     Transmisi
                   </label>
-                  <select
-                    id="catalog-transmisi-mobile"
+                  <Select
+                    items={TRANSMISSION_LABELS}
                     value={activeTransmisi}
-                    onChange={(event) => {
-                      const value = event.target.value as
-                        | "all"
-                        | TransmissionGroup
+                    onValueChange={(value) => {
+                      if (!value) return
                       onChangeFilters({
                         transmisi: value === "all" ? undefined : value,
                       })
                     }}
-                    className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground"
                   >
-                    <option value="all">Semua Transmisi</option>
-                    <option value="manual">Manual</option>
-                    <option value="automatic">Automatic</option>
-                  </select>
+                    <SelectTrigger
+                      id="catalog-transmisi-mobile"
+                      className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Semua Transmisi</SelectItem>
+                      <SelectItem value="manual">Manual</SelectItem>
+                      <SelectItem value="automatic">Automatic</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -516,21 +590,30 @@ export function CatalogSection({
                   >
                     Pembayaran
                   </label>
-                  <select
-                    id="catalog-bayar-mobile"
+                  <Select
+                    items={PAYMENT_LABELS}
                     value={activeBayar}
-                    onChange={(event) => {
-                      const value = event.target.value as "all" | PaymentMode
+                    onValueChange={(value) => {
+                      if (!value) return
                       onChangeFilters({
                         bayar: value === "all" ? undefined : value,
                       })
                     }}
-                    className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground"
                   >
-                    <option value="all">Semua Pembayaran</option>
-                    <option value="cash-credit">Cash &amp; Kredit</option>
-                    <option value="cash-only">Khusus Cash</option>
-                  </select>
+                    <SelectTrigger
+                      id="catalog-bayar-mobile"
+                      className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Semua Pembayaran</SelectItem>
+                      <SelectItem value="cash-credit">
+                        Cash &amp; Kredit
+                      </SelectItem>
+                      <SelectItem value="cash-only">Khusus Cash</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -540,22 +623,38 @@ export function CatalogSection({
                   >
                     Urutkan
                   </label>
-                  <select
-                    id="catalog-urut-mobile"
-                    value={activeUrut ?? ""}
-                    onChange={(event) => {
-                      const value = event.target.value as "" | SortOption
+                  <Select
+                    items={SORT_LABELS}
+                    value={activeUrut ?? "default"}
+                    onValueChange={(value) => {
+                      if (!value) return
                       onChangeFilters({
-                        urut: value === "" ? undefined : value,
+                        urut:
+                          value === "default"
+                            ? undefined
+                            : (value as SortOption),
                       })
                     }}
-                    className="mt-1.5 min-h-11 w-full rounded-none border border-input bg-card px-3 text-sm text-foreground"
                   >
-                    <option value="">Urutan Showroom</option>
-                    <option value="harga-terendah">Harga Terendah</option>
-                    <option value="harga-tertinggi">Harga Tertinggi</option>
-                    <option value="tahun-terbaru">Tahun Terbaru</option>
-                  </select>
+                    <SelectTrigger
+                      id="catalog-urut-mobile"
+                      className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Urutan Showroom</SelectItem>
+                      <SelectItem value="harga-terendah">
+                        Harga Terendah
+                      </SelectItem>
+                      <SelectItem value="harga-tertinggi">
+                        Harga Tertinggi
+                      </SelectItem>
+                      <SelectItem value="tahun-terbaru">
+                        Tahun Terbaru
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -619,8 +718,7 @@ export function CatalogSection({
               Belum ada unit yang cocok dengan filter saat ini
             </h3>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              Kombinasi pencarian Anda menghasilkan 0 dari {CARS.length} unit
-              tersedia
+              Tidak ada unit yang sesuai dengan filter saat ini
               {activeCriteriaDescriptions.length > 0
                 ? `: ${activeCriteriaDescriptions.join(", ")}.`
                 : "."}
@@ -637,7 +735,7 @@ export function CatalogSection({
                 variant="outline"
                 onClick={() =>
                   openWhatsAppDialog({
-                    title: "Tanya Ketersediaan Stok",
+                    title: "Tanya Ketersediaan Unit",
                     description:
                       "Sampaikan kriteria mobil yang Anda cari kepada tim sales Garasi 571 Surakarta.",
                     message: emptyInquiryMessage,
@@ -645,7 +743,7 @@ export function CatalogSection({
                 }
               >
                 <MessageCircle className="size-4" aria-hidden="true" />
-                <span>Tanya Stok via WhatsApp</span>
+                <span>Tanya Unit via WhatsApp</span>
               </Button>
             </div>
           </div>

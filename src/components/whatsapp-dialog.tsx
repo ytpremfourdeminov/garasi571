@@ -13,7 +13,7 @@ import { cn } from "cn"
 
 const DEFAULT_TITLE = "Hubungi Tim Sales Garasi 571"
 const DEFAULT_DESCRIPTION =
-  "Pilih salah satu kontak sales kami di Surakarta untuk terhubung langsung lewat WhatsApp."
+  "Pilih tim sales untuk langsung terhubung via WhatsApp."
 const DEFAULT_MESSAGE =
   "Halo Garasi 571, saya tertarik melihat stok mobil bekas dan ingin konsultasi unit atau jadwal kunjungan showroom."
 

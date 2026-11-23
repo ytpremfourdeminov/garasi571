@@ -86,13 +86,13 @@ export function ShowroomSection() {
             />
           </svg>
           <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
-            03 / Lokasi &amp; Kontak Showroom
+            03 / Showroom
           </span>
         </div>
 
         <div className="mt-5 grid grid-cols-1 border border-border lg:grid-cols-12">
-          <div className="flex flex-col justify-between bg-[#161514] p-6 text-[#FAF9F7] sm:p-8 lg:col-span-6">
-            <div>
+          <div className="flex flex-col bg-[#161514] p-6 text-[#FAF9F7] sm:p-8 lg:col-span-6">
+            <div className="flex flex-1 flex-col">
               <div className="flex items-center gap-3">
                 <img
                   src={SHOWROOM.logoSrc}
@@ -116,79 +116,96 @@ export function ShowroomSection() {
                 id="showroom-heading"
                 className="mt-6 font-heading text-2xl font-bold tracking-tight text-[#FAF9F7] sm:text-3xl"
               >
-                Kunjungi Showroom Garasi 571
+                Kunjungi Garasi 571
               </h2>
 
               <p className="mt-2.5 max-w-lg text-sm leading-relaxed text-[#C7C2BC]">
-                Inspeksi kondisi bodi, interior, mesin, serta kelengkapan
-                dokumen unit secara langsung di lokasi showroom kami di
-                Surakarta.
+                Cek langsung kondisi bodi, interior, mesin, dan dokumen unit di
+                showroom kami.
               </p>
 
-              <dl className="mt-6 space-y-3 border-y border-[#FAF9F7]/15 py-5 text-sm">
-                <div className="flex items-start gap-3">
-                  <MapPin
-                    className="mt-0.5 size-4 shrink-0 text-[#F87171]"
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <dt className="text-xs text-[#C7C2BC]">Lokasi</dt>
-                    <dd className="font-medium text-[#FAF9F7]">
-                      {SHOWROOM.city}
-                    </dd>
+              <div className="mt-6 grid flex-1 grid-cols-1 gap-5 border-t border-[#FAF9F7]/15 pt-5 sm:grid-cols-12 sm:items-stretch">
+                <dl className="space-y-4 text-sm sm:col-span-6">
+                  <div className="flex items-start gap-3">
+                    <MapPin
+                      className="mt-0.5 size-4 shrink-0 text-[#F87171]"
+                      aria-hidden="true"
+                    />
+                    <div>
+                      <dt className="text-xs text-[#C7C2BC]">Lokasi</dt>
+                      <dd className="font-medium text-[#FAF9F7]">
+                        {SHOWROOM.city}
+                      </dd>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-start gap-3">
-                  <Clock
-                    className="mt-0.5 size-4 shrink-0 text-[#F87171]"
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <dt className="text-xs text-[#C7C2BC]">Jam Operasional</dt>
-                    <dd className="font-medium text-[#FAF9F7] tabular-nums">
-                      {SHOWROOM.hours}
-                    </dd>
+                  <div className="flex items-start gap-3">
+                    <Clock
+                      className="mt-0.5 size-4 shrink-0 text-[#F87171]"
+                      aria-hidden="true"
+                    />
+                    <div>
+                      <dt className="text-xs text-[#C7C2BC]">
+                        Jam Operasional
+                      </dt>
+                      <dd className="font-medium text-[#FAF9F7] tabular-nums">
+                        {SHOWROOM.hours}
+                      </dd>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-start gap-3">
-                  <AtSign
-                    className="mt-0.5 size-4 shrink-0 text-[#F87171]"
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <dt className="text-xs text-[#C7C2BC]">Instagram Resmi</dt>
-                    <dd>
-                      <a
-                        href={SHOWROOM.instagramUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center gap-1.5 font-medium text-[#FAF9F7] underline-offset-4 transition-colors hover:text-[#F87171] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FAF9F7]"
-                      >
-                        <span>{SHOWROOM.instagramHandle}</span>
-                        <ExternalLink className="size-3.5" aria-hidden="true" />
-                      </a>
-                    </dd>
+                  <div className="flex items-start gap-3">
+                    <AtSign
+                      className="mt-0.5 size-4 shrink-0 text-[#F87171]"
+                      aria-hidden="true"
+                    />
+                    <div>
+                      <dt className="text-xs text-[#C7C2BC]">Instagram</dt>
+                      <dd>
+                        <a
+                          href={SHOWROOM.instagramUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="-my-2.5 inline-flex items-center gap-1.5 py-2.5 font-medium text-[#FAF9F7] underline-offset-4 transition-colors hover:text-[#F87171] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FAF9F7]"
+                        >
+                          <span>{SHOWROOM.instagramHandle}</span>
+                          <ExternalLink
+                            className="size-3.5"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </dd>
+                    </div>
                   </div>
-                </div>
-              </dl>
-            </div>
+                </dl>
 
-            <div className="mt-6">
-              <a
-                href={SHOWROOM.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: "default" }),
-                  "w-full no-underline focus-visible:outline-[#FAF9F7] sm:w-auto"
-                )}
-              >
-                <MapPin className="size-4" aria-hidden="true" />
-                <span>Buka di Google Maps</span>
-                <ExternalLink className="size-4" aria-hidden="true" />
-              </a>
+                <div className="flex flex-col overflow-hidden border border-[#FAF9F7]/20 bg-[#211F1D] sm:col-span-6">
+                  <div className="relative aspect-[4/3] w-full flex-1 bg-[#211F1D] sm:aspect-auto sm:min-h-40">
+                    <iframe
+                      title="Peta Lokasi Garasi 571 Surakarta"
+                      src={SHOWROOM.mapsEmbedUrl}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      className="h-full w-full border-0"
+                    />
+                  </div>
+                  <a
+                    href={SHOWROOM.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      buttonVariants({ variant: "default" }),
+                      "w-full justify-between rounded-none border-t border-[#FAF9F7]/15 no-underline focus-visible:outline-[#FAF9F7]"
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <MapPin className="size-4" aria-hidden="true" />
+                      <span>Buka di Google Maps</span>
+                    </span>
+                    <ExternalLink className="size-4" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -199,11 +216,11 @@ export function ShowroomSection() {
               </h3>
 
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Pilih kontak sales untuk konfirmasi stok terbaru, jadwal cek
-                unit, atau pertanyaan simulasi kredit dan tukar tambah.
+                Konfirmasi ketersediaan unit, jadwal inspeksi, atau simulasi
+                kredit langsung lewat WhatsApp.
               </p>
 
-              <div className="mt-6 space-y-4">
+              <div className="mt-5 space-y-3">
                 {SHOWROOM.sales.map((person) => {
                   const isCopied = copiedId === person.id
                   const whatsappHref = buildWhatsAppUrl(
@@ -212,74 +229,121 @@ export function ShowroomSection() {
                   )
 
                   return (
-                    <div
+                    <article
                       key={person.id}
-                      className="border border-border bg-background p-5"
+                      className="flex flex-col justify-between border border-foreground/20 bg-background p-4 shadow-[0_2px_0_0_rgba(22,21,20,0.06)] transition-colors hover:border-foreground/35"
                     >
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <div>
-                          <p className="font-heading text-lg font-bold text-foreground">
-                            {person.name}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {person.role}
-                          </p>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="inline-flex items-center gap-1.5">
+                          <svg
+                            width="12"
+                            height="9"
+                            viewBox="0 0 20 14"
+                            fill="none"
+                            aria-hidden="true"
+                            className="shrink-0"
+                          >
+                            <path
+                              d="M5 1L1 13"
+                              stroke="#B91C1C"
+                              strokeWidth="2.2"
+                              strokeLinecap="square"
+                            />
+                            <path
+                              d="M12 1L8 13"
+                              stroke="#B91C1C"
+                              strokeWidth="2.2"
+                              strokeLinecap="square"
+                            />
+                            <path
+                              d="M19 1L15 13"
+                              stroke="#B91C1C"
+                              strokeWidth="2.2"
+                              strokeLinecap="square"
+                            />
+                          </svg>
+                          <span className="font-heading text-[10px] font-bold tracking-[0.14em] text-foreground uppercase">
+                            Garasi 571
+                          </span>
                         </div>
-                        <p className="text-sm font-semibold text-foreground tabular-nums">
-                          {person.phoneDisplay}
+                        <span className="text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+                          Surakarta
+                        </span>
+                      </div>
+
+                      <div className="my-3">
+                        <p className="font-heading text-lg font-bold tracking-tight text-foreground">
+                          {person.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {person.role}
                         </p>
                       </div>
 
-                      <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
-                        <a
-                          href={whatsappHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={cn(
-                            buttonVariants({ variant: "default" }),
-                            "flex-1 no-underline"
-                          )}
-                        >
-                          <MessageCircle
-                            className="size-4"
-                            aria-hidden="true"
-                          />
-                          <span>Chat {person.name} via WhatsApp</span>
-                          <ExternalLink
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
-                        </a>
+                      <div className="flex flex-col gap-2.5 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
+                            WhatsApp
+                          </p>
+                          <p className="font-heading text-xs font-semibold text-foreground tabular-nums sm:text-sm">
+                            {person.phoneDisplay}
+                          </p>
+                        </div>
 
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() =>
-                            handleCopyNumber(
-                              person.id,
-                              person.name,
-                              person.phoneDisplay
-                            )
-                          }
-                          className="sm:shrink-0"
-                        >
-                          {isCopied ? (
-                            <>
-                              <Check
-                                className="size-4 text-primary"
-                                aria-hidden="true"
-                              />
-                              <span>Nomor disalin</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="size-4" aria-hidden="true" />
-                              <span>Salin Nomor</span>
-                            </>
-                          )}
-                        </Button>
+                        <div className="flex items-center gap-2 sm:shrink-0">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleCopyNumber(
+                                person.id,
+                                person.name,
+                                person.phoneDisplay
+                              )
+                            }
+                            aria-label={`Salin nomor ${person.name}`}
+                            className="flex-1 sm:flex-none"
+                          >
+                            {isCopied ? (
+                              <>
+                                <Check
+                                  className="size-3.5 text-primary"
+                                  aria-hidden="true"
+                                />
+                                <span>Disalin</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="size-3.5" aria-hidden="true" />
+                                <span>Salin</span>
+                              </>
+                            )}
+                          </Button>
+
+                          <a
+                            href={whatsappHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Chat ${person.name} via WhatsApp`}
+                            className={cn(
+                              buttonVariants({ variant: "default", size: "sm" }),
+                              "flex-1 no-underline sm:flex-none"
+                            )}
+                          >
+                            <MessageCircle
+                              className="size-3.5"
+                              aria-hidden="true"
+                            />
+                            <span>Chat</span>
+                            <ExternalLink
+                              className="size-3"
+                              aria-hidden="true"
+                            />
+                          </a>
+                        </div>
                       </div>
-                    </div>
+                    </article>
                   )
                 })}
               </div>

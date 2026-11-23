@@ -44,7 +44,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Katalog 9 unit mobil bekas pilihan di Garasi 571 Surakarta. Harga cash dan kredit transparan, inspeksi langsung bersama tim sales setiap hari 08:00 - 16:00 WIB.",
+          "Pilihan mobil bekas siap pakai di Garasi 571 Surakarta. Tersedia cash, kredit, dan tukar tambah, buka setiap hari 08:00 - 16:00 WIB.",
       },
       {
         property: "og:site_name",

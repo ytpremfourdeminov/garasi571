@@ -21,20 +21,20 @@ export const SHOWROOM_FAQS: readonly ShowroomFaqItem[] = [
     question:
       "Bagaimana perbedaan opsi pembayaran cash dan kredit di Garasi 571?",
     answer:
-      "Dari 9 unit aktif di katalog, 7 unit melayani pembelian cash maupun kredit melalui lembaga pembiayaan tercatat (antara lain BCA Finance, Hana Finance, BF, dan HF dengan DP mulai Rp23 juta). Sementara itu, 2 unit koleksi Mercedes-Benz klasik (W124 E320 Masterpiece 1995 dan MB500 Diesel 1999) berstatus Special Price khusus pembayaran cash.",
+      "Sebagian besar unit melayani pembelian cash maupun kredit melalui mitra leasing seperti BCA Finance dan Hana Finance (DP mulai Rp23 juta). Untuk unit koleksi tertentu, tersedia harga khusus pembelian tunai.",
   },
   {
     id: "layanan-tukar-tambah",
     question: "Unit mana saja yang melayani opsi tukar tambah?",
     answer:
-      "Saat ini terdapat 3 unit di katalog yang tercatat melayani opsi tukar tambah, yaitu Mitsubishi Xpander Ultimate (2017), Suzuki All New Ertiga GX Hybrid (2025), dan Honda All New Mobilio E Facelift (2018).",
+      'Layanan tukar tambah tersedia untuk unit bertanda "Bisa Tukar Tambah" di katalog. Hubungi tim sales untuk taksiran kendaraan lama Anda.',
   },
   {
     id: "cek-kondisi-odometer-dokumen",
     question:
       "Bagaimana cara mengetahui kondisi fisik, kelengkapan dokumen, dan angka odometer unit yang belum tercantum?",
     answer:
-      'Terdapat 4 unit di katalog yang memakai keterangan odometer "Tanyakan via WhatsApp". Calon pembeli dapat menghubungi tim sales via WhatsApp untuk menanyakan detail kilometer, kondisi fisik, dan kelengkapan dokumen, atau datang langsung untuk inspeksi unit di showroom Surakarta.',
+      "Untuk unit yang belum mencantumkan angka kilometer, Anda bisa menanyakan detail odometer, kondisi fisik, dan dokumen langsung via WhatsApp atau cek langsung di showroom.",
   },
   {
     id: "kontak-resmi-sales",

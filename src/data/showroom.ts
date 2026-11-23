@@ -11,6 +11,8 @@ export const SHOWROOM = {
   city: "Surakarta, Jawa Tengah",
   hours: "Setiap hari, 08:00 - 16:00 WIB",
   mapsUrl: "https://maps.app.goo.gl/4wLS9NRMExMHPaXA9",
+  mapsEmbedUrl:
+    "https://maps.google.com/maps?q=-7.5256103,110.818928&z=16&output=embed",
   instagramHandle: "@garasi.571",
   instagramUrl: "https://www.instagram.com/garasi.571/",
   logoSrc: "/images/brand/garasi-571-logo.png",

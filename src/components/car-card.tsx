@@ -107,9 +107,6 @@ export function CarCard({ car }: CarCardProps) {
                 <p className="font-heading text-lg font-bold text-foreground">
                   {formatRupiah(car.cashPrice)}
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  Tersedia khusus pembelian cash di Surakarta
-                </p>
               </div>
             )}
           </div>

@@ -2,7 +2,6 @@ import * as React from "react"
 import { Link } from "@tanstack/react-router"
 import { ArrowLeftRight, ArrowRight, MessageCircle } from "lucide-react"
 import {
-  CARS,
   CREDIT_ELIGIBLE_CARS,
   formatRupiah,
   formatShortJuta,
@@ -15,8 +14,6 @@ import { cn } from "cn"
 
 const DEFAULT_SELECTED_SLUG = "suzuki-all-new-ertiga-gx-hybrid-2025"
 
-const CASH_ONLY_CARS = CARS.filter((car) => car.paymentMode === "cash-only")
-const TRADE_IN_CARS = CARS.filter((car) => car.tradeInAvailable)
 const LOWEST_DP = Math.min(
   ...CREDIT_ELIGIBLE_CARS.flatMap((car) =>
     car.creditSimulations.map((sim) => sim.dp)
@@ -111,7 +108,7 @@ export function CreditSection() {
                 />
               </svg>
               <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
-                02 / Simulasi Kredit &amp; Tukar Tambah
+                02 / Pembiayaan
               </span>
             </div>
 
@@ -119,59 +116,52 @@ export function CreditSection() {
               id="credit-heading"
               className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
             >
-              Transparansi Skema Cash, Kredit, dan Tukar Tambah
+              Cash, Kredit, dan Tukar Tambah
             </h2>
 
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Setiap unit di Garasi 571 menampilkan harga cash dan rincian
-              simulasi leasing yang tercatat pada data unit, tanpa hitungan
-              bunga perkiraan sepihak.
+              Harga cash dan simulasi leasing ditampilkan sesuai data
+              masing-masing unit.
             </p>
 
             <div className="mt-6 space-y-4">
               <div className="border border-border bg-card p-5">
-                <p className="font-heading text-base font-semibold text-foreground tabular-nums">
-                  {CREDIT_ELIGIBLE_CARS.length} Unit Tersedia Simulasi Kredit
+                <p className="font-heading text-base font-semibold text-foreground">
+                  Pembelian Kredit &amp; Tukar Tambah
                 </p>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  Menggunakan data leasing tercatat (termasuk BCA Finance dan
-                  Hana Finance) dengan DP mulai{" "}
+                  Didukung mitra leasing seperti BCA Finance dan Hana Finance
+                  dengan DP mulai{" "}
                   <span className="font-semibold text-foreground tabular-nums">
                     {formatRupiah(LOWEST_DP)}
                   </span>
-                  . Opsi tukar tambah tersedia pada unit tertentu:{" "}
-                  {TRADE_IN_CARS.map((car) => car.shortName).join(", ")}.
+                  . Opsi tukar tambah berlaku pada unit tertentu.
                 </p>
               </div>
 
               <div className="border border-border bg-card p-5">
-                <p className="font-heading text-base font-semibold text-foreground tabular-nums">
-                  {CASH_ONLY_CARS.length} Unit Special Price Khusus Cash
+                <p className="font-heading text-base font-semibold text-foreground">
+                  Unit Koleksi Khusus Cash
                 </p>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  Unit koleksi{" "}
-                  {CASH_ONLY_CARS.map((car) => `${car.name} (${car.year})`).join(
-                    " dan "
-                  )}{" "}
-                  tersedia khusus pembelian cash dengan harga spesial tanpa
-                  skema kredit.
+                  Beberapa unit koleksi ditawarkan khusus pembelian tunai dengan
+                  harga spesial.
                 </p>
               </div>
             </div>
 
             <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
-              Nominal DP dan angsuran mengikuti catatan unit saat ini. Untuk
-              penyesuaian tenor, simulasi DP berbeda, atau taksiran tukar
-              tambah, silakan konsultasi langsung dengan tim sales kami.
+              Butuh penyesuaian DP, tenor, atau taksiran tukar tambah?
+              Diskusikan langsung dengan tim kami.
             </p>
           </div>
 
           <div className="min-w-0 lg:col-span-7">
             <p
               id="credit-selector-label"
-              className="text-xs font-semibold tracking-wider text-muted-foreground uppercase tabular-nums"
+              className="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
             >
-              Pemilih Simulasi Kredit ({CREDIT_ELIGIBLE_CARS.length} Unit)
+              Pilih Unit
             </p>
 
             <div

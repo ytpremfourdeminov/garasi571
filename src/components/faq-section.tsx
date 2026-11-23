@@ -1,5 +1,10 @@
-import { ChevronDown } from "lucide-react"
 import { SHOWROOM_FAQS } from "@/data/faq"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export function FaqSection() {
   return (
@@ -40,7 +45,7 @@ export function FaqSection() {
                 />
               </svg>
               <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
-                04 / Pertanyaan Umum
+                04 / FAQ
               </span>
             </div>
 
@@ -48,36 +53,24 @@ export function FaqSection() {
               id="faq-heading"
               className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
             >
-              Pertanyaan Umum Pembeli di Surakarta
+              Pertanyaan Umum
             </h2>
-
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Rangkuman ketentuan showroom Garasi 571 mengenai lokasi, jam buka,
-              skema pembayaran cash dan kredit, tukar tambah, serta prosedur cek
-              unit langsung.
-            </p>
           </div>
 
           <div className="min-w-0 lg:col-span-8">
-            <div className="divide-y divide-border border border-border bg-card">
+            <Accordion className="border border-border bg-card">
               {SHOWROOM_FAQS.map((item) => (
-                <details key={item.id} className="group">
-                  <summary className="flex min-h-11 list-none items-center justify-between gap-4 px-5 py-3.5 text-left font-heading text-base font-semibold text-foreground transition-colors hover:bg-secondary/60 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
+                <AccordionItem key={item.id} value={item.id}>
+                  <AccordionTrigger className="min-h-11 items-center gap-4 px-5 py-3.5 font-heading text-base font-semibold text-foreground hover:bg-secondary/60 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring **:data-[slot=accordion-trigger-icon]:text-primary">
                     <span>{item.question}</span>
-                    <ChevronDown
-                      className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180"
-                      aria-hidden="true"
-                    />
-                  </summary>
+                  </AccordionTrigger>
 
-                  <div className="border-t border-border/60 bg-background/60 px-5 py-4">
-                    <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                      {item.answer}
-                    </p>
-                  </div>
-                </details>
+                  <AccordionContent className="border-t border-border/60 bg-background/60 px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+                    <p className="max-w-3xl">{item.answer}</p>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         </div>
       </div>

@@ -8,7 +8,6 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -134,9 +133,6 @@ export function CompareTray() {
             <DialogTitle>
               Perbandingan Unit ({selectedCars.length}/3)
             </DialogTitle>
-            <DialogDescription>
-              Bandingkan harga cash, harga kredit, simulasi resmi, dan spesifikasi utama unit pilihan Anda.
-            </DialogDescription>
           </DialogHeader>
 
           {selectedCars.length === 1 ? (

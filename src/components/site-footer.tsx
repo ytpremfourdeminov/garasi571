@@ -61,7 +61,7 @@ export function SiteFooter() {
                     hash="stok"
                     className="inline-flex min-h-11 items-center text-sm font-medium text-foreground no-underline transition-colors hover:text-primary"
                   >
-                    Stok Unit
+                    Unit Tersedia
                   </Link>
                 </li>
                 <li>
@@ -136,7 +136,7 @@ export function SiteFooter() {
 
         <div className="mt-8 flex flex-col gap-2 border-t border-border pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            Garasi 571 Surakarta. Showroom mobil bekas pilihan, inspeksi langsung di tempat.
+            Garasi 571 Surakarta. Inspeksi unit langsung di showroom.
           </p>
           <p>Cash, Kredit, dan Tukar Tambah.</p>
         </div>

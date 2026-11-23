@@ -61,7 +61,7 @@ export function CarAnswerSummary({ car }: CarAnswerSummaryProps) {
         id="ringkasan-cepat-heading"
         className="text-xs font-semibold tracking-wider text-primary uppercase"
       >
-        Ringkasan Cepat Unit
+        Ringkasan Unit
       </h2>
 
       <p className="mt-2.5 text-sm leading-relaxed text-foreground">

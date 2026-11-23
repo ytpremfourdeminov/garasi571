@@ -27,7 +27,7 @@ import { ShowroomSection } from "@/components/showroom-section"
 
 const HOME_TITLE = "Garasi 571 Surakarta | Katalog Mobil Bekas Pilihan"
 const HOME_DESCRIPTION =
-  "Katalog 9 unit mobil bekas pilihan di Garasi 571 Surakarta. Harga cash dan kredit transparan, inspeksi langsung setiap hari 08:00 - 16:00 WIB."
+  "Pilihan mobil bekas siap pakai di Garasi 571 Surakarta. Tersedia cash, kredit, dan tukar tambah, buka setiap hari 08:00 - 16:00 WIB."
 
 const featuredCar =
   CARS.find((car) => car.slug === HERO_FEATURED_SLUGS[0]) ?? CARS.at(0)

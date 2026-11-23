@@ -25,7 +25,7 @@ const DEFAULT_INQUIRY_MESSAGE =
   "Halo Garasi 571, saya ingin menanyakan ketersediaan stok mobil bekas dan jadwal kunjungan showroom."
 
 const NAV_ITEMS = [
-  { label: "Stok Unit", hash: "stok" },
+  { label: "Unit Tersedia", hash: "stok" },
   { label: "Simulasi Kredit", hash: "simulasi" },
   { label: "Lokasi Showroom", hash: "lokasi" },
 ] as const
