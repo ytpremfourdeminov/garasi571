@@ -28,7 +28,7 @@ import {
   DialogTitle,
   useStableDialogData,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -874,18 +874,17 @@ export function CarMediaManager({
   )
 
   return (
-    <section aria-label="Manajemen Galeri Foto Unit" className="space-y-6">
+    <section
+      data-completeness-id="media-gallery"
+      aria-label="Manajemen Galeri Foto Unit"
+      className="space-y-6"
+    >
       {/* Research Mandatory Angle Checklist */}
       <div className="border border-border bg-card p-4 sm:p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3">
-          <div>
-            <h3 className="text-base font-semibold text-foreground">
-              6 Sudut Wajib
-            </h3>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              Pilih sudut di bawah sebelum mengunggah foto.
-            </p>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
+          <h3 className="text-base font-semibold text-foreground">
+            6 Sudut Wajib
+          </h3>
           <Badge
             variant={
               completedMandatoryCount === MANDATORY_ANGLE_OPTIONS.length
@@ -894,12 +893,11 @@ export function CarMediaManager({
             }
             className="tabular-nums"
           >
-            {completedMandatoryCount}/{MANDATORY_ANGLE_OPTIONS.length} Sudut
-            Wajib
+            {completedMandatoryCount}/{MANDATORY_ANGLE_OPTIONS.length} Lengkap
           </Badge>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-7">
+        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
           {MANDATORY_ANGLE_OPTIONS.map((item) => {
             const count = angleCounts[item.tag]
             const isComplete = count > 0
@@ -913,15 +911,15 @@ export function CarMediaManager({
                 onClick={() => handleSelectChecklistAngle(item.tag)}
                 aria-pressed={isSelectedForUpload}
                 className={cn(
-                  "flex min-h-14 flex-col justify-between border px-3 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60",
+                  "flex min-w-0 cursor-pointer flex-col gap-1.5 border px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60",
                   isComplete
                     ? "border-emerald-700/35 bg-emerald-50 text-emerald-950 hover:bg-emerald-100/70"
                     : "border-amber-700/30 bg-amber-50/60 text-amber-950 hover:bg-amber-50",
                   isSelectedForUpload && "ring-2 ring-foreground ring-offset-1"
                 )}
               >
-                <div className="flex items-center justify-between gap-1.5">
-                  <span className="text-sm font-semibold">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <span className="min-w-0 truncate text-sm font-semibold">
                     {item.checklistLabel}
                   </span>
                   {isComplete ? (
@@ -936,8 +934,8 @@ export function CarMediaManager({
                     />
                   )}
                 </div>
-                <span className="mt-1 text-sm leading-tight tabular-nums opacity-85">
-                  {isComplete ? `${count} foto terpasang` : "Belum ada"}
+                <span className="text-sm leading-tight tabular-nums opacity-85">
+                  {isComplete ? `${count} foto` : "Kosong"}
                 </span>
               </button>
             )
@@ -950,7 +948,7 @@ export function CarMediaManager({
               onClick={() => handleSelectChecklistAngle("minus")}
               aria-pressed={uploadAngleTag === "minus"}
               className={cn(
-                "flex min-h-14 flex-col justify-between border px-3 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60",
+                "flex min-w-0 cursor-pointer flex-col gap-1.5 border px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-60",
                 angleCounts.minus > 0
                   ? "border-emerald-700/35 bg-emerald-50 text-emerald-950 hover:bg-emerald-100/70"
                   : "border-dashed border-border bg-secondary/50 text-muted-foreground hover:bg-secondary",
@@ -958,8 +956,8 @@ export function CarMediaManager({
                   "ring-2 ring-foreground ring-offset-1"
               )}
             >
-              <div className="flex items-center justify-between gap-1.5">
-                <span className="text-sm font-semibold text-foreground">
+              <div className="flex w-full items-center justify-between gap-2">
+                <span className="min-w-0 truncate text-sm font-semibold text-foreground">
                   {OPTIONAL_MINUS_OPTION.checklistLabel}
                 </span>
                 {angleCounts.minus > 0 ? (
@@ -974,9 +972,9 @@ export function CarMediaManager({
                   />
                 )}
               </div>
-              <span className="mt-1 text-sm leading-tight tabular-nums">
+              <span className="text-sm leading-tight tabular-nums">
                 {angleCounts.minus > 0
-                  ? `${angleCounts.minus} foto minus`
+                  ? `${angleCounts.minus} foto`
                   : "Opsional"}
               </span>
             </button>
@@ -1207,7 +1205,7 @@ export function CarMediaManager({
               Galeri Foto ({draftImages.length})
             </h3>
             {isDirty ? (
-              <Badge variant="warning">Perubahan belum disimpan</Badge>
+              <Badge variant="warning">Belum disimpan</Badge>
             ) : draftImages.length > 0 ? (
               <Badge variant="secondary">Tersinkron</Badge>
             ) : null}
@@ -1222,13 +1220,13 @@ export function CarMediaManager({
                 onClick={handleResetChanges}
               >
                 <RotateCcw className="size-4" aria-hidden />
-                Batalkan Perubahan
+                Batalkan
               </Button>
             ) : null}
 
             <Button
               type="button"
-              variant="default"
+              variant={isDirty ? "default" : "outline"}
               disabled={
                 isBusy || !isDirty || draftImages.length === 0 || hasInvalidAlt
               }
@@ -1239,7 +1237,7 @@ export function CarMediaManager({
               ) : (
                 <Save className="size-4" aria-hidden />
               )}
-              {isSaving ? "Menyimpan..." : "Simpan Urutan & Metadata Foto"}
+              {isSaving ? "Menyimpan..." : "Simpan Galeri"}
             </Button>
           </div>
         </div>
@@ -1248,15 +1246,15 @@ export function CarMediaManager({
         {draftImages.length === 0 ? (
           <div className="mt-5 border border-dashed border-border bg-background px-6 py-10 text-center">
             <p className="text-sm font-semibold text-foreground">
-              Belum ada foto untuk unit ini
+              Belum ada foto
             </p>
             <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
-              Unggah minimal 6 sudut wajib (Hero, Eksterior, Interior, Odometer,
-              Mesin, Dokumen) agar listing tampil meyakinkan di katalog publik.
+              Unggah 6 sudut wajib (Hero, Eksterior, Interior, Odometer, Mesin,
+              Dokumen) untuk kelengkapan katalog.
             </p>
           </div>
         ) : (
-          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             {draftImages.map((img, index) => {
               const cardKey = getImageKey(img, index)
               const isDeletingThis =
@@ -1336,25 +1334,13 @@ export function CarMediaManager({
                     </div>
 
                     <div>
-                      <label
-                        htmlFor={altFieldId}
-                        className="block text-sm font-semibold text-foreground"
-                      >
-                        Deskripsi Foto
-                      </label>
-                      <div className="mt-1.5 flex items-stretch gap-1.5">
-                        <Input
-                          id={altFieldId}
-                          type="text"
-                          value={img.alt}
-                          disabled={isBusy || isDeletingThis}
-                          aria-invalid={isAltMissing}
-                          placeholder={buildSuggestedAlt(carName, img.angleTag)}
-                          onChange={(event) =>
-                            handleChangeAlt(index, event.target.value)
-                          }
-                          className="flex-1"
-                        />
+                      <div className="flex items-center justify-between gap-2">
+                        <label
+                          htmlFor={altFieldId}
+                          className="block text-sm font-semibold text-foreground"
+                        >
+                          Deskripsi Foto
+                        </label>
                         <Tooltip>
                           <TooltipTrigger
                             render={<span className="inline-flex" />}
@@ -1362,12 +1348,14 @@ export function CarMediaManager({
                             <Button
                               type="button"
                               variant="outline"
-                              size="icon"
+                              size="sm"
                               disabled={isBusy || isDeletingThis}
                               onClick={() => handleAutoFillAlt(index)}
-                              aria-label={`Isi otomatis teks alternatif foto #${index + 1}`}
+                              aria-label={`Isi otomatis deskripsi foto #${index + 1}`}
+                              className="min-h-8 px-2.5 py-1 text-sm"
                             >
-                              <Sparkles className="size-4" aria-hidden />
+                              <Sparkles className="size-3.5" aria-hidden />
+                              Isi otomatis
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
@@ -1375,6 +1363,18 @@ export function CarMediaManager({
                           </TooltipContent>
                         </Tooltip>
                       </div>
+                      <Textarea
+                        id={altFieldId}
+                        rows={2}
+                        value={img.alt}
+                        disabled={isBusy || isDeletingThis}
+                        aria-invalid={isAltMissing}
+                        placeholder={buildSuggestedAlt(carName, img.angleTag)}
+                        onChange={(event) =>
+                          handleChangeAlt(index, event.target.value)
+                        }
+                        className="mt-1.5 min-h-20 resize-y"
+                      />
                       {isAltMissing ? (
                         <p className="mt-1 text-sm text-[#991B1B]">
                           Deskripsi foto wajib diisi sebelum menyimpan.
@@ -1383,23 +1383,27 @@ export function CarMediaManager({
                     </div>
 
                     {/* Action Row */}
-                    <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
-                      <Button
-                        type="button"
-                        variant={img.isCover ? "secondary" : "outline"}
-                        disabled={isBusy || isDeletingThis || img.isCover}
-                        onClick={() => handleSetCover(index)}
-                        className="flex-1"
-                      >
-                        <Star
-                          className={cn(
-                            "size-4",
-                            img.isCover && "fill-current text-primary"
-                          )}
-                          aria-hidden
-                        />
-                        {img.isCover ? "Cover Utama" : "Jadikan Cover"}
-                      </Button>
+                    <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-3">
+                      {img.isCover ? (
+                        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground">
+                          <Star
+                            className="size-4 fill-current text-primary"
+                            aria-hidden
+                          />
+                          Cover Utama
+                        </span>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={isBusy || isDeletingThis}
+                          onClick={() => handleSetCover(index)}
+                        >
+                          <Star className="size-4" aria-hidden />
+                          Jadikan Cover
+                        </Button>
+                      )}
 
                       <div className="flex items-center gap-1">
                         <Tooltip>
@@ -1409,7 +1413,7 @@ export function CarMediaManager({
                             <Button
                               type="button"
                               variant="outline"
-                              size="icon"
+                              size="icon-sm"
                               disabled={isBusy || isDeletingThis || index === 0}
                               onClick={() => handleMoveImage(index, -1)}
                               aria-label={`Geser naik foto #${index + 1}`}
@@ -1427,7 +1431,7 @@ export function CarMediaManager({
                             <Button
                               type="button"
                               variant="outline"
-                              size="icon"
+                              size="icon-sm"
                               disabled={
                                 isBusy ||
                                 isDeletingThis ||
@@ -1449,7 +1453,7 @@ export function CarMediaManager({
                             <Button
                               type="button"
                               variant="outline"
-                              size="icon"
+                              size="icon-sm"
                               disabled={isBusy || isDeletingThis || !img.id}
                               onClick={() => setDeleteTarget({ img, index })}
                               aria-label={`Hapus foto #${index + 1}`}
@@ -1473,8 +1477,7 @@ export function CarMediaManager({
         {draftImages.length > 3 && isDirty ? (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
             <p className="text-sm font-medium text-amber-950">
-              Ada perubahan urutan, cover, atau metadata foto yang belum
-              disimpan.
+              Perubahan galeri belum disimpan.
             </p>
             <Button
               type="button"
@@ -1487,7 +1490,7 @@ export function CarMediaManager({
               ) : (
                 <Save className="size-4" aria-hidden />
               )}
-              {isSaving ? "Menyimpan..." : "Simpan Urutan & Metadata Foto"}
+              {isSaving ? "Menyimpan..." : "Simpan Galeri"}
             </Button>
           </div>
         ) : null}

@@ -34,6 +34,12 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group"
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -199,17 +205,11 @@ function RupiahInput({
   }
 
   return (
-    <div className="relative flex items-center">
-      <span
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none absolute inset-y-px left-px flex w-11 items-center justify-center border-r border-border bg-secondary text-sm font-semibold tracking-wide text-muted-foreground select-none",
-          disabled && "opacity-60",
-        )}
-      >
-        Rp
-      </span>
-      <Input
+    <InputGroup>
+      <InputGroupAddon align="inline-start">
+        <InputGroupText className="font-semibold">Rp</InputGroupText>
+      </InputGroupAddon>
+      <InputGroupInput
         id={id}
         type="text"
         inputMode="numeric"
@@ -222,9 +222,9 @@ function RupiahInput({
         disabled={disabled}
         aria-invalid={invalid || undefined}
         aria-describedby={ariaDescribedBy}
-        className="pl-14 tabular-nums"
+        className="tabular-nums"
       />
-    </div>
+    </InputGroup>
   )
 }
 
@@ -467,6 +467,7 @@ export function CarPricingCreditForm({
 
             <div
               role="radiogroup"
+              data-completeness-id="pricing-payment-mode"
               aria-labelledby={`${baseId}-payment-mode-label`}
               aria-invalid={Boolean(errors?.paymentMode) || undefined}
               className="grid grid-cols-1 gap-3 sm:grid-cols-2"
@@ -540,7 +541,7 @@ export function CarPricingCreditForm({
           {/* Price Inputs Grid */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {/* Cash Price */}
-            <div className="space-y-2">
+            <div data-completeness-id="pricing-cash-price" className="space-y-2">
               <div className="flex items-baseline justify-between gap-2">
                 <label
                   htmlFor={`${baseId}-cash-price`}
@@ -598,7 +599,7 @@ export function CarPricingCreditForm({
 
             {/* Credit Price (Cash & Credit mode) OR Cash-Only Note */}
             {isCashCredit ? (
-              <div className="space-y-2">
+              <div data-completeness-id="pricing-credit-price" className="space-y-2">
                 <div className="flex items-baseline justify-between gap-2">
                   <label
                     htmlFor={`${baseId}-credit-price`}
@@ -665,7 +666,7 @@ export function CarPricingCreditForm({
                 )}
               </div>
             ) : (
-              <div className="space-y-2">
+              <div data-completeness-id="pricing-cash-note" className="space-y-2">
                 <label
                   htmlFor={`${baseId}-cash-note`}
                   className="block text-sm font-semibold tracking-wider text-foreground uppercase"
@@ -891,6 +892,7 @@ export function CarPricingCreditForm({
       {/* SECTION B — Repeater Simulasi Kredit Leasing */}
       {isCashCredit && (
         <section
+          data-completeness-id="pricing-simulations"
           aria-labelledby={`${baseId}-section-b-heading`}
           className="border border-border bg-card"
         >

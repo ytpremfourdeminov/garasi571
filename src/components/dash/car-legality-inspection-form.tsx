@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   ClipboardCheck,
   FileCheck2,
-  Info,
   Plus,
   ShieldCheck,
   Sparkles,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { DatePicker } from "@/components/ui/date-picker"
 import {
   Dialog,
   DialogClose,
@@ -26,6 +26,12 @@ import {
   useStableDialogData,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group"
 import {
   Select,
   SelectContent,
@@ -40,7 +46,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { formatRupiah } from "@/lib/domain/formatters"
 import type { CarUpsertInput } from "@/lib/domain/schemas"
 import type {
   CarImperfection,
@@ -101,43 +106,43 @@ const DOCUMENT_CHECKLIST_ITEMS: ReadonlyArray<DocumentChecklistMeta> = [
   {
     key: "stnk",
     label: "STNK Asli",
-    description: "Surat Tanda Nomor Kendaraan fisik tersedia & terbaca jelas",
+    description: "STNK fisik tersedia & terbaca jelas",
     tier: "wajib",
   },
   {
     key: "bpkb",
     label: "BPKB Asli",
-    description: "Buku Pemilik Kendaraan Bermotor asli siap serah terima",
+    description: "BPKB asli siap serah terima",
     tier: "wajib",
   },
   {
     key: "faktur",
     label: "Faktur Pembelian",
-    description: "Faktur resmi dealer / ATPM untuk kemudahan balik nama",
+    description: "Faktur resmi dealer / ATPM",
     tier: "wajib",
   },
   {
     key: "nik",
     label: "Sertifikat NIK / Form A",
-    description: "Nomor Identifikasi Kendaraan atau Form A (khusus CBU)",
+    description: "Dokumen NIK atau Form A (khusus CBU)",
     tier: "opsional",
   },
   {
     key: "manualBook",
     label: "Buku Manual",
-    description: "Buku panduan pemilik bawaan pabrikan tersimpan rapi",
+    description: "Buku panduan pemilik pabrikan",
     tier: "bawaan",
   },
   {
     key: "serviceBook",
     label: "Buku Servis / Record",
-    description: "Catatan perawatan berkala bengkel resmi atau spesialis",
+    description: "Catatan servis bengkel resmi / spesialis",
     tier: "bawaan",
   },
   {
     key: "spareKey",
     label: "Kunci Serep",
-    description: "Kunci cadangan (keyless / immobilizer / standar) berfungsi",
+    description: "Kunci cadangan tersedia & berfungsi",
     tier: "bawaan",
   },
 ]
@@ -489,8 +494,7 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-plateInfo`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Ringkasan Plat &amp; Pajak (Kartu Katalog){" "}
-              <span className="text-primary">*</span>
+              Ringkasan Plat &amp; Pajak <span className="text-primary">*</span>
             </label>
             {suggestedPlateInfo ? (
               <Button
@@ -508,9 +512,10 @@ export function CarLegalityInspectionForm({
           </div>
           <Input
             id={`${idPrefix}-plateInfo`}
+            data-completeness-id="legality-plate-info"
             value={value.plateInfo}
             onChange={(e) => onChange({ plateInfo: e.target.value })}
-            placeholder="AD - Pajak panjang Nov 2026 (tampil di kartu)"
+            placeholder="AD - Pajak panjang Nov 2026"
             disabled={disabled}
             aria-invalid={Boolean(plateInfoError)}
             aria-describedby={
@@ -534,19 +539,20 @@ export function CarLegalityInspectionForm({
             </label>
             <Input
               id={`${idPrefix}-plateAreaCode`}
+              data-completeness-id="legality-plate-area"
               value={value.plateAreaCode ?? ""}
               onChange={(e) => {
                 const raw = e.target.value.toUpperCase()
                 onChange({ plateAreaCode: raw.trim() ? raw : null })
               }}
-              placeholder="Contoh: AD, B, AB, D, L, K"
+              placeholder="AD, B, AB, D, L, K"
               maxLength={8}
               disabled={disabled}
               aria-invalid={Boolean(plateAreaCodeError)}
-              className="uppercase"
+              className="uppercase placeholder:normal-case"
             />
             <div
-              className="flex flex-wrap gap-1.5 pt-1"
+              className="flex flex-wrap gap-1 pt-0.5"
               role="group"
               aria-label="Pilihan cepat kode wilayah plat"
             >
@@ -563,7 +569,7 @@ export function CarLegalityInspectionForm({
                       onChange({ plateAreaCode: isSelected ? null : code })
                     }
                     className={cn(
-                      "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                      "min-h-7 cursor-pointer border px-1.5 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                       isSelected
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -635,6 +641,7 @@ export function CarLegalityInspectionForm({
             >
               <SelectTrigger
                 id={`${idPrefix}-taxStatus`}
+                data-completeness-id="legality-tax-status"
                 aria-invalid={Boolean(taxStatusError)}
                 className="min-h-11 w-full bg-card px-3.5 text-sm text-foreground data-[size=default]:h-11"
               >
@@ -654,22 +661,17 @@ export function CarLegalityInspectionForm({
 
         {/* Jatuh Tempo Pajak Tahunan, Kaleng 5 Tahunan, Estimasi PKB */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="space-y-1.5">
+          <div data-completeness-id="legality-tax-expiry" className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-taxExpiryDate`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Jatuh Tempo Pajak Tahunan
+              Jatuh Tempo Pajak
             </label>
-            <Input
+            <DatePicker
               id={`${idPrefix}-taxExpiryDate`}
-              type="date"
-              value={value.taxExpiryDate ?? ""}
-              onChange={(e) =>
-                onChange({
-                  taxExpiryDate: e.target.value ? e.target.value : null,
-                })
-              }
+              value={value.taxExpiryDate}
+              onChange={(nextDate) => onChange({ taxExpiryDate: nextDate })}
               disabled={disabled}
               aria-invalid={Boolean(taxExpiryDateError)}
             />
@@ -681,17 +683,12 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-stnk5yrExpiryDate`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Masa Berlaku Kaleng (5 Tahunan)
+              Masa Berlaku Kaleng
             </label>
-            <Input
+            <DatePicker
               id={`${idPrefix}-stnk5yrExpiryDate`}
-              type="date"
-              value={value.stnk5yrExpiryDate ?? ""}
-              onChange={(e) =>
-                onChange({
-                  stnk5yrExpiryDate: e.target.value ? e.target.value : null,
-                })
-              }
+              value={value.stnk5yrExpiryDate}
+              onChange={(nextDate) => onChange({ stnk5yrExpiryDate: nextDate })}
               disabled={disabled}
               aria-invalid={Boolean(stnk5yrExpiryDateError)}
             />
@@ -703,51 +700,51 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-estimatedAnnualTax`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Estimasi PKB Tahunan (Rp)
+              Estimasi PKB / Tahun
             </label>
-            <Input
-              id={`${idPrefix}-estimatedAnnualTax`}
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step={50000}
-              value={value.estimatedAnnualTax ?? ""}
-              onChange={(e) => {
-                const raw = e.target.value.trim()
-                if (!raw) {
-                  onChange({ estimatedAnnualTax: null })
-                  return
-                }
-                const parsed = Number.parseInt(raw, 10)
-                if (!Number.isNaN(parsed) && parsed >= 0) {
-                  onChange({ estimatedAnnualTax: parsed })
-                }
-              }}
-              placeholder="3250000 (angka penuh tanpa titik)"
-              disabled={disabled}
-              aria-invalid={Boolean(estimatedAnnualTaxError)}
-            />
-            {typeof value.estimatedAnnualTax === "number" &&
-            Number.isFinite(value.estimatedAnnualTax) ? (
-              <p className="text-sm text-muted-foreground tabular-nums">
-                Tampil di publik:{" "}
-                <strong className="font-semibold text-foreground">
-                  {formatRupiah(value.estimatedAnnualTax)} / tahun
-                </strong>
-              </p>
-            ) : null}
+            <InputGroup>
+              <InputGroupAddon align="inline-start">
+                <InputGroupText className="font-semibold">Rp</InputGroupText>
+              </InputGroupAddon>
+              <InputGroupInput
+                id={`${idPrefix}-estimatedAnnualTax`}
+                data-completeness-id="legality-annual-tax"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                step={50000}
+                value={value.estimatedAnnualTax ?? ""}
+                onChange={(e) => {
+                  const raw = e.target.value.trim()
+                  if (!raw) {
+                    onChange({ estimatedAnnualTax: null })
+                    return
+                  }
+                  const parsed = Number.parseInt(raw, 10)
+                  if (!Number.isNaN(parsed) && parsed >= 0) {
+                    onChange({ estimatedAnnualTax: parsed })
+                  }
+                }}
+                placeholder="3250000"
+                disabled={disabled}
+                aria-invalid={Boolean(estimatedAnnualTaxError)}
+              />
+              <InputGroupAddon align="inline-end">
+                <InputGroupText>/ tahun</InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
             <FieldError message={estimatedAnnualTaxError} />
           </div>
         </div>
 
-        {/* Kepemilikan, Tangan ke-N, Riwayat Pakai */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Kepemilikan & Tangan ke-N */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-ownershipType`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Atas Nama Kepemilikan
+              Atas Nama
             </label>
             <Select
               items={ownershipTypeSelect.itemsMap}
@@ -763,6 +760,7 @@ export function CarLegalityInspectionForm({
             >
               <SelectTrigger
                 id={`${idPrefix}-ownershipType`}
+                data-completeness-id="legality-ownership-type"
                 aria-invalid={Boolean(ownershipTypeError)}
                 className="min-h-11 w-full bg-card px-3.5 text-sm text-foreground data-[size=default]:h-11"
               >
@@ -788,6 +786,7 @@ export function CarLegalityInspectionForm({
             </label>
             <Input
               id={`${idPrefix}-ownershipHand`}
+              data-completeness-id="legality-ownership-hand"
               type="number"
               inputMode="numeric"
               min={1}
@@ -804,12 +803,12 @@ export function CarLegalityInspectionForm({
                   onChange({ ownershipHand: parsed })
                 }
               }}
-              placeholder="Contoh: 1"
+              placeholder="1"
               disabled={disabled}
               aria-invalid={Boolean(ownershipHandError)}
             />
             <div
-              className="flex flex-wrap gap-1.5 pt-1"
+              className="flex flex-wrap gap-1.5 pt-0.5"
               role="group"
               aria-label="Pilihan cepat tangan kepemilikan"
             >
@@ -825,7 +824,7 @@ export function CarLegalityInspectionForm({
                       onChange({ ownershipHand: isSelected ? null : hand })
                     }
                     className={cn(
-                      "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                      "min-h-7 cursor-pointer border px-2.5 py-0.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                       isSelected
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -838,41 +837,42 @@ export function CarLegalityInspectionForm({
             </div>
             <FieldError message={ownershipHandError} />
           </div>
+        </div>
 
-          <div className="space-y-1.5">
-            <label
-              htmlFor={`${idPrefix}-usageHistory`}
-              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
-            >
-              Riwayat Pemakaian
-            </label>
-            <Input
-              id={`${idPrefix}-usageHistory`}
-              value={value.usageHistory ?? ""}
-              onChange={(e) =>
-                onChange({
-                  usageHistory: e.target.value.trim() ? e.target.value : null,
-                })
-              }
-              placeholder="Contoh: Pemakaian pribadi / Eks operasional"
-              disabled={disabled}
-              aria-invalid={Boolean(usageHistoryError)}
-            />
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {USAGE_HISTORY_PRESETS.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => onChange({ usageHistory: preset })}
-                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2 py-0.5 text-sm font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {preset}
-                </button>
-              ))}
-            </div>
-            <FieldError message={usageHistoryError} />
+        {/* Riwayat Pemakaian */}
+        <div className="space-y-1.5">
+          <label
+            htmlFor={`${idPrefix}-usageHistory`}
+            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
+          >
+            Riwayat Pemakaian
+          </label>
+          <Input
+            id={`${idPrefix}-usageHistory`}
+            value={value.usageHistory ?? ""}
+            onChange={(e) =>
+              onChange({
+                usageHistory: e.target.value.trim() ? e.target.value : null,
+              })
+            }
+            placeholder="Pemakaian pribadi, eks operasional kantor..."
+            disabled={disabled}
+            aria-invalid={Boolean(usageHistoryError)}
+          />
+          <div className="flex flex-wrap gap-1.5 pt-0.5">
+            {USAGE_HISTORY_PRESETS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                disabled={disabled}
+                onClick={() => onChange({ usageHistory: preset })}
+                className="min-h-8 cursor-pointer border border-border bg-secondary px-2.5 py-1 text-sm font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {preset}
+              </button>
+            ))}
           </div>
+          <FieldError message={usageHistoryError} />
         </div>
 
         {/* Switches Legalitas: STNK Tidak Terblokir & No. Rangka/Mesin Cocok */}
@@ -886,26 +886,21 @@ export function CarLegalityInspectionForm({
             )}
           >
             <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  htmlFor={`${idPrefix}-stnkBlockFree`}
-                  className="cursor-pointer text-sm font-semibold text-foreground"
-                >
-                  STNK Tidak Terblokir
-                </label>
-                <Badge variant={value.stnkBlockFree ? "success" : "warning"}>
-                  {value.stnkBlockFree ? "Aman" : "Perlu Cek"}
-                </Badge>
-              </div>
+              <label
+                htmlFor={`${idPrefix}-stnkBlockFree`}
+                className="block cursor-pointer text-sm font-semibold text-foreground"
+              >
+                STNK Tidak Terblokir
+              </label>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Bebas blokir pajak progresif, e-TLE tertunggak, maupun blokir
-                jual.
+                Bebas blokir pajak progresif, e-TLE, maupun blokir jual.
               </p>
             </div>
             <Switch
               id={`${idPrefix}-stnkBlockFree`}
               checked={value.stnkBlockFree}
               disabled={disabled}
+              className="shrink-0"
               onCheckedChange={(checked) =>
                 onChange({ stnkBlockFree: checked })
               }
@@ -921,26 +916,21 @@ export function CarLegalityInspectionForm({
             )}
           >
             <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  htmlFor={`${idPrefix}-vinEngineMatched`}
-                  className="cursor-pointer text-sm font-semibold text-foreground"
-                >
-                  No. Rangka &amp; Mesin Cocok
-                </label>
-                <Badge variant={value.vinEngineMatched ? "success" : "warning"}>
-                  {value.vinEngineMatched ? "Sesuai" : "Belum Cek"}
-                </Badge>
-              </div>
+              <label
+                htmlFor={`${idPrefix}-vinEngineMatched`}
+                className="block cursor-pointer text-sm font-semibold text-foreground"
+              >
+                No. Rangka &amp; Mesin Cocok
+              </label>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Nomor rangka &amp; mesin fisik sesuai dengan STNK, BPKB, dan
-                faktur.
+                Fisik rangka &amp; mesin sesuai STNK, BPKB, dan faktur.
               </p>
             </div>
             <Switch
               id={`${idPrefix}-vinEngineMatched`}
               checked={value.vinEngineMatched}
               disabled={disabled}
+              className="shrink-0"
               onCheckedChange={(checked) =>
                 onChange({ vinEngineMatched: checked })
               }
@@ -957,59 +947,63 @@ export function CarLegalityInspectionForm({
         <div id={`${idPrefix}-sec-b-title`}>
           <SectionHeader
             eyebrow="Bagian B · Dokumen & Bawaan"
-            title="Checklist 7 Dokumen & Kelengkapan Unit"
+            title="Checklist Dokumen & Kelengkapan"
             icon={ClipboardCheck}
             trailing={
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge
-                  variant={requiredDocsChecked ? "success" : "warning"}
-                  className="tabular-nums"
-                >
-                  {checkedDocsCount}/7 Tersedia
-                </Badge>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={disabled || requiredDocsChecked}
-                  onClick={() =>
-                    updateChecklist({
-                      stnk: true,
-                      bpkb: true,
-                      faktur: true,
-                    })
-                  }
-                >
-                  <CheckCircle2 className="size-3.5" aria-hidden={true} />
-                  Centang Semua Wajib (STNK, BPKB, Faktur)
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  disabled={disabled || allDocsChecked}
-                  onClick={() =>
-                    updateChecklist({
-                      stnk: true,
-                      bpkb: true,
-                      faktur: true,
-                      nik: true,
-                      manualBook: true,
-                      serviceBook: true,
-                      spareKey: true,
-                    })
-                  }
-                >
-                  Centang Semua (7/7)
-                </Button>
-              </div>
+              <Badge
+                variant={requiredDocsChecked ? "success" : "warning"}
+                className="tabular-nums"
+              >
+                {checkedDocsCount}/7 Tersedia
+              </Badge>
             }
           />
         </div>
 
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={disabled || requiredDocsChecked}
+            onClick={() =>
+              updateChecklist({
+                stnk: true,
+                bpkb: true,
+                faktur: true,
+              })
+            }
+          >
+            <CheckCircle2 className="size-3.5" aria-hidden={true} />
+            Centang Wajib
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled={disabled || allDocsChecked}
+            onClick={() =>
+              updateChecklist({
+                stnk: true,
+                bpkb: true,
+                faktur: true,
+                nik: true,
+                manualBook: true,
+                serviceBook: true,
+                spareKey: true,
+              })
+            }
+          >
+            Centang Semua
+          </Button>
+        </div>
+
         <FieldError message={documentChecklistError} />
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          data-completeness-id="legality-documents"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+        >
           {DOCUMENT_CHECKLIST_ITEMS.map((item) => {
             const isChecked = Boolean(checklist[item.key])
             const itemError = getFieldError(
@@ -1043,29 +1037,21 @@ export function CarLegalityInspectionForm({
                   >
                     <Check className="size-3.5 stroke-[2.5]" />
                   </span>
-                  <span className="min-w-0 flex-1 space-y-1">
-                    <span className="flex flex-wrap items-center gap-1.5">
+                  <span className="min-w-0 flex-1 space-y-0.5">
+                    <span className="flex items-center justify-between gap-2">
                       <span className="text-sm font-semibold text-foreground">
                         {item.label}
                       </span>
-                      <Badge
-                        variant={
-                          item.tier === "wajib"
-                            ? isChecked
-                              ? "success"
-                              : "primary"
-                            : "secondary"
-                        }
-                        className="px-1.5 py-0 text-sm"
-                      >
-                        {item.tier === "wajib"
-                          ? "Wajib"
-                          : item.tier === "opsional"
-                            ? "Opsional"
-                            : "Bawaan"}
-                      </Badge>
+                      {item.tier === "wajib" ? (
+                        <Badge
+                          variant={isChecked ? "success" : "primary"}
+                          className="shrink-0 px-1.5 py-0 text-sm"
+                        >
+                          Wajib
+                        </Badge>
+                      ) : null}
                     </span>
-                    <span className="block text-sm leading-relaxed text-muted-foreground">
+                    <span className="block text-sm text-muted-foreground">
                       {item.description}
                     </span>
                   </span>
@@ -1093,36 +1079,34 @@ export function CarLegalityInspectionForm({
         <FieldError message={inspectionSummaryError} />
 
         {/* Prominent Trust Switches: Bebas Banjir & Bebas Tabrak Besar */}
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div
+          data-completeness-id="legality-trust-switches"
+          className="grid grid-cols-1 gap-3 md:grid-cols-2"
+        >
           <div
             className={cn(
-              "flex items-center justify-between gap-4 border-2 p-4 transition-colors",
+              "flex items-center justify-between gap-4 border p-4 transition-colors",
               inspection.floodFree
-                ? "border-emerald-700/50 bg-emerald-50/70"
+                ? "border-emerald-700/40 bg-emerald-50/60"
                 : "border-amber-700/35 bg-amber-50/40"
             )}
           >
             <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  htmlFor={`${idPrefix}-floodFree`}
-                  className="cursor-pointer font-heading text-base font-bold text-foreground"
-                >
-                  Bebas Banjir
-                </label>
-                <Badge variant={inspection.floodFree ? "success" : "warning"}>
-                  {inspection.floodFree ? "Terjamin" : "Belum Dikonfirmasi"}
-                </Badge>
-              </div>
+              <label
+                htmlFor={`${idPrefix}-floodFree`}
+                className="block cursor-pointer font-heading text-sm font-bold text-foreground"
+              >
+                Bebas Banjir
+              </label>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Tidak ada bekas lumpur/korosi di bawah karpet, soket
-                kelistrikan, maupun bau lembap bekas terendam air.
+                Bebas bekas lumpur, korosi kelistrikan, maupun bau lembap.
               </p>
             </div>
             <Switch
               id={`${idPrefix}-floodFree`}
               checked={Boolean(inspection.floodFree)}
               disabled={disabled}
+              className="shrink-0"
               onCheckedChange={(checked) =>
                 updateInspection({ floodFree: checked })
               }
@@ -1131,37 +1115,29 @@ export function CarLegalityInspectionForm({
 
           <div
             className={cn(
-              "flex items-center justify-between gap-4 border-2 p-4 transition-colors",
+              "flex items-center justify-between gap-4 border p-4 transition-colors",
               inspection.majorAccidentFree
-                ? "border-emerald-700/50 bg-emerald-50/70"
+                ? "border-emerald-700/40 bg-emerald-50/60"
                 : "border-amber-700/35 bg-amber-50/40"
             )}
           >
             <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  htmlFor={`${idPrefix}-majorAccidentFree`}
-                  className="cursor-pointer font-heading text-base font-bold text-foreground"
-                >
-                  Bebas Tabrak Besar
-                </label>
-                <Badge
-                  variant={inspection.majorAccidentFree ? "success" : "warning"}
-                >
-                  {inspection.majorAccidentFree
-                    ? "Terjamin"
-                    : "Belum Dikonfirmasi"}
-                </Badge>
-              </div>
+              <label
+                htmlFor={`${idPrefix}-majorAccidentFree`}
+                className="block cursor-pointer font-heading text-sm font-bold text-foreground"
+              >
+                Bebas Tabrak Besar
+              </label>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Tulang sasis, apron depan, pilar A/B/C, dan bullhead utuh tanpa
-                bekas las struktur atau perbaikan tabrak berat.
+                Rangka, apron, pilar A/B/C, dan bullhead utuh tanpa bekas las
+                berat.
               </p>
             </div>
             <Switch
               id={`${idPrefix}-majorAccidentFree`}
               checked={Boolean(inspection.majorAccidentFree)}
               disabled={disabled}
+              className="shrink-0"
               onCheckedChange={(checked) =>
                 updateInspection({ majorAccidentFree: checked })
               }
@@ -1170,13 +1146,16 @@ export function CarLegalityInspectionForm({
         </div>
 
         {/* Grade 4 Sektor */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div
+          data-completeness-id="legality-grades"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        >
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-exteriorGrade`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Grade Eksterior &amp; Bodi
+              Grade Eksterior
             </label>
             <Input
               id={`${idPrefix}-exteriorGrade`}
@@ -1186,11 +1165,11 @@ export function CarLegalityInspectionForm({
                   exteriorGrade: e.target.value.trim() ? e.target.value : null,
                 })
               }
-              placeholder="Contoh: A — Cat orisinil mulus, minim baret"
+              placeholder="A — Cat orisinil mulus, minim baret"
               disabled={disabled}
               aria-invalid={Boolean(exteriorGradeError)}
             />
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {GRADE_PRESETS.map((grade) => (
                 <button
                   key={grade}
@@ -1198,7 +1177,7 @@ export function CarLegalityInspectionForm({
                   disabled={disabled}
                   onClick={() => updateInspection({ exteriorGrade: grade })}
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2.5 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.exteriorGrade ?? "").trim() === grade
                       ? "border-foreground bg-foreground text-background"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1216,7 +1195,7 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-interiorGrade`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Grade Interior &amp; Kabin
+              Grade Interior
             </label>
             <Input
               id={`${idPrefix}-interiorGrade`}
@@ -1226,11 +1205,11 @@ export function CarLegalityInspectionForm({
                   interiorGrade: e.target.value.trim() ? e.target.value : null,
                 })
               }
-              placeholder="Contoh: A — Jok bersih, plafon rapi, tombol fungsi normal"
+              placeholder="A — Jok bersih, plafon rapi, tombol normal"
               disabled={disabled}
               aria-invalid={Boolean(interiorGradeError)}
             />
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {GRADE_PRESETS.map((grade) => (
                 <button
                   key={grade}
@@ -1238,7 +1217,7 @@ export function CarLegalityInspectionForm({
                   disabled={disabled}
                   onClick={() => updateInspection({ interiorGrade: grade })}
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2.5 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.interiorGrade ?? "").trim() === grade
                       ? "border-foreground bg-foreground text-background"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1268,11 +1247,11 @@ export function CarLegalityInspectionForm({
                     : null,
                 })
               }
-              placeholder="Contoh: A — Mesin halus, kering, perpindahan gigi responsif"
+              placeholder="A — Mesin halus, kering, responsif"
               disabled={disabled}
               aria-invalid={Boolean(engineTransmissionGradeError)}
             />
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {GRADE_PRESETS.map((grade) => (
                 <button
                   key={grade}
@@ -1282,7 +1261,7 @@ export function CarLegalityInspectionForm({
                     updateInspection({ engineTransmissionGrade: grade })
                   }
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2.5 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.engineTransmissionGrade ?? "").trim() === grade
                       ? "border-foreground bg-foreground text-background"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1300,10 +1279,11 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-undercarriageSuspensionGrade`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Grade Kaki-Kaki &amp; Kolong
+              Grade Kaki-Kaki
             </label>
             <Input
               id={`${idPrefix}-undercarriageSuspensionGrade`}
+              data-completeness-id="legality-undercarriage-grade"
               value={inspection.undercarriageSuspensionGrade ?? ""}
               onChange={(e) =>
                 updateInspection({
@@ -1312,11 +1292,11 @@ export function CarLegalityInspectionForm({
                     : null,
                 })
               }
-              placeholder="Contoh: B+ — Suspensi senyap, kolong bersih bebas karat"
+              placeholder="B+ — Suspensi senyap, kolong bersih"
               disabled={disabled}
               aria-invalid={Boolean(undercarriageSuspensionGradeError)}
             />
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {GRADE_PRESETS.map((grade) => (
                 <button
                   key={grade}
@@ -1326,7 +1306,7 @@ export function CarLegalityInspectionForm({
                     updateInspection({ undercarriageSuspensionGrade: grade })
                   }
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2.5 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.undercarriageSuspensionGrade ?? "").trim() ===
                       grade
                       ? "border-foreground bg-foreground text-background"
@@ -1348,21 +1328,22 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-tireCondition`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Kondisi &amp; Ketebalan Ban
+              Kondisi Ban
             </label>
             <Input
               id={`${idPrefix}-tireCondition`}
+              data-completeness-id="legality-tire-condition"
               value={inspection.tireCondition ?? ""}
               onChange={(e) =>
                 updateInspection({
                   tireCondition: e.target.value.trim() ? e.target.value : null,
                 })
               }
-              placeholder="Contoh: 4 ban tebal 85%, produksi 2024"
+              placeholder="4 ban tebal 85%, produksi 2024"
               disabled={disabled}
               aria-invalid={Boolean(tireConditionError)}
             />
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {TIRE_CONDITION_PRESETS.map((preset) => (
                 <button
                   key={preset}
@@ -1383,7 +1364,7 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-inspectionNotes`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Catatan Hasil Inspeksi
+              Catatan Inspeksi
             </label>
             <Textarea
               id={`${idPrefix}-inspectionNotes`}
@@ -1393,7 +1374,7 @@ export function CarLegalityInspectionForm({
                   notes: e.target.value.trim() ? e.target.value : null,
                 })
               }
-              placeholder="Ringkasan hasil cek fisik, kondisi AC, kelistrikan, nama inspektor/bengkel pengecek, atau catatan test drive..."
+              placeholder="Ringkasan cek fisik, AC, kelistrikan, atau hasil test drive..."
               disabled={disabled}
               aria-invalid={Boolean(inspectionNotesError)}
               className="min-h-24"
@@ -1409,22 +1390,23 @@ export function CarLegalityInspectionForm({
               htmlFor={`${idPrefix}-warrantyInfo`}
               className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
-              Informasi Garansi Showroom
+              Garansi Showroom
             </label>
             <Textarea
               id={`${idPrefix}-warrantyInfo`}
+              data-completeness-id="legality-warranty"
               value={value.warrantyInfo ?? ""}
               onChange={(e) =>
                 onChange({
                   warrantyInfo: e.target.value.trim() ? e.target.value : null,
                 })
               }
-              placeholder="Contoh: Garansi Mesin & Transmisi 30 Hari + Buyback 100% Bebas Banjir/Tabrak"
+              placeholder="Garansi Mesin & Transmisi 30 Hari + Buyback 100% Bebas Banjir/Tabrak"
               disabled={disabled}
               aria-invalid={Boolean(warrantyInfoError)}
               className="min-h-20"
             />
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {WARRANTY_PRESETS.map((preset) => (
                 <button
                   key={preset}
@@ -1449,28 +1431,21 @@ export function CarLegalityInspectionForm({
             )}
           >
             <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <label
-                  htmlFor={`${idPrefix}-mechanicCheckAllowed`}
-                  className="cursor-pointer text-sm font-semibold text-foreground"
-                >
-                  Boleh Bawa Mekanik / Cek Bengkel Resmi
-                </label>
-                <Badge
-                  variant={value.mechanicCheckAllowed ? "success" : "secondary"}
-                >
-                  {value.mechanicCheckAllowed ? "Diperbolehkan" : "Tidak Aktif"}
-                </Badge>
-              </div>
+              <label
+                htmlFor={`${idPrefix}-mechanicCheckAllowed`}
+                className="block cursor-pointer text-sm font-semibold text-foreground"
+              >
+                Boleh Cek Mekanik / Bengkel Resmi
+              </label>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Pembeli diperbolehkan membawa mekanik pribadi, jasa inspeksi
-                independen, atau general check-up ke bengkel resmi.
+                Pembeli bebas membawa mekanik pribadi atau cek ke bengkel resmi.
               </p>
             </div>
             <Switch
               id={`${idPrefix}-mechanicCheckAllowed`}
               checked={value.mechanicCheckAllowed}
               disabled={disabled}
+              className="shrink-0"
               onCheckedChange={(checked) =>
                 onChange({ mechanicCheckAllowed: checked })
               }
@@ -1497,11 +1472,10 @@ export function CarLegalityInspectionForm({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h4 className="font-heading text-sm font-bold text-foreground">
-                Peremajaan Part / Servis Terakhir
+                Peremajaan Part
               </h4>
               <p className="text-sm text-muted-foreground">
-                Catat perawatan atau penggantian suku cadang terbaru sebelum
-                unit masuk showroom.
+                Perawatan atau penggantian komponen terbaru.
               </p>
             </div>
             <Badge variant="secondary" className="tabular-nums">
@@ -1520,7 +1494,7 @@ export function CarLegalityInspectionForm({
                   handleAddMaintenanceItem(maintenanceDraft)
                 }
               }}
-              placeholder="Contoh: Ganti oli mesin & filter baru (tekan Enter)"
+              placeholder="Ganti oli mesin & filter baru"
               disabled={disabled}
               aria-label="Tambah catatan peremajaan part"
             />
@@ -1621,23 +1595,22 @@ export function CarLegalityInspectionForm({
               })}
             </ul>
           ) : (
-            <p className="border border-dashed border-border bg-secondary/30 px-4 py-3 text-sm text-muted-foreground">
-              Belum ada catatan peremajaan part. Klik salah satu chip cepat di
-              atas atau ketik manual.
+            <p className="border border-dashed border-border bg-secondary/30 px-4 py-3 text-center text-sm text-muted-foreground">
+              Belum ada catatan peremajaan part.
             </p>
           )}
         </div>
 
         {/* Sub-block D2: Imperfections Repeater */}
         <div className="space-y-4 border-t border-border pt-5">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="space-y-1">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-0.5">
               <h4 className="font-heading text-sm font-bold text-foreground">
                 Transparansi Minus Unit
               </h4>
               <p className="text-sm text-muted-foreground">
-                Cantumkan minus minor atau komponen aus secara jujur agar
-                pembeli tidak kaget saat inspeksi langsung.
+                Catat minus minor atau komponen aus agar pembeli tahu kondisi
+                sebenarnya.
               </p>
             </div>
             <Button
@@ -1646,51 +1619,19 @@ export function CarLegalityInspectionForm({
               size="sm"
               disabled={disabled}
               onClick={handleAddImperfection}
+              className="shrink-0"
             >
               <Plus className="size-3.5" aria-hidden={true} />
-              Tambah Catatan Minus
+              Tambah Minus
             </Button>
-          </div>
-
-          {/* Guidance Prompt Banner */}
-          <div className="flex items-start gap-2.5 border border-l-2 border-amber-700/30 border-l-amber-700 bg-amber-50/70 px-3.5 py-3 text-sm leading-relaxed text-amber-950">
-            <Info
-              className="mt-0.5 size-4 shrink-0 text-amber-800"
-              aria-hidden={true}
-            />
-            <div>
-              <p className="font-semibold">
-                Kejujuran soal minus minor meningkatkan konversi &amp;
-                kepercayaan pembeli luar kota.
-              </p>
-              <p className="mt-0.5 text-amber-900/85">
-                Contoh yang baik: &ldquo;Bumper depan kiri — baret halus 3 cm
-                bekas parkir, tidak tembus cat dasar.&rdquo;
-              </p>
-            </div>
           </div>
 
           <FieldError message={imperfectionsError} />
 
           {imperfections.length === 0 ? (
-            <div className="flex flex-col items-start justify-between gap-3 border border-dashed border-border bg-secondary/30 p-4 sm:flex-row sm:items-center">
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                Belum ada catatan minus yang dimasukkan. Jika unit memiliki
-                baret halus, penyok ringan, atau part yang perlu diperhatikan,
-                tambahkan di sini.
-              </p>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                disabled={disabled}
-                onClick={handleAddImperfection}
-                className="shrink-0"
-              >
-                <Plus className="size-3.5" aria-hidden={true} />
-                Tambah Minus Pertama
-              </Button>
-            </div>
+            <p className="border border-dashed border-border bg-secondary/30 px-4 py-3 text-center text-sm text-muted-foreground">
+              Belum ada catatan minus.
+            </p>
           ) : (
             <div className="space-y-3">
               {imperfections.map((item, index) => {
@@ -1756,7 +1697,7 @@ export function CarLegalityInspectionForm({
                           htmlFor={`${idPrefix}-imp-area-${index}`}
                           className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                         >
-                          Bagian / Area <span className="text-primary">*</span>
+                          Area <span className="text-primary">*</span>
                         </label>
                         <Input
                           id={`${idPrefix}-imp-area-${index}`}
@@ -1766,7 +1707,7 @@ export function CarLegalityInspectionForm({
                               area: e.target.value,
                             })
                           }
-                          placeholder="Contoh: Bumper depan kiri, velg kanan belakang"
+                          placeholder="Bumper depan kiri, velg kanan belakang"
                           disabled={disabled}
                           aria-invalid={Boolean(areaError)}
                         />
@@ -1817,7 +1758,7 @@ export function CarLegalityInspectionForm({
                         htmlFor={`${idPrefix}-imp-desc-${index}`}
                         className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                       >
-                        Deskripsi Minus <span className="text-primary">*</span>
+                        Deskripsi <span className="text-primary">*</span>
                       </label>
                       <Textarea
                         id={`${idPrefix}-imp-desc-${index}`}
@@ -1827,7 +1768,7 @@ export function CarLegalityInspectionForm({
                             description: e.target.value,
                           })
                         }
-                        placeholder="Jelaskan kondisi secara spesifik, mis. baret halus 3 cm bekas parkir, tidak tembus cat dasar."
+                        placeholder="Baret halus 3 cm bekas parkir, tidak tembus cat dasar."
                         disabled={disabled}
                         aria-invalid={Boolean(descriptionError)}
                         className="min-h-20"

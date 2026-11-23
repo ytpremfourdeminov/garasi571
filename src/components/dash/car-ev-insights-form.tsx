@@ -353,7 +353,7 @@ export function CarEvInsightsForm({
   }
 
   const [deleteConfirm, setDeleteConfirm] = React.useState<{
-    kind: "evSpecs" | "video" | "issue"
+    kind: "evSpecs" | "video" | "issue" | "issuesAll"
     index?: number
   } | null>(null)
   const displayedDeleteConfirm = useStableDialogData(deleteConfirm)
@@ -461,7 +461,7 @@ export function CarEvInsightsForm({
         <SectionHeader
           headingId={`${idPrefix}-ev-heading`}
           index="01 / EV & HYBRID"
-          title="Spesifikasi Baterai & Pengisian (EV / Hybrid)"
+          title="Spesifikasi Baterai & Pengisian"
           icon={BatteryCharging}
           trailing={
             <div className="flex flex-wrap items-center gap-2">
@@ -470,15 +470,12 @@ export function CarEvInsightsForm({
                 {FUEL_LABELS[value.fuelType]}
               </Badge>
               {isHybrid ? (
-                <label className="inline-flex min-h-9 cursor-pointer items-center gap-2 border border-border bg-secondary/50 px-3 text-sm font-semibold text-foreground">
-                  <Switch
-                    checked={isEvSectionOpen}
-                    disabled={disabled}
-                    aria-label="Aktifkan spesifikasi baterai Hybrid"
-                    onCheckedChange={handleHybridToggle}
-                  />
-                  <span>{isEvSectionOpen ? "Aktif" : "Nonaktif"}</span>
-                </label>
+                <Switch
+                  checked={isEvSectionOpen}
+                  disabled={disabled}
+                  aria-label="Aktifkan spesifikasi baterai Hybrid"
+                  onCheckedChange={handleHybridToggle}
+                />
               ) : null}
             </div>
           }
@@ -493,16 +490,15 @@ export function CarEvInsightsForm({
               />
               <div>
                 <p className="font-semibold text-foreground">
-                  Panel EV / Hybrid tidak aktif untuk unit{" "}
-                  {FUEL_LABELS[value.fuelType]}
+                  Panel nonaktif untuk unit {FUEL_LABELS[value.fuelType]}
                 </p>
-                <p className="mt-1">
+                <p className="mt-0.5">
                   Ubah{" "}
                   <strong className="font-semibold text-foreground">
                     Jenis Bahan Bakar
                   </strong>{" "}
                   di tab Identitas &amp; Spek ke Hybrid, PHEV, atau EV untuk
-                  mengisi data baterai.
+                  mengisi.
                 </p>
               </div>
             </div>
@@ -568,15 +564,14 @@ export function CarEvInsightsForm({
                   aria-hidden="true"
                 />
                 <span>
-                  Untuk unit <strong>Hybrid (HEV)</strong>, isi kolom yang
-                  relevan (misalnya SOH baterai &amp; garansi baterai). Kolom
-                  port charging bisa dikosongkan jika bukan plug-in.
+                  Isi kolom yang relevan untuk <strong>Hybrid (HEV)</strong>{" "}
+                  (mis. SOH &amp; garansi baterai).
                 </span>
               </div>
             ) : null}
 
             {/* Row 1: SOH, Kapasitas kWh, Range Klaim, Range Riil */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <label
@@ -606,7 +601,7 @@ export function CarEvInsightsForm({
                       false
                     )
                   }
-                  placeholder="96 (hasil scan OBD / bengkel resmi, 0–100%)"
+                  placeholder="96"
                   className="tabular-nums"
                 />
                 <FieldError message={batterySohError} />
@@ -635,7 +630,7 @@ export function CarEvInsightsForm({
                       false
                     )
                   }
-                  placeholder="50.4 (kapasitas total pack baterai)"
+                  placeholder="50.4"
                   className="tabular-nums"
                 />
                 <FieldError message={batteryCapacityError} />
@@ -660,7 +655,7 @@ export function CarEvInsightsForm({
                   onChange={(e) =>
                     handleEvNumberChange("claimedRangeKm", e.target.value, true)
                   }
-                  placeholder="410 (klaim pabrikan WLTP / NEDC)"
+                  placeholder="410 (WLTP / NEDC)"
                   className="tabular-nums"
                 />
                 <FieldError message={claimedRangeError} />
@@ -685,7 +680,7 @@ export function CarEvInsightsForm({
                   onChange={(e) =>
                     handleEvNumberChange("realRangeKm", e.target.value, true)
                   }
-                  placeholder="340 (estimasi pemakaian nyata AC menyala)"
+                  placeholder="340 (AC menyala)"
                   className="tabular-nums"
                 />
                 <FieldError message={realRangeError} />
@@ -711,7 +706,7 @@ export function CarEvInsightsForm({
                       chargingPortType: e.target.value || null,
                     })
                   }
-                  placeholder="Contoh: Type 2 / CCS2"
+                  placeholder="Type 2 / CCS2"
                 />
                 <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {CHARGING_PORT_PRESETS.map((preset) => {
@@ -726,7 +721,7 @@ export function CarEvInsightsForm({
                           updateEvSpecs({ chargingPortType: preset })
                         }
                         className={cn(
-                          "min-h-8 cursor-pointer border px-2.5 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                          "min-h-8 cursor-pointer border px-2.5 py-1 text-left text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                           active
                             ? "border-foreground bg-foreground text-background"
                             : "border-border bg-secondary/60 text-foreground hover:bg-secondary"
@@ -757,7 +752,7 @@ export function CarEvInsightsForm({
                       fastChargingInfo: e.target.value || null,
                     })
                   }
-                  placeholder="Contoh: DC Fast Charge 30-80% ±35 menit"
+                  placeholder="DC Fast Charge 30-80% ±35 menit"
                 />
                 <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {FAST_CHARGE_PRESETS.map((preset) => {
@@ -772,7 +767,7 @@ export function CarEvInsightsForm({
                           updateEvSpecs({ fastChargingInfo: preset })
                         }
                         className={cn(
-                          "min-h-8 cursor-pointer border px-2.5 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                          "min-h-8 cursor-pointer border px-2.5 py-1 text-left text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                           active
                             ? "border-foreground bg-foreground text-background"
                             : "border-border bg-secondary/60 text-foreground hover:bg-secondary"
@@ -789,7 +784,7 @@ export function CarEvInsightsForm({
 
             {/* Row 3: Charger Inclusion Switches */}
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <div className="flex items-start justify-between gap-3 border border-border bg-background/70 p-3.5">
+              <div className="flex items-center justify-between gap-3 border border-border bg-background/70 p-3.5">
                 <div className="space-y-0.5">
                   <label
                     htmlFor={`${idPrefix}-portable-charger`}
@@ -798,35 +793,37 @@ export function CarEvInsightsForm({
                     Portable Charger Termasuk
                   </label>
                   <p className="text-sm text-muted-foreground">
-                    Kabel pengisian AC colokan rumahan bawaan pabrik tersedia.
+                    Kabel pengisian AC rumahan.
                   </p>
                 </div>
                 <Switch
                   id={`${idPrefix}-portable-charger`}
                   checked={Boolean(evSpecs.portableChargerIncluded)}
                   disabled={disabled}
+                  className="shrink-0"
                   onCheckedChange={(checked) =>
                     updateEvSpecs({ portableChargerIncluded: checked })
                   }
                 />
               </div>
 
-              <div className="flex items-start justify-between gap-3 border border-border bg-background/70 p-3.5">
+              <div className="flex items-center justify-between gap-3 border border-border bg-background/70 p-3.5">
                 <div className="space-y-0.5">
                   <label
                     htmlFor={`${idPrefix}-wall-charger`}
                     className="block text-sm font-semibold text-foreground"
                   >
-                    Wall Charger / Home Unit Termasuk
+                    Wall Charger Termasuk
                   </label>
                   <p className="text-sm text-muted-foreground">
-                    Unit wallbox AC 7 kW ikut disertakan atau siap serah terima.
+                    Unit wallbox AC 7 kW ikut disertakan.
                   </p>
                 </div>
                 <Switch
                   id={`${idPrefix}-wall-charger`}
                   checked={Boolean(evSpecs.wallChargerIncluded)}
                   disabled={disabled}
+                  className="shrink-0"
                   onCheckedChange={(checked) =>
                     updateEvSpecs({ wallChargerIncluded: checked })
                   }
@@ -835,13 +832,13 @@ export function CarEvInsightsForm({
             </div>
 
             {/* Row 4: Battery Warranty + Transferable */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-              <div className="space-y-1.5 md:col-span-8">
+            <div className="space-y-4">
+              <div className="space-y-1.5">
                 <label
                   htmlFor={`${idPrefix}-battery-warranty`}
                   className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
-                  Catatan Garansi Baterai
+                  Garansi Baterai
                 </label>
                 <Input
                   id={`${idPrefix}-battery-warranty`}
@@ -853,7 +850,7 @@ export function CarEvInsightsForm({
                       batteryWarrantyInfo: e.target.value || null,
                     })
                   }
-                  placeholder="Contoh: Garansi baterai ATPM 8 tahun / 160.000 km"
+                  placeholder="Garansi baterai ATPM 8 tahun / 160.000 km"
                 />
                 <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {BATTERY_WARRANTY_PRESETS.map((preset) => (
@@ -864,7 +861,7 @@ export function CarEvInsightsForm({
                       onClick={() =>
                         updateEvSpecs({ batteryWarrantyInfo: preset })
                       }
-                      className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                      className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-left text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {preset}
                     </button>
@@ -873,7 +870,7 @@ export function CarEvInsightsForm({
                 <FieldError message={batteryWarrantyError} />
               </div>
 
-              <div className="flex items-start justify-between gap-3 border border-border bg-background/70 p-3.5 md:col-span-4">
+              <div className="flex items-center justify-between gap-4 border border-border bg-background/70 p-3.5">
                 <div className="space-y-0.5">
                   <label
                     htmlFor={`${idPrefix}-warranty-transferable`}
@@ -883,16 +880,17 @@ export function CarEvInsightsForm({
                       className="size-3.5 shrink-0 text-primary"
                       aria-hidden="true"
                     />
-                    <span>Garansi Bisa Pindah Tangan</span>
+                    <span>Garansi Pindah Tangan</span>
                   </label>
                   <p className="text-sm text-muted-foreground">
-                    Garansi baterai tetap berlaku untuk pemilik berikutnya.
+                    Tetap berlaku untuk pemilik berikutnya.
                   </p>
                 </div>
                 <Switch
                   id={`${idPrefix}-warranty-transferable`}
                   checked={Boolean(evSpecs.batteryWarrantyTransferable)}
                   disabled={disabled}
+                  className="shrink-0"
                   onCheckedChange={(checked) =>
                     updateEvSpecs({ batteryWarrantyTransferable: checked })
                   }
@@ -913,8 +911,8 @@ export function CarEvInsightsForm({
         <SectionHeader
           headingId={`${idPrefix}-video-heading`}
           index="02 / VIDEO WALKAROUND"
-          title="Video Walkaround & Review Unit"
-          description="Tautkan video keliling unit dari YouTube, Instagram Reels, atau TikTok agar calon pembeli luar kota bisa menilai kondisi suara mesin dan bodi secara transparan."
+          title="Video Walkaround & Review"
+          description="Tautkan video YouTube, Instagram Reels, atau TikTok."
           icon={Video}
           trailing={
             videoPlatform ? (
@@ -1007,7 +1005,7 @@ export function CarEvInsightsForm({
         <SectionHeader
           headingId={`${idPrefix}-insights-heading`}
           index="03 / INSIGHT AHLI"
-          title="Catatan Ahli & Pengalaman Pemakaian Riil"
+          title="Catatan Ahli & Pemakaian Riil"
           icon={Sparkles}
           trailing={
             issueItems.length > 0 ? (
@@ -1033,7 +1031,7 @@ export function CarEvInsightsForm({
                 />
                 <span>
                   {value.fuelType === "ev"
-                    ? "Efisiensi Konsumsi Listrik Riil"
+                    ? "Efisiensi Listrik Riil"
                     : "Konsumsi BBM Riil"}
                 </span>
               </label>
@@ -1049,8 +1047,8 @@ export function CarEvInsightsForm({
                 }
                 placeholder={
                   value.fuelType === "ev"
-                    ? "Contoh: 6,8 km/kWh pemakaian dalam kota"
-                    : "Contoh: 12–14 km/L dalam kota, 16–18 km/L tol"
+                    ? "6,8 km/kWh dalam kota"
+                    : "12–14 km/L dalam kota, 16–18 km/L tol"
                 }
               />
               <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -1082,7 +1080,7 @@ export function CarEvInsightsForm({
                   className="size-3.5 text-muted-foreground"
                   aria-hidden="true"
                 />
-                <span>Estimasi Biaya Perawatan Tahunan</span>
+                <span>Biaya Perawatan / Tahun</span>
               </label>
               <Input
                 id={`${idPrefix}-maintenance-cost`}
@@ -1094,7 +1092,7 @@ export function CarEvInsightsForm({
                     estimatedMaintenanceCost: e.target.value || null,
                   })
                 }
-                placeholder="Contoh: Rp2,5–3,5 jt/tahun (servis berkala)"
+                placeholder="Rp2,5–3,5 jt/tahun (servis berkala)"
               />
               <div className="flex flex-wrap gap-1.5 pt-0.5">
                 {MAINTENANCE_COST_PRESETS.map((preset) => (
@@ -1119,30 +1117,27 @@ export function CarEvInsightsForm({
 
           {/* Penyakit Khas / Titik Kritis Sudah Dicek (Dynamic Tag/List) */}
           <div className="border border-border bg-background/60 p-4">
-            <div className="flex flex-wrap items-start justify-between gap-2 border-b border-border pb-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Gauge
-                    className="size-4 shrink-0 text-primary"
-                    aria-hidden="true"
-                  />
-                  <h4 className="font-heading text-sm font-bold text-foreground">
-                    Penyakit Khas &amp; Titik Kritis yang Sudah Dicek
-                  </h4>
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <Gauge
+                  className="size-4 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+                <h4 className="font-heading text-sm font-bold text-foreground">
+                  Titik Kritis yang Sudah Dicek
+                </h4>
               </div>
               {issueItems.length > 0 ? (
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   disabled={disabled}
-                  onClick={() =>
-                    updateCreatorInsights({ commonIssuesChecked: null })
-                  }
-                  className="text-sm text-muted-foreground hover:text-destructive"
+                  onClick={() => setDeleteConfirm({ kind: "issuesAll" })}
+                  className="min-h-8 border-destructive/30 px-2.5 text-sm text-destructive hover:border-destructive hover:bg-destructive/10 hover:text-[#991B1B]"
                 >
-                  Kosongkan
+                  <Trash2 className="size-3.5" aria-hidden="true" />
+                  <span>Kosongkan</span>
                 </Button>
               ) : null}
             </div>
@@ -1176,8 +1171,7 @@ export function CarEvInsightsForm({
               </ul>
             ) : (
               <div className="mt-3 border border-dashed border-border bg-card px-4 py-4 text-center text-sm text-muted-foreground">
-                Belum ada titik pengecekan khusus. Ketik poin di bawah atau
-                pilih contoh cepat.
+                Belum ada titik pengecekan.
               </div>
             )}
 
@@ -1194,7 +1188,7 @@ export function CarEvInsightsForm({
                     handleAddIssue(issueDraft)
                   }
                 }}
-                placeholder="Contoh: Rack steer senyap & motor EPS sehat"
+                placeholder="Rack steer senyap & motor EPS sehat"
                 className="flex-1"
               />
               <Button
@@ -1204,14 +1198,11 @@ export function CarEvInsightsForm({
                 onClick={() => handleAddIssue(issueDraft)}
               >
                 <Plus className="size-4" aria-hidden="true" />
-                <span>Tambah Poin</span>
+                <span>Tambah</span>
               </Button>
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              <span className="text-sm font-medium text-muted-foreground">
-                Tambah cepat:
-              </span>
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {COMMON_ISSUE_PRESETS.map((preset) => {
                 const alreadyAdded = issueItems.some(
                   (item) => item.toLowerCase() === preset.toLowerCase()
@@ -1246,7 +1237,7 @@ export function CarEvInsightsForm({
                 htmlFor={`${idPrefix}-expert-notes`}
                 className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
-                Catatan Ahli Garasi 571
+                Catatan Ahli
               </label>
               <span className="text-sm text-muted-foreground tabular-nums">
                 {(insights.expertNotes ?? "").length} karakter
@@ -1283,17 +1274,21 @@ export function CarEvInsightsForm({
                 ? "Bersihkan Data Spesifikasi EV?"
                 : displayedDeleteConfirm?.kind === "video"
                   ? "Hapus Tautan Video?"
-                  : "Hapus Poin Pengecekan?"}
+                  : displayedDeleteConfirm?.kind === "issuesAll"
+                    ? "Kosongkan Semua Titik Kritis?"
+                    : "Hapus Poin Pengecekan?"}
             </DialogTitle>
             <DialogDescription>
               {displayedDeleteConfirm?.kind === "evSpecs"
                 ? "Seluruh data spesifikasi baterai EV yang tersimpan sebelumnya akan dibersihkan dari unit ini."
                 : displayedDeleteConfirm?.kind === "video"
                   ? "Tautan video walkaround & review unit akan dihapus."
-                  : displayedDeleteConfirm?.index !== undefined &&
-                      issueItems[displayedDeleteConfirm.index]
-                    ? `Poin "${issueItems[displayedDeleteConfirm.index]}" akan dihapus dari daftar titik kritis yang sudah dicek.`
-                    : "Poin pengecekan akan dihapus dari daftar."}
+                  : displayedDeleteConfirm?.kind === "issuesAll"
+                    ? "Seluruh daftar titik kritis yang sudah dicek akan dihapus."
+                    : displayedDeleteConfirm?.index !== undefined &&
+                        issueItems[displayedDeleteConfirm.index]
+                      ? `Poin "${issueItems[displayedDeleteConfirm.index]}" akan dihapus dari daftar titik kritis yang sudah dicek.`
+                      : "Poin pengecekan akan dihapus dari daftar."}
             </DialogDescription>
           </DialogHeader>
 
@@ -1310,6 +1305,9 @@ export function CarEvInsightsForm({
                   handleClearEvSpecs()
                 } else if (deleteConfirm.kind === "video") {
                   onChange({ videoWalkaroundUrl: null })
+                  setDeleteConfirm(null)
+                } else if (deleteConfirm.kind === "issuesAll") {
+                  updateCreatorInsights({ commonIssuesChecked: null })
                   setDeleteConfirm(null)
                 } else if (deleteConfirm.index !== undefined) {
                   handleRemoveIssue(deleteConfirm.index)
