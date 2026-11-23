@@ -1,10 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { getRequestHostname, isDashHostname } from "@/lib/host"
 import { getAiTrainingPolicy, getSiteUrl } from "@/lib/seo"
 
 export const Route = createFileRoute("/robots.txt")({
   server: {
     handlers: {
       GET: ({ request }) => {
+        const hostname = getRequestHostname(request)
+        if (isDashHostname(hostname)) {
+          return new Response("User-agent: *\nDisallow: /\n", {
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8",
+              "Cache-Control": "public, max-age=3600",
+              Vary: "Host",
+            },
+          })
+        }
+
         const baseUrl = getSiteUrl(request.url)
         const trainingRule =
           getAiTrainingPolicy() === "disallow-training"
@@ -50,6 +62,7 @@ export const Route = createFileRoute("/robots.txt")({
           headers: {
             "Content-Type": "text/plain; charset=utf-8",
             "Cache-Control": "public, max-age=3600",
+            Vary: "Host",
           },
         })
       },

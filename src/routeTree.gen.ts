@@ -14,6 +14,7 @@ import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as DashLoginRouteImport } from './routes/dash_.login'
 import { Route as MobilSlugRouteImport } from './routes/mobil.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashLoginRoute = DashLoginRouteImport.update({
+  id: '/dash_/login',
+  path: '/dash/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MobilSlugRoute = MobilSlugRouteImport.update({
   id: '/mobil/$slug',
   path: '/mobil/$slug',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dash/login': typeof DashLoginRoute
   '/mobil/$slug': typeof MobilSlugRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dash/login': typeof DashLoginRoute
   '/mobil/$slug': typeof MobilSlugRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dash_/login': typeof DashLoginRoute
   '/mobil/$slug': typeof MobilSlugRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/dash/login'
     | '/mobil/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/dash/login'
     | '/mobil/$slug'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/dash_/login'
     | '/mobil/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  DashLoginRoute: typeof DashLoginRoute
   MobilSlugRoute: typeof MobilSlugRoute
 }
 
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dash_/login': {
+      id: '/dash_/login'
+      path: '/dash/login'
+      fullPath: '/dash/login'
+      preLoaderRoute: typeof DashLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mobil/$slug': {
       id: '/mobil/$slug'
       path: '/mobil/$slug'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   LlmsDottxtRoute: LlmsDottxtRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  DashLoginRoute: DashLoginRoute,
   MobilSlugRoute: MobilSlugRoute,
 }
 export const routeTree = rootRouteImport
