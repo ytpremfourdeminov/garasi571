@@ -584,10 +584,10 @@ function DashLayout() {
       >
         <div
           className={cn(
-            "inline-flex items-center gap-2.5 overflow-hidden rounded-full border border-[#2F2D2B] bg-[#161514] py-2 text-sm font-medium text-[#FAF9F7] shadow-lg motion-reduce:transition-none",
+            "inline-flex items-center overflow-hidden rounded-full border border-[#2F2D2B] bg-[#161514] py-2 text-sm font-medium text-[#FAF9F7] shadow-lg motion-reduce:transition-none",
             showIsland
-              ? "max-w-48 translate-y-0 scale-100 px-4 opacity-100 motion-safe:[transition:translate_250ms_cubic-bezier(0.22,1,0.36,1)_0ms,scale_250ms_cubic-bezier(0.22,1,0.36,1)_0ms,opacity_150ms_ease-out_0ms,max-width_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms,padding_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms]"
-              : "max-w-10 -translate-y-[calc(100%+1.5rem)] scale-75 px-2 opacity-0 motion-safe:[transition:max-width_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,padding_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,translate_260ms_cubic-bezier(0.4,0,1,1)_200ms,scale_260ms_cubic-bezier(0.4,0,1,1)_200ms,opacity_150ms_ease-in_300ms]"
+              ? "max-w-48 translate-y-0 scale-100 gap-2.5 px-4 opacity-100 motion-safe:[transition:translate_250ms_cubic-bezier(0.22,1,0.36,1)_0ms,scale_250ms_cubic-bezier(0.22,1,0.36,1)_0ms,opacity_150ms_ease-out_0ms,max-width_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms,padding_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms,gap_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms]"
+              : "max-w-[38px] -translate-y-[calc(100%+1.5rem)] scale-75 gap-0 px-2.5 opacity-0 motion-safe:[transition:max-width_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,padding_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,gap_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,translate_260ms_cubic-bezier(0.4,0,1,1)_200ms,scale_260ms_cubic-bezier(0.4,0,1,1)_200ms,opacity_150ms_ease-in_300ms]"
           )}
         >
           <Spinner className="size-4 shrink-0 text-primary" />
@@ -622,15 +622,15 @@ function DashLayout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-[72px] shrink-0 items-center justify-between gap-3 border-b border-border bg-card px-4 sm:px-6 lg:px-8">
-          <div className="flex min-w-0 items-center gap-3">
+        <header className="sticky top-0 z-30 flex h-[72px] shrink-0 items-center border-b border-border bg-card">
+          <div className="mx-auto flex w-full max-w-6xl min-w-0 items-center gap-3 px-4 sm:px-6 lg:px-8">
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger
                 type="button"
                 aria-label="Buka menu navigasi dashboard"
                 className={cn(
                   buttonVariants({ variant: "ghost", size: "icon" }),
-                  "shrink-0 lg:hidden"
+                  "-ml-3.5 shrink-0 lg:hidden"
                 )}
               >
                 <PanelLeft className="size-4" aria-hidden="true" />
@@ -669,7 +669,7 @@ function DashLayout() {
               aria-label={sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
               aria-expanded={!sidebarCollapsed}
               title={sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
-              className="hidden shrink-0 lg:inline-flex"
+              className="-ml-3.5 hidden shrink-0 lg:inline-flex"
             >
               <PanelLeft className="size-4" aria-hidden="true" />
             </Button>
