@@ -101,7 +101,7 @@ function normalizeCatalogSearch(
   return result
 }
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_public/")({
   validateSearch: (search: Record<string, unknown>): CatalogFilterState =>
     normalizeCatalogSearch(search),
   head: () => ({

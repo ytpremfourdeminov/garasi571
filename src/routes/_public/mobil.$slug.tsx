@@ -36,7 +36,7 @@ import { useCompare } from "@/components/compare-context"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"
 
-export const Route = createFileRoute("/mobil/$slug")({
+export const Route = createFileRoute("/_public/mobil/$slug")({
   loader: ({ params }) => {
     const car = getCarBySlug(params.slug)
     if (!car) {
