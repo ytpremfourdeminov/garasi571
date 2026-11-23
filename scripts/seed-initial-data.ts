@@ -375,6 +375,38 @@ async function fetchExistingR2Keys(sql: SqlExecutor): Promise<Set<string>> {
   return existingKeys
 }
 
+function fetchExistingLocalR2Keys(cwd: string): Set<string> {
+  const existingKeys = new Set<string>()
+  const bucketObjDir = resolve(
+    cwd,
+    ".wrangler/state/v3/r2/miniflare-R2BucketObject"
+  )
+  if (!existsSync(bucketObjDir)) return existingKeys
+
+  try {
+    const sqliteFiles = readdirSync(bucketObjDir).filter(
+      (name) => name.endsWith(".sqlite") && name !== "metadata.sqlite"
+    )
+    for (const file of sqliteFiles) {
+      const dbPath = join(bucketObjDir, file)
+      const res = spawnSync(
+        "sqlite3",
+        [dbPath, "SELECT key FROM _mf_objects;"],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }
+      )
+      if (res.status === 0 && res.stdout) {
+        for (const line of res.stdout.split(/\r?\n/)) {
+          const key = line.trim()
+          if (key) existingKeys.add(key)
+        }
+      }
+    }
+  } catch {
+    // Fall back to uploading all assets if local sqlite inspection fails.
+  }
+  return existingKeys
+}
+
 function uploadR2Asset(asset: MediaAsset, useLocal: boolean): void {
   const targetFlag = useLocal ? "--local" : "--remote"
   const objectPath = `${R2_BUCKET_NAME}/${asset.r2Key}`
@@ -440,10 +472,13 @@ async function syncR2Media(
     return { uploaded: 0, skipped: 0 }
   }
 
-  const existingKeys =
-    !options.force && !options.local && sql
-      ? await fetchExistingR2Keys(sql)
-      : new Set<string>()
+  const existingKeys = options.force
+    ? new Set<string>()
+    : options.local
+      ? fetchExistingLocalR2Keys(process.cwd())
+      : sql
+        ? await fetchExistingR2Keys(sql)
+        : new Set<string>()
 
   let uploaded = 0
   let skipped = 0
@@ -477,6 +512,33 @@ async function seedDatabase(sql: BunSqlClient): Promise<void> {
   console.log("[Step B] Memulai upsert idempoten ke PostgreSQL...")
 
   await sql.begin(async (tx) => {
+    await tx`
+      GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role
+    `
+    await tx`
+      GRANT SELECT ON
+        public.cars,
+        public.car_images,
+        public.car_credit_simulations,
+        public.showroom_settings,
+        public.sales_contacts,
+        public.showroom_faqs
+      TO anon, authenticated, service_role
+    `
+    await tx`
+      GRANT INSERT, UPDATE, DELETE ON
+        public.cars,
+        public.car_images,
+        public.car_credit_simulations,
+        public.showroom_settings,
+        public.sales_contacts,
+        public.showroom_faqs
+      TO authenticated, service_role
+    `
+    await tx`
+      GRANT SELECT, UPDATE ON public.profiles TO authenticated, service_role
+    `
+
     await tx`
       INSERT INTO public.showroom_settings (
         id,
@@ -847,9 +909,19 @@ async function main(): Promise<void> {
     )
   }
 
+  if (!options.skipR2 && !options.local && !options.force) {
+    const precheckSql = createBunSqlClient(dbResolution.url)
+    try {
+      await syncR2Media(assets, options, precheckSql)
+    } finally {
+      await precheckSql.close({ timeout: 5 })
+    }
+  } else {
+    await syncR2Media(assets, options, null)
+  }
+
   const sql = createBunSqlClient(dbResolution.url)
   try {
-    await syncR2Media(assets, options, sql)
     await seedDatabase(sql)
   } finally {
     await sql.close({ timeout: 5 })

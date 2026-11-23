@@ -1,3 +1,16 @@
+/**
+ * @module data/showroom
+ * @description Arsip profil statis & kontak sales awal Garasi 571.
+ *
+ * CATATAN ARSIP (Wave 4 / Issue #24):
+ * Data profil showroom dan kontak sales runtime kini berasal dari Supabase PostgreSQL
+ * (`public.showroom_settings` & `public.sales_contacts`) serta logo brand dari
+ * Cloudflare R2 (`garasi571-media`).
+ *
+ * File ini dipertahankan sebagai sumber seed awal (`scripts/seed-initial-data.ts`)
+ * dan nilai fallback default untuk `ShowroomProvider` (`src/components/showroom-context.tsx`).
+ */
+
 export interface SalesContact {
   id: "farrel" | "abbad"
   name: string
