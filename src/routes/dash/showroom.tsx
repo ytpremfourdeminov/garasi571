@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronUp,
   ExternalLink,
+  Eye,
   ImageIcon,
   Loader2,
   MapPin,
@@ -34,7 +35,6 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { TruncatedTooltip } from "@/components/ui/tooltip"
 import { buildWhatsAppUrl, slugifyText } from "@/lib/domain/formatters"
 import {
   salesContactUpsertSchema,
@@ -219,6 +219,7 @@ function DashShowroomPage() {
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null)
   const [isUploadingLogo, setIsUploadingLogo] = React.useState(false)
+  const [isLogoPreviewOpen, setIsLogoPreviewOpen] = React.useState(false)
   const [logoUploadFeedback, setLogoUploadFeedback] =
     React.useState<FeedbackMessage | null>(null)
 
@@ -876,19 +877,19 @@ function DashShowroomPage() {
             </div>
 
             <div className="space-y-6 lg:col-span-5">
-              <div className="border border-border bg-secondary/30 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold tracking-wider text-foreground uppercase">
-                    <ImageIcon className="size-3.5 text-primary" aria-hidden="true" />
-                    <span>Logo Brand Showroom</span>
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    WebP / JPG / PNG · Maks 5 MB
+              <div className="space-y-4 border border-border bg-secondary/30 p-5">
+                <div className="flex items-center gap-2">
+                  <ImageIcon
+                    className="size-4 shrink-0 text-primary"
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm font-semibold tracking-wider text-foreground uppercase">
+                    Logo Brand Showroom
                   </span>
                 </div>
 
-                <div className="mt-3 flex items-center gap-4 border border-[#2F2D2B] bg-[#161514] p-4">
-                  <div className="flex size-16 shrink-0 items-center justify-center border border-[#2F2D2B] bg-[#1F1E1C] p-2">
+                <div className="flex items-center gap-4 border border-[#2F2D2B] bg-[#161514] px-4 py-3.5">
+                  <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden">
                     {form.logoUrl.trim() ? (
                       <img
                         src={form.logoUrl}
@@ -903,45 +904,18 @@ function DashShowroomPage() {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
+                    <p className="truncate font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
                       {form.name || "Garasi 571"}
                     </p>
-                    <TruncatedTooltip
-                      content={form.logoUrl || "Belum ada URL logo"}
-                      render={
-                        <p className="mt-1 truncate font-mono text-sm text-[#C7C2BC]" />
-                      }
-                    >
-                      {form.logoUrl || "Belum ada URL logo"}
-                    </TruncatedTooltip>
+                    <p className="mt-0.5 text-xs text-[#C7C2BC]">
+                      {form.logoUrl.trim()
+                        ? "Pratinjau pada latar gelap"
+                        : "Belum ada logo terpasang"}
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-3 space-y-2.5">
-                  <div className="space-y-1.5">
-                    <label
-                      htmlFor="showroom-logo-url"
-                      className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
-                    >
-                      URL Logo
-                    </label>
-                    <Input
-                      id="showroom-logo-url"
-                      value={form.logoUrl}
-                      disabled={!isAdmin || isSavingProfile || isUploadingLogo}
-                      onChange={(e) =>
-                        updateFormField("logoUrl", e.target.value)
-                      }
-                      aria-invalid={formErrors.logoUrl ? true : undefined}
-                      placeholder="/media/brand/logo-....png"
-                    />
-                    {formErrors.logoUrl ? (
-                      <p className="text-sm text-destructive">
-                        {formErrors.logoUrl}
-                      </p>
-                    ) : null}
-                  </div>
-
+                <div className="space-y-3">
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -952,29 +926,54 @@ function DashShowroomPage() {
                     aria-label="Pilih file logo showroom"
                   />
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="default"
-                    disabled={!isAdmin || isUploadingLogo || isSavingProfile}
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full"
-                  >
-                    {isUploadingLogo ? (
-                      <>
-                        <Loader2
-                          className="size-4 animate-spin"
-                          aria-hidden="true"
-                        />
-                        <span>Mengunggah Logo...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="size-4" aria-hidden="true" />
-                        <span>Unggah Logo Baru</span>
-                      </>
-                    )}
-                  </Button>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="default"
+                        disabled={!form.logoUrl.trim()}
+                        onClick={() => setIsLogoPreviewOpen(true)}
+                        className="shrink-0"
+                      >
+                        <Eye className="size-4" aria-hidden="true" />
+                        <span>Preview</span>
+                      </Button>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="default"
+                        disabled={!isAdmin || isUploadingLogo || isSavingProfile}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="min-w-0 flex-1"
+                      >
+                        {isUploadingLogo ? (
+                          <>
+                            <Loader2
+                              className="size-4 animate-spin"
+                              aria-hidden="true"
+                            />
+                            <span>Mengunggah Logo...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="size-4" aria-hidden="true" />
+                            <span>Unggah Logo Baru</span>
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground">
+                      Format WebP, JPG, atau PNG · Maksimal 5 MB
+                    </p>
+                  </div>
+
+                  {formErrors.logoUrl ? (
+                    <p className="text-sm text-destructive">
+                      {formErrors.logoUrl}
+                    </p>
+                  ) : null}
 
                   {logoUploadFeedback ? (
                     <p
@@ -991,6 +990,37 @@ function DashShowroomPage() {
                     </p>
                   ) : null}
                 </div>
+
+                <Dialog
+                  open={isLogoPreviewOpen}
+                  onOpenChange={setIsLogoPreviewOpen}
+                >
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Pratinjau Logo Showroom</DialogTitle>
+                      <DialogDescription>
+                        Tampilan logo {form.name || "Garasi 571"} pada latar
+                        gelap.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex min-h-48 items-center justify-center border border-[#2F2D2B] bg-[#161514] p-6">
+                      {form.logoUrl.trim() ? (
+                        <img
+                          src={form.logoUrl}
+                          alt={`Logo ${form.name || "Garasi 571"}`}
+                          className="max-h-40 max-w-full object-contain"
+                        />
+                      ) : null}
+                    </div>
+
+                    <DialogFooter>
+                      <DialogClose render={<Button variant="outline" />}>
+                        Tutup
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="border border-border bg-secondary/30 p-4">
@@ -1155,16 +1185,9 @@ function DashShowroomPage() {
                       </span>
 
                       <div className="min-w-0 space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-heading text-base font-bold text-foreground">
-                            {contact.name}
-                          </p>
-                          <Badge
-                            variant={contact.isActive ? "success" : "secondary"}
-                          >
-                            {contact.isActive ? "Aktif" : "Nonaktif"}
-                          </Badge>
-                        </div>
+                        <p className="font-heading text-base font-bold text-foreground">
+                          {contact.name}
+                        </p>
 
                         <p className="text-sm font-medium text-muted-foreground">
                           {contact.role}
