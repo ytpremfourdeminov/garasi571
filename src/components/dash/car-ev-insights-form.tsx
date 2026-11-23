@@ -205,7 +205,7 @@ interface SectionHeaderProps {
   headingId: string
   index: string
   title: string
-  description: string
+  description?: string
   icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>
   trailing?: React.ReactNode
 }
@@ -231,9 +231,11 @@ function SectionHeader({
         >
           {title}
         </h3>
-        <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
-          {description}
-        </p>
+        {description ? (
+          <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            {description}
+          </p>
+        ) : null}
       </div>
       {trailing ? <div className="shrink-0">{trailing}</div> : null}
     </div>
@@ -437,7 +439,6 @@ export function CarEvInsightsForm({
           headingId={`${idPrefix}-ev-heading`}
           index="01 / EV & HYBRID"
           title="Spesifikasi Baterai & Pengisian (EV / Hybrid)"
-          description="Terbuka otomatis saat jenis bahan bakar unit diatur ke Hybrid, PHEV, atau Listrik Murni (EV) pada tab Identitas & Spek."
           icon={BatteryCharging}
           trailing={
             <div className="flex flex-wrap items-center gap-2">
@@ -473,13 +474,12 @@ export function CarEvInsightsForm({
                   {FUEL_LABELS[value.fuelType]}
                 </p>
                 <p className="mt-1">
-                  Jika unit ini menggunakan penggerak Hybrid, PHEV, atau Listrik
-                  Murni (EV), ubah pilihan{" "}
+                  Ubah{" "}
                   <strong className="font-semibold text-foreground">
                     Jenis Bahan Bakar
                   </strong>{" "}
-                  di tab Identitas &amp; Spek maka seluruh kolom SOH baterai,
-                  jarak tempuh, dan pengisian akan terbuka otomatis di sini.
+                  di tab Identitas &amp; Spek ke Hybrid, PHEV, atau EV untuk
+                  mengisi data baterai.
                 </p>
               </div>
             </div>
@@ -522,10 +522,8 @@ export function CarEvInsightsForm({
         ) : !isEvSectionOpen ? (
           <div className="mt-5 flex flex-col gap-3 border border-dashed border-border bg-secondary/30 p-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
             <p>
-              Spesifikasi baterai Hybrid dinonaktifkan dan data{" "}
-              <code className="font-mono text-foreground">evSpecs</code>{" "}
-              dikosongkan. Aktifkan sakelar di kanan atas jika ingin mencatat
-              SOH baterai atau garansi baterai hybrid.
+              Spesifikasi baterai Hybrid nonaktif. Aktifkan sakelar di kanan
+              atas untuk mengisi SOH atau garansi baterai.
             </p>
             <Button
               type="button"
@@ -984,8 +982,7 @@ export function CarEvInsightsForm({
             id={`${idPrefix}-video-url-hint`}
             className="text-xs text-muted-foreground"
           >
-            Mendukung tautan publik YouTube, YouTube Shorts, Instagram Reels,
-            atau TikTok (wajib diawali https://).
+            Mendukung tautan YouTube, Instagram Reels, atau TikTok.
           </p>
           <FieldError
             id={`${idPrefix}-video-url-error`}
@@ -1003,7 +1000,6 @@ export function CarEvInsightsForm({
           headingId={`${idPrefix}-insights-heading`}
           index="03 / INSIGHT AHLI"
           title="Catatan Ahli & Pengalaman Pemakaian Riil"
-          description="Sajikan sudut pandang jujur tim Garasi 571 mengenai konsumsi BBM/listrik nyata, estimasi biaya rawat tahunan, titik penyakit khas yang sudah diverifikasi, dan rekomendasi untuk pembeli."
           icon={Sparkles}
           trailing={
             issueItems.length > 0 ? (
@@ -1126,11 +1122,6 @@ export function CarEvInsightsForm({
                     Penyakit Khas &amp; Titik Kritis yang Sudah Dicek
                   </h4>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Daftar komponen sensitif khas model ini yang sudah diuji oleh
-                  tim Garasi 571. Tambahkan sebagai poin agar mudah dipindai
-                  pembeli.
-                </p>
               </div>
               {issueItems.length > 0 ? (
                 <Button
@@ -1247,7 +1238,7 @@ export function CarEvInsightsForm({
                 htmlFor={`${idPrefix}-expert-notes`}
                 className="block text-xs font-semibold tracking-wider text-foreground uppercase"
               >
-                Catatan Ahli Garasi 571 (Editorial Rekomendasi)
+                Catatan Ahli Garasi 571
               </label>
               <span className="text-[11px] text-muted-foreground tabular-nums">
                 {(insights.expertNotes ?? "").length} karakter

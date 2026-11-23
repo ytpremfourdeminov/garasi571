@@ -742,7 +742,7 @@ export function CarMediaManager({
 
     if (hasInvalidAlt) {
       setErrorBanner(
-        "Teks alternatif (alt) wajib diisi pada semua foto sebelum menyimpan."
+        "Deskripsi foto wajib diisi pada semua foto sebelum menyimpan."
       )
       return
     }
@@ -860,15 +860,11 @@ export function CarMediaManager({
       <div className="border border-border bg-card p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3">
           <div>
-            <p className="text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-              Checklist 6 Sudut Wajib Riset
-            </p>
-            <h3 className="mt-1 text-base font-semibold text-foreground">
-              Kelengkapan Visual Unit
+            <h3 className="text-base font-semibold text-foreground">
+              6 Sudut Wajib
             </h3>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Klik salah satu sudut di bawah untuk menjadikannya tag default
-              saat mengunggah foto baru.
+              Pilih sudut di bawah sebelum mengunggah foto.
             </p>
           </div>
           <Badge
@@ -977,8 +973,7 @@ export function CarMediaManager({
               Unggah Foto Unit
             </h3>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Foto JPG, PNG, atau WebP otomatis dikompresi ke WebP maksimal
-              1600px di browser sebelum dikirim.
+              Mendukung JPG, PNG, atau WebP, maksimal 5 MB per foto.
             </p>
           </div>
 
@@ -1107,8 +1102,8 @@ export function CarMediaManager({
                       {item.fileName}
                     </span>
                     <span className="shrink-0 text-muted-foreground tabular-nums">
-                      {item.status === "queued" && "Menunggu giliran..."}
-                      {item.status === "compressing" && "Mengompresi WebP..."}
+                      {item.status === "queued" && "Menunggu..."}
+                      {item.status === "compressing" && "Memproses..."}
                       {item.status === "uploading" &&
                         `Mengunggah (${item.progress}%)...`}
                       {item.status === "done" &&
@@ -1322,7 +1317,7 @@ export function CarMediaManager({
                         htmlFor={altFieldId}
                         className="block text-xs font-semibold text-foreground"
                       >
-                        Teks Alternatif (Alt)
+                        Deskripsi Foto
                       </label>
                       <div className="mt-1.5 flex items-stretch gap-1.5">
                         <Input
@@ -1351,7 +1346,7 @@ export function CarMediaManager({
                       </div>
                       {isAltMissing ? (
                         <p className="mt-1 text-xs text-[#991B1B]">
-                          Teks alternatif wajib diisi sebelum menyimpan.
+                          Deskripsi foto wajib diisi sebelum menyimpan.
                         </p>
                       ) : null}
                     </div>
@@ -1429,8 +1424,7 @@ export function CarMediaManager({
                         className="border border-destructive/40 bg-destructive/5 p-3"
                       >
                         <p className="text-xs font-medium text-[#991B1B]">
-                          Hapus foto ini secara permanen dari database dan
-                          penyimpanan?
+                          Hapus foto ini secara permanen?
                         </p>
                         <div className="mt-2.5 flex items-center gap-2">
                           <Button

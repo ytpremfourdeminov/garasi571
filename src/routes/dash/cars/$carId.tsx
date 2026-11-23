@@ -246,7 +246,7 @@ function EditCarPage() {
   const [saveError, setSaveError] = React.useState<string | null>(null)
   const [saveSuccess, setSaveSuccess] = React.useState<string | null>(
     search.created === "1"
-      ? "Unit baru berhasil dibuat! Lanjutkan dengan mengunggah foto sudut wajib pada tab Galeri Foto R2."
+      ? "Unit berhasil dibuat. Silakan unggah foto pada tab Galeri Foto."
       : null
   )
   const [isSaving, setIsSaving] = React.useState(false)
@@ -403,7 +403,7 @@ function EditCarPage() {
       setForm(nextMapped)
       setSavedForm(nextMapped)
       setImages(updated.images)
-      setSaveSuccess("Perubahan data unit berhasil disimpan ke database.")
+      setSaveSuccess("Perubahan data unit berhasil disimpan.")
       void router.invalidate()
     } catch (err) {
       const message = extractErrorMessage(
@@ -625,7 +625,7 @@ function EditCarPage() {
 
               <TabsTrigger value="media">
                 <Camera className="size-4" aria-hidden="true" />
-                <span>Galeri Foto R2</span>
+                <span>Galeri Foto</span>
                 <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
                   {images.length}
                 </Badge>
@@ -729,7 +729,7 @@ function EditCarPage() {
                   aria-hidden="true"
                   className="inline-block size-2 bg-amber-600"
                 />
-                <span>Ada perubahan formulir yang belum disimpan</span>
+                <span>Perubahan belum disimpan</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-2 font-medium text-emerald-900">
@@ -737,7 +737,7 @@ function EditCarPage() {
                   className="size-3.5 text-emerald-700"
                   aria-hidden="true"
                 />
-                <span>Semua data formulir tersimpan</span>
+                <span>Tersimpan</span>
               </span>
             )}
           </div>

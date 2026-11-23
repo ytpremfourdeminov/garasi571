@@ -562,24 +562,9 @@ function DashCarsPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <section className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <div className="inline-flex items-center gap-2">
-            <span
-              aria-hidden="true"
-              className="inline-block h-2.5 w-1 bg-primary"
-            />
-            <span className="font-heading text-xs font-bold tracking-[0.16em] text-primary uppercase">
-              02 / Inventaris Showroom
-            </span>
-          </div>
-          <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Inventaris Mobil
-          </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Kelola status ketersediaan unit, skor kelengkapan riset, dan urutan
-            maksimal 3 unit unggulan Hero.
-          </p>
-        </div>
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Inventaris Mobil
+        </h1>
 
         <div className="flex flex-wrap items-center gap-2.5">
           <div className="inline-flex min-h-11 items-center gap-2 border border-border bg-card px-3.5 text-xs font-semibold text-foreground">
@@ -590,7 +575,7 @@ function DashCarsPage() {
               )}
               aria-hidden="true"
             />
-            <span>Unggulan Hero:</span>
+            <span>Unggulan Beranda:</span>
             <span className="font-heading text-sm font-bold tabular-nums">
               {featuredCount}/3
             </span>
@@ -870,7 +855,7 @@ function DashCarsPage() {
                   <TableHead>Harga (Cash / Kredit)</TableHead>
                   <TableHead className="w-[12%]">Kelengkapan</TableHead>
                   <TableHead className="w-[15%]">Status</TableHead>
-                  <TableHead className="w-[14%]">Hero Featured</TableHead>
+                  <TableHead className="w-[14%]">Unggulan Beranda</TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
@@ -1302,7 +1287,7 @@ function DashCarsPage() {
                         />
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-foreground">
-                            Unggulan Hero
+                            Unggulan Beranda
                           </p>
                           <p className="text-[11px] text-muted-foreground">
                             {car.status === "archived"
@@ -1311,7 +1296,7 @@ function DashCarsPage() {
                                 ? `Aktif di Slot #${car.featuredOrder ?? 1}`
                                 : featuredCount >= 3
                                   ? "Slot penuh (3/3)"
-                                  : "Tampilkan di Hero utama"}
+                                  : "Tampilkan di beranda"}
                           </p>
                         </div>
                       </div>
@@ -1378,7 +1363,7 @@ function DashCarsPage() {
                       )}
                     >
                       <ExternalLink className="size-4" aria-hidden="true" />
-                      <span>Preview</span>
+                      <span>Pratinjau</span>
                     </a>
 
                     <Button
@@ -1438,9 +1423,8 @@ function DashCarsPage() {
             <DialogHeader>
               <DialogTitle>Hapus Unit Secara Permanen?</DialogTitle>
               <DialogDescription>
-                Tindakan ini tidak dapat dibatalkan. Data unit, paket simulasi
-                kredit, serta seluruh foto yang tersimpan di penyimpanan media
-                akan dihapus permanen.
+                Unit, simulasi kredit, dan semua fotonya akan dihapus permanen.
+                Tindakan ini tidak dapat dibatalkan.
               </DialogDescription>
             </DialogHeader>
 

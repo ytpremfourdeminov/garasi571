@@ -147,29 +147,16 @@ function DashOverviewPage() {
       {/* Header */}
       <section className="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <div className="inline-flex items-center gap-2">
-            <span
-              aria-hidden="true"
-              className="inline-block h-2.5 w-1 bg-primary"
-            />
-            <span className="font-heading text-xs font-bold tracking-[0.16em] text-primary uppercase">
-              01 / Ringkasan Operasional
-            </span>
-          </div>
-          <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Ringkasan Stok &amp; Kelengkapan Unit
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Halo,{" "}
-            <span className="font-semibold text-foreground">
-              {staff.fullName || staff.email}
-            </span>
-            . Tercatat{" "}
+            Total{" "}
             <span className="font-semibold text-foreground tabular-nums">
               {kpis.total}
             </span>{" "}
-            total unit ({activeCars.length} aktif, {kpis.archived} diarsipkan)
-            dengan rata-rata kelengkapan riset{" "}
+            unit ({activeCars.length} aktif, {kpis.archived} diarsipkan),
+            rata-rata kelengkapan data{" "}
             <span className="font-semibold text-foreground tabular-nums">
               {averageCompleteness}%
             </span>
@@ -351,23 +338,17 @@ function DashOverviewPage() {
           className="border border-border bg-card lg:col-span-8"
         >
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-secondary/40 px-4 py-4 sm:px-5">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <AlertTriangle
-                  className="size-4 shrink-0 text-primary"
-                  aria-hidden="true"
-                />
-                <h2
-                  id="completeness-heading"
-                  className="font-heading text-base font-bold tracking-tight text-foreground"
-                >
-                  Unit Perlu Dilengkapi (&lt; 70%)
-                </h2>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Unit aktif yang belum memenuhi standar kelengkapan data riset
-                minimal 70%.
-              </p>
+            <div className="flex items-center gap-2">
+              <AlertTriangle
+                className="size-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <h2
+                id="completeness-heading"
+                className="font-heading text-base font-bold tracking-tight text-foreground"
+              >
+                Unit Perlu Dilengkapi (&lt; 70%)
+              </h2>
             </div>
 
             <Badge
@@ -387,8 +368,8 @@ function DashOverviewPage() {
                 Belum ada unit aktif di inventaris
               </p>
               <p className="mt-1 max-w-md text-sm text-muted-foreground">
-                Tambahkan unit mobil pertama Anda untuk mulai memantau skor
-                kelengkapan riset dan menayangkan katalog.
+                Tambahkan unit mobil pertama untuk mulai memantau kelengkapan
+                data dan menayangkan katalog.
               </p>
               <Link
                 to="/dash/cars/new"
@@ -482,7 +463,7 @@ function DashOverviewPage() {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <span className="font-medium text-muted-foreground">
-                          Skor Kelengkapan Riset
+                          Kelengkapan Data
                         </span>
                         <span
                           className={cn(
@@ -560,7 +541,7 @@ function DashOverviewPage() {
                 id="featured-summary-heading"
                 className="font-heading text-base font-bold tracking-tight text-foreground"
               >
-                Unggulan Hero
+                Unggulan Beranda
               </h2>
             </div>
             <Badge
@@ -573,14 +554,13 @@ function DashOverviewPage() {
 
           <div className="flex-1 p-4 sm:p-5">
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Maksimal 3 unit tampil di bagian Hero halaman utama website
-              publik. Atur urutan langsung dari tabel inventaris.
+              Maksimal 3 unit tampil di sorotan utama beranda.
             </p>
 
             {featuredUnits.length === 0 ? (
               <div className="mt-4 border border-dashed border-border bg-secondary/30 p-4 text-center">
                 <p className="text-xs font-medium text-muted-foreground">
-                  Belum ada unit yang ditandai sebagai unggulan Hero.
+                  Belum ada unit unggulan beranda.
                 </p>
               </div>
             ) : (
@@ -621,7 +601,7 @@ function DashOverviewPage() {
                 "w-full justify-between no-underline"
               )}
             >
-              <span>Atur Slot Hero di Inventaris</span>
+              <span>Atur di Inventaris</span>
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>

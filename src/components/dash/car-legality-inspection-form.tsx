@@ -255,7 +255,7 @@ function SectionHeader({
 }: {
   eyebrow: string
   title: string
-  description: string
+  description?: string
   icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>
   trailing?: React.ReactNode
 }) {
@@ -269,9 +269,11 @@ function SectionHeader({
         <h3 className="font-heading text-lg font-bold tracking-tight text-foreground">
           {title}
         </h3>
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          {description}
-        </p>
+        {description ? (
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        ) : null}
       </div>
       {trailing ? <div className="shrink-0">{trailing}</div> : null}
     </div>
@@ -453,7 +455,6 @@ export function CarLegalityInspectionForm({
           <SectionHeader
             eyebrow="Bagian A · Legalitas & Pajak"
             title="Legalitas, Plat Nomor & Status Pajak"
-            description="Lengkapi data plat, jatuh tempo pajak tahunan/5 tahunan, estimasi PKB, kepemilikan, dan keabsahan STNK/nomor rangka."
             icon={FileCheck2}
           />
         </div>
@@ -951,7 +952,6 @@ export function CarLegalityInspectionForm({
           <SectionHeader
             eyebrow="Bagian B · Dokumen & Bawaan"
             title="Checklist 7 Dokumen & Kelengkapan Unit"
-            description="Centang seluruh dokumen legalitas dan kelengkapan bawaan yang siap diserahkan saat transaksi."
             icon={ClipboardCheck}
             trailing={
               <div className="flex flex-wrap items-center gap-2">
@@ -1080,7 +1080,6 @@ export function CarLegalityInspectionForm({
           <SectionHeader
             eyebrow="Bagian C · Inspeksi & Garansi"
             title="Laporan Inspeksi Teknis & Garansi Showroom"
-            description="Tegaskan jaminan bebas banjir/tabrak besar, penilaian kondisi tiap sektor, serta kebijakan garansi dan cek mekanik."
             icon={ShieldCheck}
           />
         </div>
@@ -1483,7 +1482,6 @@ export function CarLegalityInspectionForm({
           <SectionHeader
             eyebrow="Bagian D · Rekondisi & Transparansi"
             title="Peremajaan Part & Catatan Minus Jujur"
-            description="Tampilkan part yang baru diganti agar nilai unit terlihat jelas, sekaligus sampaikan minus minor secara terbuka."
             icon={Wrench}
           />
         </div>
@@ -1620,7 +1618,7 @@ export function CarLegalityInspectionForm({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="space-y-1">
               <h4 className="font-heading text-sm font-bold text-foreground">
-                Transparansi Minus Unit (Imperfections)
+                Transparansi Minus Unit
               </h4>
               <p className="text-xs text-muted-foreground">
                 Cantumkan minus minor atau komponen aus secara jujur agar

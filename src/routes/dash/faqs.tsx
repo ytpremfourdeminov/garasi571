@@ -67,7 +67,7 @@ export const Route = createFileRoute("/dash/faqs")({
   head: () => ({
     meta: [
       {
-        title: "Manajemen FAQ | Garasi 571 CMS",
+        title: "FAQ | Garasi 571",
       },
       {
         name: "robots",
@@ -317,18 +317,9 @@ function DashFaqsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">
-            Konten Bantuan Pelanggan
-          </p>
-          <h1 className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Manajemen FAQ Showroom
-          </h1>
-          <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
-            Kelola pertanyaan umum seputar pembelian cash, kredit, tukar tambah,
-            dan pengecekan unit yang tampil di halaman publik Garasi 571.
-          </p>
-        </div>
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          FAQ Showroom
+        </h1>
 
         <Button
           type="button"
@@ -402,7 +393,7 @@ function DashFaqsPage() {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari pertanyaan, jawaban, atau slug..."
+            placeholder="Cari pertanyaan atau jawaban..."
             aria-label="Cari FAQ"
             className="pl-10"
           />
@@ -447,8 +438,7 @@ function DashFaqsPage() {
 
       {isFiltered && faqs.length > 1 ? (
         <p className="text-xs text-muted-foreground">
-          Tombol ubah urutan naik/turun dinonaktifkan saat pencarian atau filter
-          aktif. Klik <strong>Reset</strong> untuk mengatur urutan tampilan FAQ.
+          Reset filter untuk mengubah urutan FAQ.
         </p>
       ) : null}
 
@@ -521,9 +511,6 @@ function DashFaqsPage() {
                         >
                           {faq.isPublished ? "Publik" : "Draft"}
                         </Badge>
-                        <span className="border border-border bg-secondary px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
-                          {faq.slug}
-                        </span>
                       </div>
 
                       <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
@@ -615,10 +602,6 @@ function DashFaqsPage() {
             <DialogTitle>
               {faqForm.id ? "Edit FAQ Showroom" : "Tambah FAQ Baru"}
             </DialogTitle>
-            <DialogDescription>
-              Tulis pertanyaan dan jawaban secara jelas untuk membantu calon
-              pembeli memahami layanan Garasi 571.
-            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSaveFaq} noValidate className="mt-4 space-y-4">
@@ -721,10 +704,7 @@ function DashFaqsPage() {
             <div className="flex items-center justify-between border border-border bg-secondary/40 px-3.5 py-2.5">
               <div>
                 <p className="text-xs font-semibold text-foreground">
-                  Publikasikan di Website Publik
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Jika nonaktif, FAQ tersimpan sebagai draft internal.
+                  Tampilkan di Halaman Publik
                 </p>
               </div>
               <Switch

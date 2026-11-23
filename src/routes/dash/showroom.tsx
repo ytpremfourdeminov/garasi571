@@ -139,7 +139,7 @@ export const Route = createFileRoute("/dash/showroom")({
   head: () => ({
     meta: [
       {
-        title: "Showroom & Sales | Garasi 571 CMS",
+        title: "Showroom & Sales | Garasi 571",
       },
       {
         name: "robots",
@@ -547,24 +547,10 @@ function DashShowroomPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">
-            Pengaturan Showroom
-          </p>
-          <h1 className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Showroom &amp; Kontak Sales
-          </h1>
-          <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
-            Kelola identitas lokasi showroom, jam operasional, peta Google Maps,
-            logo brand, serta daftar nomor WhatsApp tim sales yang tampil di
-            website publik.
-          </p>
-        </div>
-
-        <Badge variant={isAdmin ? "primary" : "secondary"} className="self-start sm:self-auto">
-          {isAdmin ? "Akses Edit Admin" : "Mode Lihat Saja"}
-        </Badge>
+      <div className="border-b border-border pb-5">
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Showroom &amp; Kontak Sales
+        </h1>
       </div>
 
       {!isAdmin ? (
@@ -577,13 +563,9 @@ function DashShowroomPage() {
             aria-hidden="true"
           />
           <div>
-            <p className="font-semibold">
-              Hanya Admin yang dapat mengubah profil showroom &amp; kontak sales
-              — mode lihat saja
-            </p>
+            <p className="font-semibold">Mode lihat saja</p>
             <p className="mt-0.5 text-xs text-amber-900">
-              Anda dapat melihat informasi showroom dan daftar kontak sales yang
-              aktif saat ini. Hubungi Admin jika ada pembaruan data.
+              Hubungi Admin untuk mengubah data showroom atau kontak sales.
             </p>
           </div>
         </div>
@@ -596,18 +578,12 @@ function DashShowroomPage() {
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-secondary/40 px-5 py-4 sm:px-6">
           <div className="flex items-center gap-2.5">
             <Store className="size-4 text-primary" aria-hidden="true" />
-            <div>
-              <h2
-                id="showroom-profile-heading"
-                className="font-heading text-base font-bold tracking-tight text-foreground"
-              >
-                Profil &amp; Identitas Showroom
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                Data ini digunakan pada header, footer, halaman kontak, dan
-                metadata SEO publik.
-              </p>
-            </div>
+            <h2
+              id="showroom-profile-heading"
+              className="font-heading text-base font-bold tracking-tight text-foreground"
+            >
+              Profil Showroom
+            </h2>
           </div>
         </div>
 
@@ -828,7 +804,7 @@ function DashShowroomPage() {
                   htmlFor="showroom-maps-embed-url"
                   className="block text-xs font-semibold tracking-wider text-foreground uppercase"
                 >
-                  URL Embed Google Maps (Iframe)
+                  URL Sematan Google Maps
                 </label>
                 <Input
                   id="showroom-maps-embed-url"
@@ -847,11 +823,7 @@ function DashShowroomPage() {
                   </p>
                 ) : (
                   <p className="text-xs text-muted-foreground">
-                    Gunakan URL embed Google Maps (biasanya berakhiran{" "}
-                    <code className="bg-secondary px-1 py-0.5 text-[11px]">
-                      output=embed
-                    </code>{" "}
-                    atau tautan <code className="bg-secondary px-1 py-0.5 text-[11px]">maps/embed</code>).
+                    Salin tautan sematan (embed) dari Google Maps.
                   </p>
                 )}
               </div>
@@ -900,7 +872,7 @@ function DashShowroomPage() {
                       htmlFor="showroom-logo-url"
                       className="block text-[11px] font-semibold tracking-wider text-muted-foreground uppercase"
                     >
-                      Path / URL Logo
+                      URL Logo
                     </label>
                     <Input
                       id="showroom-logo-url"
@@ -943,7 +915,7 @@ function DashShowroomPage() {
                           className="size-4 animate-spin"
                           aria-hidden="true"
                         />
-                        <span>Mengunggah Logo ke R2...</span>
+                        <span>Mengunggah Logo...</span>
                       </>
                     ) : (
                       <>
@@ -974,7 +946,7 @@ function DashShowroomPage() {
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-foreground uppercase">
                     <MapPin className="size-3.5 text-primary" aria-hidden="true" />
-                    <span>Pratinjau Embed Peta</span>
+                    <span>Pratinjau Peta</span>
                   </span>
                   <Badge variant={safeMapsEmbedUrl ? "success" : "secondary"}>
                     {safeMapsEmbedUrl ? "URL Valid" : "Belum Valid"}
@@ -1004,13 +976,7 @@ function DashShowroomPage() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
-            <p className="text-xs text-muted-foreground">
-              {isAdmin
-                ? "Perubahan akan langsung tersimpan ke database dan tampil di website publik."
-                : "Tombol simpan dinonaktifkan untuk akun Sales."}
-            </p>
-
+          <div className="mt-6 flex justify-end border-t border-border pt-5">
             <Button
               type="submit"
               disabled={!isAdmin || isSavingProfile || isUploadingLogo}
@@ -1053,10 +1019,6 @@ function DashShowroomPage() {
                   {activeSalesCount} aktif / {sales.length} total
                 </Badge>
               </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                Atur urutan dan status aktif kontak sales yang muncul pada CTA
-                WhatsApp katalog publik.
-              </p>
             </div>
           </div>
 
@@ -1151,9 +1113,6 @@ function DashShowroomPage() {
                           >
                             {contact.isActive ? "Aktif" : "Nonaktif"}
                           </Badge>
-                          <span className="border border-border bg-secondary px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
-                            {contact.slug}
-                          </span>
                         </div>
 
                         <p className="text-xs font-medium text-muted-foreground">
@@ -1165,7 +1124,7 @@ function DashShowroomPage() {
                             {contact.phoneDisplay}
                           </span>
                           <span className="font-mono text-muted-foreground tabular-nums">
-                            E.164: {contact.phoneE164}
+                            WA: {contact.phoneE164}
                           </span>
                           <a
                             href={waPreviewUrl}
@@ -1413,7 +1372,7 @@ function DashShowroomPage() {
                   htmlFor="sales-phone-e164"
                   className="block text-xs font-semibold tracking-wider text-foreground uppercase"
                 >
-                  Nomor WhatsApp E.164
+                  Nomor WhatsApp
                 </label>
                 <Input
                   id="sales-phone-e164"

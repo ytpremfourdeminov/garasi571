@@ -77,7 +77,7 @@ export const Route = createFileRoute("/dash/team")({
   head: () => ({
     meta: [
       {
-        title: "Tim & Role | Garasi 571 CMS",
+        title: "Tim & Role | Garasi 571",
       },
       {
         name: "robots",
@@ -198,18 +198,9 @@ function DashTeamPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">
-            Administrasi Akses Khusus Admin
-          </p>
-          <h1 className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Tim &amp; Hak Akses Staf
-          </h1>
-          <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
-            Atur status aktivasi dan peran (Admin atau Sales) untuk seluruh akun
-            staf dashboard Garasi 571.
-          </p>
-        </div>
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Tim &amp; Hak Akses Staf
+        </h1>
 
         <Badge variant="primary" className="self-start sm:self-auto">
           <ShieldCheck className="size-3" aria-hidden="true" />
@@ -267,45 +258,37 @@ function DashTeamPage() {
             >
               Cara Menambahkan Anggota Tim Baru
             </h2>
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              Portal dashboard tidak menyediakan pendaftaran publik demi
-              keamanan akses. Ikuti alur berikut untuk menambahkan staf baru:
-            </p>
             <ol className="grid gap-2 pt-1 text-xs text-foreground sm:grid-cols-3">
               <li className="border border-border bg-secondary/40 px-3 py-2.5">
                 <span className="font-mono text-[11px] font-bold text-primary">
-                  01. SUPABASE AUTH
+                  01. BUAT AKUN
                 </span>
                 <p className="mt-1 leading-relaxed text-muted-foreground">
-                  Buat akun baru (email &amp; kata sandi) di{" "}
+                  Tambahkan pengguna baru (email &amp; kata sandi) di{" "}
                   <strong className="font-semibold text-foreground">
-                    Supabase Auth Dashboard
-                  </strong>{" "}
-                  (Authentication &rarr; Users &rarr; Add user).
+                    panel autentikasi
+                  </strong>
+                  .
                 </p>
               </li>
               <li className="border border-border bg-secondary/40 px-3 py-2.5">
                 <span className="font-mono text-[11px] font-bold text-primary">
-                  02. SINKRON OTOMATIS
+                  02. MUNCUL DI TABEL
                 </span>
                 <p className="mt-1 leading-relaxed text-muted-foreground">
-                  Akun akan otomatis muncul di tabel ini sebagai{" "}
+                  Akun masuk ke tabel ini sebagai{" "}
                   <strong className="font-semibold text-foreground">
                     Sales (Nonaktif)
                   </strong>{" "}
-                  sehingga belum bisa masuk sebelum disetujui.
+                  hingga disetujui.
                 </p>
               </li>
               <li className="border border-border bg-secondary/40 px-3 py-2.5">
                 <span className="font-mono text-[11px] font-bold text-primary">
-                  03. AKTIVASI ADMIN
+                  03. AKTIVASI
                 </span>
                 <p className="mt-1 leading-relaxed text-muted-foreground">
-                  Aktifkan toggle{" "}
-                  <strong className="font-semibold text-foreground">
-                    Aktif
-                  </strong>{" "}
-                  dan pilih peran{" "}
+                  Aktifkan status dan pilih peran{" "}
                   <strong className="font-semibold text-foreground">
                     Admin
                   </strong>{" "}
@@ -313,7 +296,7 @@ function DashTeamPage() {
                   <strong className="font-semibold text-foreground">
                     Sales
                   </strong>{" "}
-                  langsung dari tabel di bawah.
+                  di tabel bawah.
                 </p>
               </li>
             </ol>
@@ -330,13 +313,9 @@ function DashTeamPage() {
           aria-hidden="true"
         />
         <p>
-          <strong className="font-semibold">
-            Proteksi Admin Aktif Terakhir:
-          </strong>{" "}
-          Sistem selalu menjaga agar minimal terdapat{" "}
-          <strong className="font-semibold">1 Admin aktif</strong>. Akun Admin
-          aktif terakhir tidak dapat diturunkan ke peran Sales atau dinonaktifkan
-          sebelum Admin lain diaktifkan terlebih dahulu.
+          Minimal harus ada{" "}
+          <strong className="font-semibold">1 Admin aktif</strong>. Admin
+          terakhir tidak bisa dinonaktifkan atau diubah ke Sales.
         </p>
       </div>
 
@@ -381,7 +360,7 @@ function DashTeamPage() {
           </div>
           <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <Info className="size-3.5" aria-hidden="true" />
-            <span>Perubahan peran dan status langsung tersimpan otomatis.</span>
+            <span>Perubahan tersimpan otomatis.</span>
           </p>
         </div>
 
@@ -395,8 +374,7 @@ function DashTeamPage() {
               Belum Ada Profil Staf
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Tambahkan pengguna melalui Supabase Auth Dashboard agar muncul di
-              sini.
+              Tambahkan pengguna melalui panel autentikasi agar muncul di sini.
             </p>
           </div>
         ) : (

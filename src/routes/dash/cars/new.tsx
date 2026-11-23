@@ -334,12 +334,7 @@ function NewCarPage() {
             {form.name.trim() || "Tambah Unit Mobil Baru"}
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Lengkapi profil unit, harga, legalitas, dan catatan ahli. Setelah
-            disimpan, Anda akan diarahkan langsung ke{" "}
-            <strong className="font-semibold text-foreground">
-              Galeri Foto R2
-            </strong>{" "}
-            untuk mengunggah foto sudut wajib.
+            Simpan unit terlebih dahulu untuk mulai mengunggah foto.
           </p>
         </div>
 
@@ -477,7 +472,7 @@ function NewCarPage() {
 
               <TabsTrigger value="media">
                 <Camera className="size-4" aria-hidden="true" />
-                <span>Galeri Foto R2</span>
+                <span>Galeri Foto</span>
                 <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
                   Pasca Simpan
                 </Badge>
@@ -529,24 +524,11 @@ function NewCarPage() {
                     <Camera className="size-6" aria-hidden="true" />
                   </div>
                   <div className="space-y-1">
-                    <p className="font-heading text-[11px] font-bold tracking-[0.16em] text-primary uppercase">
-                      Galeri Foto Cloudflare R2
-                    </p>
                     <h2 className="font-heading text-lg font-bold tracking-tight text-foreground">
-                      Unggah Foto Terbuka Otomatis Setelah Unit Disimpan
+                      Unggah Foto Dibuka Setelah Unit Disimpan
                     </h2>
                     <p className="text-sm leading-relaxed text-muted-foreground">
-                      Foto unit disimpan per ID mobil di Cloudflare R2 (konversi
-                      otomatis WebP, penandaan 6 sudut wajib, dan pemilihan foto
-                      cover). Klik{" "}
-                      <strong className="font-semibold text-foreground">
-                        Simpan Draft
-                      </strong>{" "}
-                      atau{" "}
-                      <strong className="font-semibold text-foreground">
-                        Simpan &amp; Terbitkan
-                      </strong>{" "}
-                      untuk langsung membuka tab Galeri Foto R2.
+                      Simpan unit terlebih dahulu untuk membuka unggahan foto.
                     </p>
                   </div>
                 </div>
@@ -621,13 +603,7 @@ function NewCarPage() {
             <span className="hidden text-border sm:inline" aria-hidden="true">
               |
             </span>
-            <span>
-              Setelah tersimpan, halaman otomatis membuka{" "}
-              <strong className="font-semibold text-foreground">
-                Galeri Foto R2
-              </strong>
-              .
-            </span>
+            <span>Simpan unit untuk lanjut ke unggah foto.</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-2">

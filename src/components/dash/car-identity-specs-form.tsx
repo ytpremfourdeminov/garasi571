@@ -155,7 +155,7 @@ interface SectionHeaderProps {
   headingId: string
   index: string
   title: string
-  description: string
+  description?: string
   badge?: React.ReactNode
 }
 
@@ -181,9 +181,11 @@ function SectionHeader({
             {title}
           </h3>
         </div>
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-          {description}
-        </p>
+        {description ? (
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            {description}
+          </p>
+        ) : null}
       </div>
       {badge ? <div className="shrink-0">{badge}</div> : null}
     </div>
@@ -693,7 +695,6 @@ export function CarIdentitySpecsForm({
           headingId="section-identity-heading"
           index="01 / IDENTITAS"
           title="Identitas Unit"
-          description="Informasi utama yang tampil pada kartu katalog, halaman detail mobil, dan tautan publik."
           badge={
             <div className="flex flex-wrap items-center gap-1.5">
               <Badge variant={statusMeta.variant}>{statusMeta.label}</Badge>
@@ -749,10 +750,10 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-short-name"
-            label="Nama Singkat (Kartu & Hero)"
+            label="Nama Singkat (Kartu & Beranda)"
             required
             error={errors?.shortName}
-            hint="Versi ringkas untuk judul kartu dan tab hero."
+            hint="Versi ringkas untuk judul kartu dan sorotan beranda."
             className="md:col-span-5"
           >
             <Input
@@ -772,7 +773,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-slug"
-            label="Slug URL Publik"
+            label="Slug URL"
             required
             error={errors?.slug}
             hint={`Tautan: /mobil/${value.slug.trim() || "nama-unit-tahun"}`}
@@ -834,10 +835,10 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-year-sort"
-            label="Tahun Urut (Numerik)"
+            label="Tahun Urut"
             required
             error={errors?.yearSort}
-            hint="Otomatis mengikuti Tahun Tampil untuk pengurutan katalog."
+            hint="Untuk pengurutan di katalog."
             className="md:col-span-3"
           >
             <Input
@@ -1033,7 +1034,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-offer-badge"
-            label="Offer Badge (Opsional)"
+            label="Label Promo (Opsional)"
             error={errors?.offerBadge}
             hint="Label singkat di pojok kartu katalog."
             className="md:col-span-6"
@@ -1133,18 +1134,17 @@ export function CarIdentitySpecsForm({
                     htmlFor="car-is-featured"
                     className="block text-sm font-semibold text-foreground"
                   >
-                    Tampilkan di Hero Beranda (Featured)
+                    Tampilkan di Sorotan Beranda
                   </label>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    Pilih maksimal 3 unit unggulan untuk tampil di sorotan utama
-                    halaman depan.
+                    Maksimal 3 unit unggulan di bagian atas beranda.
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5 sm:items-end">
                 <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                  Urutan Slot Hero (1–3)
+                  Urutan Sorotan (1–3)
                 </span>
                 <div
                   role="group"
@@ -1202,7 +1202,6 @@ export function CarIdentitySpecsForm({
           headingId="section-specs-heading"
           index="02 / SPESIFIKASI"
           title="Spesifikasi Teknis"
-          description="Detail transmisi, sistem penggerak, bahan bakar, dan kapasitas mesin."
         />
 
         <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-12">
@@ -1233,10 +1232,10 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-transmission-group"
-            label="Kelompok Transmisi (Filter)"
+            label="Kelompok Transmisi"
             required
             error={errors?.transmissionGroup}
-            hint="Dipakai untuk filter Automatic / Manual di katalog."
+            hint="Untuk filter Automatic / Manual di katalog."
             className="md:col-span-6"
           >
             <Select
@@ -1387,7 +1386,6 @@ export function CarIdentitySpecsForm({
           headingId="section-odometer-heading"
           index="03 / ODOMETER"
           title="Odometer & Verifikasi"
-          description="Transparansi jarak tempuh dan bukti keaslian kilometer unit."
           badge={
             value.mileageVerified ? (
               <Badge variant="success">
@@ -1564,7 +1562,6 @@ export function CarIdentitySpecsForm({
           headingId="section-highlights-heading"
           index="04 / RINGKASAN KONDISI"
           title="Highlights & Kondisi / Kelengkapan"
-          description="Susun poin keunggulan utama dan rincian kondisi fisik agar calon pembeli langsung memahami nilai unit."
           badge={
             <div className="flex items-center gap-1.5">
               <Badge variant="outline" className="tabular-nums">

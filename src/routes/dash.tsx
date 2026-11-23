@@ -110,7 +110,7 @@ function getSectionTitle(pathname: string): string {
   const activeItem = DASH_NAV_ITEMS.find((item) =>
     isNavItemActive(pathname, item)
   )
-  return activeItem?.label ?? "Dashboard CMS"
+  return activeItem?.label ?? "Dashboard"
 }
 
 function getRoleLabel(role: StaffProfile["role"]): string {
@@ -138,7 +138,7 @@ export const Route = createFileRoute("/dash")({
   head: () => ({
     meta: [
       {
-        title: "Dashboard CMS | Garasi 571",
+        title: "Dashboard | Garasi 571",
       },
       {
         name: "robots",
@@ -195,7 +195,7 @@ function SidebarContent({
               GARASI 571
             </span>
             <span className="mt-1 text-[10px] font-semibold tracking-[0.2em] text-[#C7C2BC] uppercase">
-              CMS
+              Dashboard
             </span>
           </span>
         </Link>
@@ -227,12 +227,9 @@ function SidebarContent({
       </div>
 
       <nav
-        aria-label="Navigasi Dashboard CMS"
+        aria-label="Navigasi Dashboard"
         className="flex-1 overflow-y-auto px-3 py-4"
       >
-        <p className="px-2.5 pb-2 text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-          Menu Utama
-        </p>
         <ul className="space-y-1">
           {visibleItems.map((item) => {
             const Icon = item.icon
@@ -399,9 +396,9 @@ function DashLayout() {
                 className="w-[min(100vw,18.5rem)] p-0"
               >
                 <SheetHeader className="sr-only">
-                  <SheetTitle>Garasi 571 CMS</SheetTitle>
+                  <SheetTitle>Dashboard Garasi 571</SheetTitle>
                   <SheetDescription>
-                    Navigasi dashboard operasional staf Garasi 571 Surakarta.
+                    Menu navigasi dashboard staf Garasi 571.
                   </SheetDescription>
                 </SheetHeader>
 
@@ -434,15 +431,12 @@ function DashLayout() {
                   GARASI 571
                 </span>
                 <span className="mt-0.5 text-[9px] font-semibold tracking-[0.18em] text-[#C7C2BC] uppercase">
-                  CMS
+                  Dashboard
                 </span>
               </span>
             </Link>
 
             <div className="hidden min-w-0 lg:block">
-              <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-                GARASI 571 / CMS
-              </p>
               <p className="truncate font-heading text-base font-bold tracking-tight text-foreground">
                 {sectionTitle}
               </p>

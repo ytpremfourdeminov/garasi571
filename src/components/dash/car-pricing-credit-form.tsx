@@ -427,10 +427,6 @@ export function CarPricingCreditForm({
             >
               Skema Pembayaran &amp; Harga Unit
             </h3>
-            <p className="text-xs text-muted-foreground">
-              Atur mode pembelian, nominal harga tunai/kredit dalam Rupiah
-              bulat, serta ketersediaan tukar tambah.
-            </p>
           </div>
           <Badge variant={isCashCredit ? "primary" : "default"}>
             {isCashCredit ? "Cash & Kredit" : "Cash Only"}
@@ -793,7 +789,7 @@ export function CarPricingCreditForm({
                 />
                 <div className="space-y-0.5 text-xs leading-relaxed">
                   <p className="font-semibold">
-                    Mode Cash Only aktif — simulasi kredit disembunyikan
+                    Mode Cash Only aktif. Simulasi kredit disembunyikan.
                   </p>
                   {hasLeftoverCreditDataInCashOnly ? (
                     <p>
@@ -907,10 +903,6 @@ export function CarPricingCreditForm({
                   {simulations.length} Paket
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Tambahkan 1 atau lebih simulasi DP, angsuran, dan tenor leasing
-                rekanan. Urutan di sini menentukan tampilan di halaman publik.
-              </p>
             </div>
 
             <Button

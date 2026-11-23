@@ -135,15 +135,12 @@ function DashLoginPage() {
               </div>
 
               <div className="mt-8 border-t border-[#2F2D2B] pt-6">
-                <p className="text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">
-                  Portal Operasional Internal
-                </p>
-                <h1 className="mt-3 font-heading text-2xl font-bold tracking-tight text-[#FAF9F7] sm:text-3xl">
+                <h1 className="font-heading text-2xl font-bold tracking-tight text-[#FAF9F7] sm:text-3xl">
                   Kelola Stok &amp; Katalog Showroom
                 </h1>
                 <p className="mt-3 text-sm leading-relaxed text-[#C7C2BC]">
-                  Ruang kerja khusus tim Garasi 571 untuk memperbarui unit
-                  kendaraan, galeri foto, informasi showroom, dan FAQ pelanggan.
+                  Ruang kerja tim Garasi 571 untuk memperbarui unit kendaraan,
+                  galeri foto, informasi showroom, dan FAQ pelanggan.
                 </p>
               </div>
             </div>
@@ -154,10 +151,7 @@ function DashLoginPage() {
                   className="mt-0.5 size-4 shrink-0 text-primary"
                   aria-hidden="true"
                 />
-                <span>
-                  Akses terbatas untuk akun staf terdaftar. Tidak tersedia
-                  pendaftaran mandiri pada portal ini.
-                </span>
+                <span>Khusus akun staf terdaftar.</span>
               </div>
             </div>
           </aside>
@@ -167,23 +161,18 @@ function DashLoginPage() {
             className="flex flex-col justify-center p-7 sm:p-10 lg:col-span-7"
           >
             <div className="mx-auto w-full max-w-md">
-              <div className="flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+              <div className="flex items-center gap-2">
                 <LockKeyhole
-                  className="size-3.5 text-primary"
+                  className="size-4 text-primary"
                   aria-hidden="true"
                 />
-                <span>Autentikasi Staf</span>
+                <h2
+                  id="dash-login-heading"
+                  className="font-heading text-2xl font-bold tracking-tight text-foreground"
+                >
+                  Masuk ke Dashboard
+                </h2>
               </div>
-
-              <h2
-                id="dash-login-heading"
-                className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground"
-              >
-                Masuk ke Dashboard
-              </h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                Masukkan email dan kata sandi akun staf Garasi 571 Anda.
-              </p>
 
               {errorMessage ? (
                 <div
