@@ -22,19 +22,52 @@ export function formatShortJuta(amount: number): string {
   return `Rp${formatted} jt`
 }
 
-export function slugifyText(input: string): string {
-  return input
+export function slugifyText(input: string, maxLength = 80): string {
+  const normalized = input
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .replace(/-{2,}/g, "-")
+
+  if (normalized.length <= maxLength) {
+    return normalized
+  }
+
+  return normalized.slice(0, maxLength).replace(/-+$/g, "")
 }
 
 export function slugifyCarName(name: string, year?: string): string {
   const base = year ? `${name} ${year}` : name
   return slugifyText(base)
+}
+
+export function pickUniqueSlug(
+  existingSlugs: Iterable<string>,
+  rawBase: string,
+  fallback: string,
+  maxLength = 80
+): string {
+  const normalizedBase = slugifyText(rawBase, maxLength) || fallback
+  const taken = new Set(existingSlugs)
+  if (!taken.has(normalizedBase)) {
+    return normalizedBase
+  }
+
+  let suffix = 2
+  while (true) {
+    const suffixStr = `-${suffix}`
+    const trimmedBase =
+      normalizedBase
+        .slice(0, Math.max(1, maxLength - suffixStr.length))
+        .replace(/-+$/g, "") || fallback
+    const candidate = `${trimmedBase}${suffixStr}`
+    if (!taken.has(candidate)) {
+      return candidate
+    }
+    suffix += 1
+  }
 }
 
 export function buildWhatsAppUrl(phoneE164: string, message: string): string {

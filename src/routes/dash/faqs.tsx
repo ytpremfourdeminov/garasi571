@@ -131,7 +131,6 @@ function DashFaqsPage() {
     isPublished: true,
     sortOrder: 0,
   })
-  const [slugEdited, setSlugEdited] = React.useState(false)
   const [formErrors, setFormErrors] = React.useState<
     Partial<Record<keyof FaqFormState, string>>
   >({})
@@ -174,7 +173,6 @@ function DashFaqsPage() {
       isPublished: true,
       sortOrder: faqs.length,
     })
-    setSlugEdited(false)
     setFormErrors({})
     setDialogError(null)
     setDialogOpen(true)
@@ -189,7 +187,6 @@ function DashFaqsPage() {
       isPublished: faq.isPublished,
       sortOrder: faq.sortOrder,
     })
-    setSlugEdited(true)
     setFormErrors({})
     setDialogError(null)
     setDialogOpen(true)
@@ -690,9 +687,7 @@ function DashFaqsPage() {
                   setFaqForm((prev) => ({
                     ...prev,
                     question: nextQuestion,
-                    ...(!slugEdited
-                      ? { slug: slugifyText(nextQuestion).slice(0, 80) }
-                      : {}),
+                    ...(!prev.id ? { slug: slugifyText(nextQuestion) } : {}),
                   }))
                 }}
                 aria-invalid={formErrors.question ? true : undefined}
@@ -703,35 +698,6 @@ function DashFaqsPage() {
                   {formErrors.question}
                 </p>
               ) : null}
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="faq-slug"
-                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
-              >
-                Slug Unik
-              </label>
-              <Input
-                id="faq-slug"
-                value={faqForm.slug}
-                disabled={isSaving}
-                onChange={(e) => {
-                  setSlugEdited(true)
-                  setFaqForm((prev) => ({ ...prev, slug: e.target.value }))
-                }}
-                aria-invalid={formErrors.slug ? true : undefined}
-                placeholder="tukar-tambah-mobil-lama"
-                className="font-mono"
-              />
-              {formErrors.slug ? (
-                <p className="text-sm text-destructive">{formErrors.slug}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Huruf kecil, angka, dan tanda hubung (-). Otomatis terisi dari
-                  pertanyaan saat menambah FAQ baru.
-                </p>
-              )}
             </div>
 
             <div className="space-y-1.5">

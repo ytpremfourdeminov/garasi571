@@ -3,6 +3,11 @@ import { notFound } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
 import {
+  pickUniqueSlug,
+  slugifyCarName,
+  slugifyText,
+} from "@/lib/domain/formatters"
+import {
   mapDbCarImageToDomain,
   mapDbCarToDomain,
   mapDomainCarToDbInsert,
@@ -132,27 +137,30 @@ async function fetchCarByIdOrThrow(
   return mapCarRowWithRelations(data)
 }
 
-async function ensureUniqueCarSlug(
+async function resolveUniqueCarSlug(
   supabase: SupabaseClient<Database>,
-  slug: string,
+  rawSlug: string,
   excludeId?: string
-): Promise<void> {
-  let query = supabase.from("cars").select("id").eq("slug", slug).limit(1)
+): Promise<string> {
+  const baseSlug = slugifyText(rawSlug) || "unit"
+  let query = supabase
+    .from("cars")
+    .select("id, slug")
+    .ilike("slug", `${baseSlug}%`)
   if (excludeId) {
     query = query.neq("id", excludeId)
   }
 
-  const { data, error } = await query.maybeSingle()
+  const { data, error } = await query
   if (error) {
     throw createHttpError(500, "Gagal memeriksa keunikan slug unit mobil.")
   }
 
-  if (data) {
-    throw createHttpError(
-      409,
-      "Slug URL sudah digunakan oleh unit lain. Gunakan slug yang berbeda."
-    )
-  }
+  return pickUniqueSlug(
+    (data ?? []).map((row) => row.slug),
+    baseSlug,
+    "unit"
+  )
 }
 
 async function resolveFeaturedState(
@@ -262,7 +270,10 @@ export const createCarFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<CarUnit> => {
     const { supabase, user } = await requireStaff()
 
-    await ensureUniqueCarSlug(supabase, data.slug)
+    const resolvedSlug = await resolveUniqueCarSlug(
+      supabase,
+      data.slug || slugifyCarName(data.name, data.year)
+    )
 
     const featured =
       data.status === "archived"
@@ -276,6 +287,7 @@ export const createCarFn = createServerFn({ method: "POST" })
     const insertPayload = mapDomainCarToDbInsert(
       {
         ...data,
+        slug: resolvedSlug,
         isFeatured: featured.isFeatured,
         featuredOrder: featured.featuredOrder,
       },
@@ -355,7 +367,11 @@ export const updateCarFn = createServerFn({ method: "POST" })
       throw notFound()
     }
 
-    await ensureUniqueCarSlug(supabase, data.slug, carId)
+    const resolvedSlug = await resolveUniqueCarSlug(
+      supabase,
+      data.slug || slugifyCarName(data.name, data.year),
+      carId
+    )
 
     const featured =
       data.status === "archived"
@@ -369,6 +385,7 @@ export const updateCarFn = createServerFn({ method: "POST" })
 
     const updatePayload = mapDomainCarToDbUpdate({
       ...data,
+      slug: resolvedSlug,
       isFeatured: featured.isFeatured,
       featuredOrder: featured.featuredOrder,
     })

@@ -194,17 +194,19 @@ export const carImageMetaSchema = z.object({
   isCover: z.boolean().default(false),
 })
 
+const optionalSlugSchema = z
+  .string()
+  .trim()
+  .refine(
+    (val) => val.length === 0 || slugRegex.test(val),
+    "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung (-)"
+  )
+  .default("")
+
 export const carUpsertSchema = z
   .object({
     id: z.string().uuid().optional(),
-    slug: z
-      .string()
-      .trim()
-      .min(3, "Slug URL minimal 3 karakter")
-      .regex(
-        slugRegex,
-        "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung (-)",
-      ),
+    slug: optionalSlugSchema,
     status: carStatusSchema.default("draft"),
     isFeatured: z.boolean().default(false),
     featuredOrder: z.number().int().min(1).max(10).nullable().optional(),
@@ -355,14 +357,7 @@ export const showroomUpdateSchema = z.object({
 
 export const salesContactUpsertSchema = z.object({
   id: z.string().uuid().optional(),
-  slug: z
-    .string()
-    .trim()
-    .min(2, "Slug kontak sales minimal 2 karakter")
-    .regex(
-      slugRegex,
-      "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung (-)",
-    ),
+  slug: optionalSlugSchema,
   name: z.string().trim().min(2, "Nama sales minimal 2 karakter"),
   role: z.string().trim().min(2, "Jabatan/peran sales wajib diisi"),
   phoneDisplay: z
@@ -384,14 +379,7 @@ export const salesContactSchema = salesContactUpsertSchema
 
 export const faqUpsertSchema = z.object({
   id: z.string().uuid().optional(),
-  slug: z
-    .string()
-    .trim()
-    .min(2, "Slug FAQ minimal 2 karakter")
-    .regex(
-      slugRegex,
-      "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung (-)",
-    ),
+  slug: optionalSlugSchema,
   question: z.string().trim().min(5, "Pertanyaan FAQ minimal 5 karakter"),
   answer: z.string().trim().min(10, "Jawaban FAQ minimal 10 karakter"),
   isPublished: z.boolean().default(true),

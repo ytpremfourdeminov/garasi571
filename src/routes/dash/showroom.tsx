@@ -244,7 +244,6 @@ function DashShowroomPage() {
     isActive: true,
     sortOrder: 0,
   })
-  const [salesSlugEdited, setSalesSlugEdited] = React.useState(false)
   const [salesE164Edited, setSalesE164Edited] = React.useState(false)
   const [salesFormErrors, setSalesFormErrors] = React.useState<
     Partial<Record<keyof SalesFormState, string>>
@@ -407,7 +406,6 @@ function DashShowroomPage() {
       isActive: true,
       sortOrder: sales.length,
     })
-    setSalesSlugEdited(false)
     setSalesE164Edited(false)
     setSalesFormErrors({})
     setSalesDialogError(null)
@@ -426,7 +424,6 @@ function DashShowroomPage() {
       isActive: contact.isActive,
       sortOrder: contact.sortOrder,
     })
-    setSalesSlugEdited(true)
     setSalesE164Edited(true)
     setSalesFormErrors({})
     setSalesDialogError(null)
@@ -1371,9 +1368,7 @@ function DashShowroomPage() {
                     setSalesForm((prev) => ({
                       ...prev,
                       name: nextName,
-                      ...(!salesSlugEdited
-                        ? { slug: slugifyText(nextName) }
-                        : {}),
+                      ...(!prev.id ? { slug: slugifyText(nextName) } : {}),
                     }))
                   }}
                   aria-invalid={salesFormErrors.name ? true : undefined}
@@ -1409,37 +1404,6 @@ function DashShowroomPage() {
                   </p>
                 ) : null}
               </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="sales-slug"
-                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
-              >
-                Slug Unik
-              </label>
-              <Input
-                id="sales-slug"
-                value={salesForm.slug}
-                disabled={isSavingSales}
-                onChange={(e) => {
-                  setSalesSlugEdited(true)
-                  setSalesForm((prev) => ({ ...prev, slug: e.target.value }))
-                }}
-                aria-invalid={salesFormErrors.slug ? true : undefined}
-                placeholder="mas-budi"
-                className="font-mono"
-              />
-              {salesFormErrors.slug ? (
-                <p className="text-sm text-destructive">
-                  {salesFormErrors.slug}
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Huruf kecil, angka, dan tanda hubung (-). Otomatis dibuat dari
-                  nama saat menambah kontak baru.
-                </p>
-              )}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">

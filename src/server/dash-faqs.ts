@@ -1,6 +1,7 @@
 import { notFound } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
+import { pickUniqueSlug, slugifyText } from "@/lib/domain/formatters"
 import { mapDbFaqToDomain } from "@/lib/domain/mappers"
 import { faqUpsertSchema } from "@/lib/domain/schemas"
 import type { ShowroomFaqItem } from "@/lib/domain/types"
@@ -58,29 +59,27 @@ export const upsertFaqFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<ShowroomFaqItem> => {
     const { supabase } = await requireStaff()
 
+    const baseSlug = slugifyText(data.slug || data.question) || "faq"
     let slugQuery = supabase
       .from("showroom_faqs")
-      .select("id")
-      .eq("slug", data.slug)
-      .limit(1)
+      .select("id, slug")
+      .ilike("slug", `${baseSlug}%`)
 
     if (data.id) {
       slugQuery = slugQuery.neq("id", data.id)
     }
 
-    const { data: duplicateSlug, error: slugError } =
-      await slugQuery.maybeSingle()
+    const { data: matchingSlugs, error: slugError } = await slugQuery
 
     if (slugError) {
       throw createHttpError(500, "Gagal memeriksa keunikan slug FAQ.")
     }
 
-    if (duplicateSlug) {
-      throw createHttpError(
-        409,
-        "Slug FAQ sudah digunakan. Gunakan slug yang berbeda."
-      )
-    }
+    const resolvedSlug = pickUniqueSlug(
+      (matchingSlugs ?? []).map((row) => row.slug),
+      baseSlug,
+      "faq"
+    )
 
     if (data.id) {
       const { data: existing, error: existingError } = await supabase
@@ -100,7 +99,7 @@ export const upsertFaqFn = createServerFn({ method: "POST" })
       const { data: updated, error: updateError } = await supabase
         .from("showroom_faqs")
         .update({
-          slug: data.slug,
+          slug: resolvedSlug,
           question: data.question,
           answer: data.answer,
           is_published: data.isPublished,
@@ -126,7 +125,7 @@ export const upsertFaqFn = createServerFn({ method: "POST" })
     const { data: inserted, error: insertError } = await supabase
       .from("showroom_faqs")
       .insert({
-        slug: data.slug,
+        slug: resolvedSlug,
         question: data.question,
         answer: data.answer,
         is_published: data.isPublished,

@@ -1,6 +1,7 @@
 import { notFound } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
+import { pickUniqueSlug, slugifyText } from "@/lib/domain/formatters"
 import {
   mapDbSalesContactToDomain,
   mapDbShowroomToDomain,
@@ -134,29 +135,27 @@ export const upsertSalesContactFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<SalesContact> => {
     const { supabase } = await requireAdmin()
 
+    const baseSlug = slugifyText(data.slug || data.name) || "sales"
     let slugQuery = supabase
       .from("sales_contacts")
-      .select("id")
-      .eq("slug", data.slug)
-      .limit(1)
+      .select("id, slug")
+      .ilike("slug", `${baseSlug}%`)
 
     if (data.id) {
       slugQuery = slugQuery.neq("id", data.id)
     }
 
-    const { data: duplicateSlug, error: slugError } =
-      await slugQuery.maybeSingle()
+    const { data: matchingSlugs, error: slugError } = await slugQuery
 
     if (slugError) {
       throw createHttpError(500, "Gagal memeriksa keunikan slug kontak sales.")
     }
 
-    if (duplicateSlug) {
-      throw createHttpError(
-        409,
-        "Slug kontak sales sudah digunakan. Gunakan slug yang berbeda."
-      )
-    }
+    const resolvedSlug = pickUniqueSlug(
+      (matchingSlugs ?? []).map((row) => row.slug),
+      baseSlug,
+      "sales"
+    )
 
     if (data.id) {
       const { data: existing, error: existingError } = await supabase
@@ -176,7 +175,7 @@ export const upsertSalesContactFn = createServerFn({ method: "POST" })
       const { data: updated, error: updateError } = await supabase
         .from("sales_contacts")
         .update({
-          slug: data.slug,
+          slug: resolvedSlug,
           name: data.name,
           role: data.role,
           phone_display: data.phoneDisplay,
@@ -204,7 +203,7 @@ export const upsertSalesContactFn = createServerFn({ method: "POST" })
     const { data: inserted, error: insertError } = await supabase
       .from("sales_contacts")
       .insert({
-        slug: data.slug,
+        slug: resolvedSlug,
         name: data.name,
         role: data.role,
         phone_display: data.phoneDisplay,

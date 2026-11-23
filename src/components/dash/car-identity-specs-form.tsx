@@ -9,7 +9,6 @@ import {
   Gauge,
   ListChecks,
   Plus,
-  RefreshCw,
   ShieldCheck,
   Sparkles,
   Star,
@@ -620,15 +619,6 @@ export function CarIdentitySpecsForm({
   isNew = false,
   disabled = false,
 }: CarIdentitySpecsFormProps) {
-  const [slugManuallyEdited, setSlugManuallyEdited] = React.useState<boolean>(
-    () => {
-      if (!isNew) return true
-      const currentSlug = value.slug.trim()
-      if (!currentSlug) return false
-      return currentSlug !== slugifyCarName(value.name, value.year)
-    }
-  )
-
   const bodyTypeItems = React.useMemo(() => {
     const map: Record<string, string> = {
       [EMPTY_SELECT_VALUE]: "Pilih tipe bodi",
@@ -660,11 +650,8 @@ export function CarIdentitySpecsForm({
 
   const handleNameChange = (nextName: string) => {
     const patch: Partial<CarUpsertInput> = { name: nextName }
-    if (isNew && !slugManuallyEdited) {
-      const expectedPrevSlug = slugifyCarName(value.name, value.year)
-      if (!value.slug || value.slug === expectedPrevSlug) {
-        patch.slug = slugifyCarName(nextName, value.year)
-      }
+    if (isNew) {
+      patch.slug = slugifyCarName(nextName, value.year)
     }
     onChange(patch)
   }
@@ -675,29 +662,10 @@ export function CarIdentitySpecsForm({
     if (inferred !== null) {
       patch.yearSort = inferred
     }
-    if (isNew && !slugManuallyEdited) {
-      const expectedPrevSlug = slugifyCarName(value.name, value.year)
-      if (!value.slug || value.slug === expectedPrevSlug) {
-        patch.slug = slugifyCarName(value.name, nextYear)
-      }
+    if (isNew) {
+      patch.slug = slugifyCarName(value.name, nextYear)
     }
     onChange(patch)
-  }
-
-  const handleSlugChange = (nextSlug: string) => {
-    const generated = slugifyCarName(value.name, value.year)
-    if (nextSlug.trim() === "") {
-      setSlugManuallyEdited(false)
-    } else if (nextSlug !== generated) {
-      setSlugManuallyEdited(true)
-    }
-    onChange({ slug: nextSlug })
-  }
-
-  const handleGenerateSlug = () => {
-    const generated = slugifyCarName(value.name, value.year)
-    setSlugManuallyEdited(false)
-    onChange({ slug: generated })
   }
 
   const handleCategoryChange = (nextCategory: CarCategory) => {
@@ -746,9 +714,6 @@ export function CarIdentitySpecsForm({
       onChange({ yearSort: parsed })
     }
   }
-
-  const canGenerateSlug =
-    value.name.trim().length > 0 || value.year.trim().length > 0
 
   return (
     <div className="space-y-6">
@@ -820,7 +785,7 @@ export function CarIdentitySpecsForm({
             required
             error={errors?.shortName}
             hint="Versi ringkas untuk judul kartu dan sorotan beranda."
-            className="md:col-span-5"
+            className="md:col-span-8"
           >
             <Input
               id="car-short-name"
@@ -835,46 +800,6 @@ export function CarIdentitySpecsForm({
               onChange={(event) => onChange({ shortName: event.target.value })}
               placeholder="Contoh: Innova Reborn 2.4 V"
             />
-          </FieldShell>
-
-          <FieldShell
-            id="car-slug"
-            label="Slug URL"
-            required
-            error={errors?.slug}
-            hint={`Tautan: /mobil/${value.slug.trim() || "nama-unit-tahun"}`}
-            labelAction={
-              isNew && !slugManuallyEdited ? (
-                <span className="text-sm font-medium text-emerald-800">
-                  Sinkron otomatis
-                </span>
-              ) : null
-            }
-            className="md:col-span-7"
-          >
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Input
-                id="car-slug"
-                value={value.slug}
-                disabled={disabled}
-                aria-invalid={Boolean(errors?.slug)}
-                aria-describedby={
-                  errors?.slug ? "car-slug-error" : "car-slug-hint"
-                }
-                onChange={(event) => handleSlugChange(event.target.value)}
-                placeholder="toyota-innova-reborn-2-4-v-2019"
-                className="flex-1 font-mono text-sm"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                disabled={disabled || !canGenerateSlug}
-                onClick={handleGenerateSlug}
-              >
-                <RefreshCw className="size-4" aria-hidden="true" />
-                Buat Slug Otomatis
-              </Button>
-            </div>
           </FieldShell>
 
           <FieldShell
