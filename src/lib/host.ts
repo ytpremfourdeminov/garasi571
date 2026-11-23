@@ -171,17 +171,6 @@ function resolveBaseUrl(requestUrl?: string): URL {
     return fromRequest
   }
 
-  if (
-    typeof window !== "undefined" &&
-    window.location.origin &&
-    window.location.origin !== "null"
-  ) {
-    const fromWindow = parseUrlSafe(window.location.origin)
-    if (fromWindow) {
-      return fromWindow
-    }
-  }
-
   const fromEnv = parseUrlSafe(getConfiguredSiteUrl())
   if (fromEnv && fromEnv.origin !== "null") {
     return fromEnv
