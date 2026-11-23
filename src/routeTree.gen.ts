@@ -24,6 +24,8 @@ import { Route as DashLoginRouteImport } from './routes/dash_.login'
 import { Route as MediaSplatRouteImport } from './routes/media.$'
 import { Route as PublicMobilSlugRouteImport } from './routes/_public/mobil.$slug'
 import { Route as DashCarsIndexRouteImport } from './routes/dash/cars/index'
+import { Route as DashCarsCarIdRouteImport } from './routes/dash/cars/$carId'
+import { Route as DashCarsNewRouteImport } from './routes/dash/cars/new'
 import { Route as ApiDashMediaUploadRouteImport } from './routes/api/dash.media.upload'
 
 const PublicRoute = PublicRouteImport.update({
@@ -100,6 +102,16 @@ const DashCarsIndexRoute = DashCarsIndexRouteImport.update({
   path: '/cars/',
   getParentRoute: () => DashRoute,
 } as any)
+const DashCarsCarIdRoute = DashCarsCarIdRouteImport.update({
+  id: '/cars/$carId',
+  path: '/cars/$carId',
+  getParentRoute: () => DashRoute,
+} as any)
+const DashCarsNewRoute = DashCarsNewRouteImport.update({
+  id: '/cars/new',
+  path: '/cars/new',
+  getParentRoute: () => DashRoute,
+} as any)
 const ApiDashMediaUploadRoute = ApiDashMediaUploadRouteImport.update({
   id: '/api/dash/media/upload',
   path: '/api/dash/media/upload',
@@ -120,6 +132,8 @@ export interface FileRoutesByFullPath {
   '/media/$': typeof MediaSplatRoute
   '/dash/': typeof DashIndexRoute
   '/mobil/$slug': typeof PublicMobilSlugRoute
+  '/dash/cars/$carId': typeof DashCarsCarIdRoute
+  '/dash/cars/new': typeof DashCarsNewRoute
   '/dash/cars/': typeof DashCarsIndexRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
@@ -136,6 +150,8 @@ export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/dash': typeof DashIndexRoute
   '/mobil/$slug': typeof PublicMobilSlugRoute
+  '/dash/cars/$carId': typeof DashCarsCarIdRoute
+  '/dash/cars/new': typeof DashCarsNewRoute
   '/dash/cars': typeof DashCarsIndexRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
@@ -155,6 +171,8 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/dash/': typeof DashIndexRoute
   '/_public/mobil/$slug': typeof PublicMobilSlugRoute
+  '/dash/cars/$carId': typeof DashCarsCarIdRoute
+  '/dash/cars/new': typeof DashCarsNewRoute
   '/dash/cars/': typeof DashCarsIndexRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
@@ -174,6 +192,8 @@ export interface FileRouteTypes {
     | '/media/$'
     | '/dash/'
     | '/mobil/$slug'
+    | '/dash/cars/$carId'
+    | '/dash/cars/new'
     | '/dash/cars/'
     | '/api/dash/media/upload'
   fileRoutesByTo: FileRoutesByTo
@@ -190,6 +210,8 @@ export interface FileRouteTypes {
     | '/'
     | '/dash'
     | '/mobil/$slug'
+    | '/dash/cars/$carId'
+    | '/dash/cars/new'
     | '/dash/cars'
     | '/api/dash/media/upload'
   id:
@@ -208,6 +230,8 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/dash/'
     | '/_public/mobil/$slug'
+    | '/dash/cars/$carId'
+    | '/dash/cars/new'
     | '/dash/cars/'
     | '/api/dash/media/upload'
   fileRoutesById: FileRoutesById
@@ -331,6 +355,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashCarsIndexRouteImport
       parentRoute: typeof DashRoute
     }
+    '/dash/cars/$carId': {
+      id: '/dash/cars/$carId'
+      path: '/cars/$carId'
+      fullPath: '/dash/cars/$carId'
+      preLoaderRoute: typeof DashCarsCarIdRouteImport
+      parentRoute: typeof DashRoute
+    }
+    '/dash/cars/new': {
+      id: '/dash/cars/new'
+      path: '/cars/new'
+      fullPath: '/dash/cars/new'
+      preLoaderRoute: typeof DashCarsNewRouteImport
+      parentRoute: typeof DashRoute
+    }
     '/api/dash/media/upload': {
       id: '/api/dash/media/upload'
       path: '/api/dash/media/upload'
@@ -359,6 +397,8 @@ interface DashRouteChildren {
   DashShowroomRoute: typeof DashShowroomRoute
   DashTeamRoute: typeof DashTeamRoute
   DashIndexRoute: typeof DashIndexRoute
+  DashCarsCarIdRoute: typeof DashCarsCarIdRoute
+  DashCarsNewRoute: typeof DashCarsNewRoute
   DashCarsIndexRoute: typeof DashCarsIndexRoute
 }
 
@@ -367,6 +407,8 @@ const DashRouteChildren: DashRouteChildren = {
   DashShowroomRoute: DashShowroomRoute,
   DashTeamRoute: DashTeamRoute,
   DashIndexRoute: DashIndexRoute,
+  DashCarsCarIdRoute: DashCarsCarIdRoute,
+  DashCarsNewRoute: DashCarsNewRoute,
   DashCarsIndexRoute: DashCarsIndexRoute,
 }
 

@@ -3,7 +3,6 @@ import {
   Link,
   createFileRoute,
   useRouter,
-  type LinkProps,
 } from "@tanstack/react-router"
 import {
   AlertCircle,
@@ -598,7 +597,7 @@ function DashCarsPage() {
           </div>
 
           <Link
-            to={"/dash/cars/new" as LinkProps["to"]}
+            to="/dash/cars/new"
             className={cn(
               buttonVariants({ variant: "default", size: "default" }),
               "no-underline"
@@ -827,7 +826,7 @@ function DashCarsPage() {
             katalog website publik.
           </p>
           <Link
-            to={"/dash/cars/new" as LinkProps["to"]}
+            to="/dash/cars/new"
             className={cn(
               buttonVariants({ variant: "default", size: "default" }),
               "mt-5 no-underline"
@@ -1097,8 +1096,8 @@ function DashCarsPage() {
                           </a>
 
                           <Link
-                            to={"/dash/cars/$carId" as LinkProps["to"]}
-                            params={{ carId: car.id } as never}
+                            to="/dash/cars/$carId"
+                            params={{ carId: car.id }}
                             aria-label={`Edit ${car.name}`}
                             title="Edit unit"
                             className={cn(
@@ -1358,8 +1357,8 @@ function DashCarsPage() {
                   {/* Mobile Actions */}
                   <div className="mt-4 grid grid-cols-2 gap-2">
                     <Link
-                      to={"/dash/cars/$carId" as LinkProps["to"]}
-                      params={{ carId: car.id } as never}
+                      to="/dash/cars/$carId"
+                      params={{ carId: car.id }}
                       className={cn(
                         buttonVariants({ variant: "default", size: "default" }),
                         "w-full no-underline"
