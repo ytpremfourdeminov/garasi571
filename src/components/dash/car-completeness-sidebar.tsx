@@ -124,26 +124,27 @@ export function CarCompletenessSidebar({
     >
       {/* Overall Score Header */}
       <div className="border-b border-border bg-secondary/45 p-4 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="font-heading text-sm font-bold tracking-[0.16em] text-primary uppercase">
-              Kelengkapan Data
-            </p>
-            <div className="mt-1.5 flex items-baseline gap-2">
-              <span
-                className={cn(
-                  "font-heading text-3xl font-bold tracking-tight tabular-nums",
-                  scoreMeta.scoreTextClass
-                )}
-              >
-                {completeness.score}%
-              </span>
-              <span className="text-sm font-medium text-muted-foreground">
-                / 100%
-              </span>
-            </div>
+        <h2 className="font-heading text-base font-bold tracking-tight text-foreground">
+          Kelengkapan Data
+        </h2>
+
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="flex items-baseline gap-1.5">
+            <span
+              className={cn(
+                "font-heading text-3xl font-bold tracking-tight tabular-nums",
+                scoreMeta.scoreTextClass
+              )}
+            >
+              {completeness.score}%
+            </span>
+            <span className="text-sm font-medium text-muted-foreground">
+              / 100%
+            </span>
           </div>
-          <Badge variant={scoreMeta.badgeVariant}>{scoreMeta.label}</Badge>
+          <Badge variant={scoreMeta.badgeVariant} className="shrink-0">
+            {scoreMeta.label}
+          </Badge>
         </div>
 
         <div
