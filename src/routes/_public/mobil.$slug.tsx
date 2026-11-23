@@ -29,6 +29,7 @@ import {
 } from "@/lib/seo"
 import { getPublicCarBySlugFn } from "@/server/public-catalog"
 import { CarGallery } from "@/components/car-gallery"
+import { ErrorStateView } from "@/components/error-state-view"
 import { CarAnswerSummary } from "@/components/car-answer-summary"
 import { CarLegalitySection } from "@/components/car-legality-section"
 import { CarInspectionSection } from "@/components/car-inspection-section"
@@ -148,36 +149,15 @@ function CarDetailNotFound() {
   const { openWhatsAppDialog } = useWhatsAppDialog()
 
   return (
-    <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-      <div className="border border-border bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
-          Unit Tidak Ditemukan
-        </p>
-        <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Unit yang Anda Cari Belum Tersedia
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Unit mungkin sudah terjual atau tautan halaman tidak sesuai. Silakan
-          lihat unit tersedia di katalog atau tanyakan rekomendasi unit serupa ke
-          tim sales Garasi 571.
-        </p>
-
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Link
-            to="/"
-            hash="stok"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "no-underline",
-            )}
-          >
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            <span>Kembali ke Katalog</span>
-          </Link>
-
+    <ErrorStateView
+      variant="not-found"
+      title="Unit yang Anda Cari Belum Tersedia"
+      description="Unit mungkin sudah terjual atau tautan halaman tidak sesuai. Silakan lihat unit tersedia di katalog atau tanyakan rekomendasi unit serupa ke tim sales Garasi 571."
+      actions={
+        <>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() =>
               openWhatsAppDialog({
                 title: "Tanya Unit Tersedia",
@@ -191,9 +171,21 @@ function CarDetailNotFound() {
             <MessageCircle className="size-4" aria-hidden="true" />
             <span>Hubungi WhatsApp</span>
           </Button>
-        </div>
-      </div>
-    </section>
+
+          <Link
+            to="/"
+            hash="stok"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "no-underline",
+            )}
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span>Kembali ke Katalog</span>
+          </Link>
+        </>
+      }
+    />
   )
 }
 
