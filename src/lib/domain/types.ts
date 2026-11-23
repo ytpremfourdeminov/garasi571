@@ -234,6 +234,10 @@ export interface CompletenessDimension {
   completedCount: number
   totalCount: number
   missingItems: string[]
+  missingItemTargets?: Array<{
+    label: string
+    targetId?: string
+  }>
   targetTab: CompletenessTabKey
 }
 
@@ -242,6 +246,7 @@ export interface CompletenessResult {
   dimensions: CompletenessDimension[]
   missingItems: Array<{
     label: string
+    targetId?: string
     dimensionKey: CompletenessDimension["key"]
     targetTab: CompletenessTabKey
   }>

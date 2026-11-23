@@ -17,6 +17,7 @@ import { cn } from "cn"
 import {
   COMPLETENESS_TAB_LABELS,
   CarCompletenessSidebar,
+  scrollToCarField,
 } from "@/components/dash/car-completeness-sidebar"
 import { CarEvInsightsForm } from "@/components/dash/car-ev-insights-form"
 import { CarIdentitySpecsForm } from "@/components/dash/car-identity-specs-form"
@@ -230,9 +231,13 @@ function NewCarPage() {
     []
   )
 
-  const handleSelectTab = React.useCallback((nextTab: CompletenessTabKey) => {
-    setActiveTab(nextTab)
-  }, [])
+  const handleSelectTab = React.useCallback(
+    (nextTab: CompletenessTabKey, targetId?: string) => {
+      setActiveTab(nextTab)
+      scrollToCarField(targetId)
+    },
+    []
+  )
 
   const handleSubmit = async (targetStatus: "draft" | "ready") => {
     if (isSubmitting) return
@@ -317,7 +322,7 @@ function NewCarPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* Page Header */}
-      <section className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mb-0! flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Link
@@ -341,41 +346,6 @@ function NewCarPage() {
           <p className="mt-1.5 text-sm text-muted-foreground">
             Simpan unit terlebih dahulu untuk mulai mengunggah foto.
           </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isSubmitting}
-            onClick={() => void handleSubmit("draft")}
-          >
-            {submittingMode === "draft" ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            ) : (
-              <Save className="size-4" aria-hidden="true" />
-            )}
-            <span>
-              {submittingMode === "draft" ? "Menyimpan..." : "Simpan Draft"}
-            </span>
-          </Button>
-          <Button
-            type="button"
-            variant="default"
-            disabled={isSubmitting}
-            onClick={() => void handleSubmit("ready")}
-          >
-            {submittingMode === "ready" ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            ) : (
-              <Send className="size-4" aria-hidden="true" />
-            )}
-            <span>
-              {submittingMode === "ready"
-                ? "Menerbitkan..."
-                : "Simpan & Terbitkan"}
-            </span>
-          </Button>
         </div>
       </section>
 
@@ -436,22 +406,21 @@ function NewCarPage() {
         </div>
       ) : null}
 
-      {/* Main Layout: Editor Tabs + Live Completeness Sidebar */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="min-w-0 lg:col-span-8">
-          <Tabs
-            value={activeTab}
-            onValueChange={(nextValue) => {
-              if (typeof nextValue === "string" && VALID_TABS.has(nextValue)) {
-                setActiveTab(nextValue as CompletenessTabKey)
-              }
-            }}
-          >
-            <TabsList
-              variant="line"
-              aria-label="Tab formulir unit mobil baru"
-              className="border-b border-border bg-card px-2"
-            >
+      {/* Main Layout: Full-Width Tabs + Form & Completeness Sidebar */}
+      <Tabs
+        value={activeTab}
+        onValueChange={(nextValue) => {
+          if (typeof nextValue === "string" && VALID_TABS.has(nextValue)) {
+            setActiveTab(nextValue as CompletenessTabKey)
+          }
+        }}
+        className="mt-0!"
+      >
+        <TabsList
+          variant="line"
+          aria-label="Tab formulir unit mobil baru"
+          className="w-full justify-start bg-card"
+        >
               <TabsTrigger value="identity">
                 <Car className="size-4" aria-hidden="true" />
                 <span>Identitas &amp; Spek</span>
@@ -485,9 +454,6 @@ function NewCarPage() {
               <TabsTrigger value="media">
                 <Camera className="size-4" aria-hidden="true" />
                 <span>Galeri Foto</span>
-                <Badge variant="secondary" className="px-1.5 py-0 text-sm">
-                  Pasca Simpan
-                </Badge>
               </TabsTrigger>
 
               <TabsTrigger value="insights">
@@ -499,9 +465,11 @@ function NewCarPage() {
                   </Badge>
                 ) : null}
               </TabsTrigger>
-            </TabsList>
+        </TabsList>
 
-            <TabsContent value="identity" className="pt-2">
+        <div className="mt-2 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-8">
+            <TabsContent value="identity">
               <CarIdentitySpecsForm
                 value={form}
                 onChange={handlePatchForm}
@@ -511,7 +479,7 @@ function NewCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="pricing" className="pt-2">
+            <TabsContent value="pricing">
               <CarPricingCreditForm
                 value={form}
                 onChange={handlePatchForm}
@@ -520,7 +488,7 @@ function NewCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="legality" className="pt-2">
+            <TabsContent value="legality">
               <CarLegalityInspectionForm
                 value={form}
                 onChange={handlePatchForm}
@@ -529,8 +497,11 @@ function NewCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="media" className="pt-2">
-              <section className="border border-border bg-card p-6 sm:p-8">
+            <TabsContent value="media">
+              <section
+                data-completeness-id="media-gallery"
+                className="border border-border bg-card p-6 sm:p-8"
+              >
                 <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
                   <div className="flex size-12 shrink-0 items-center justify-center border border-border bg-secondary text-primary">
                     <Camera className="size-6" aria-hidden="true" />
@@ -574,7 +545,7 @@ function NewCarPage() {
               </section>
             </TabsContent>
 
-            <TabsContent value="insights" className="pt-2">
+            <TabsContent value="insights">
               <CarEvInsightsForm
                 value={form}
                 onChange={handlePatchForm}
@@ -582,21 +553,21 @@ function NewCarPage() {
                 disabled={isSubmitting}
               />
             </TabsContent>
-          </Tabs>
-        </div>
+          </div>
 
-        <div className="min-w-0 lg:col-span-4">
-          <div className="lg:sticky lg:top-20">
-            <CarCompletenessSidebar
-              car={form}
-              images={[]}
-              activeTab={activeTab}
-              onSelectTab={handleSelectTab}
-              isNew={true}
-            />
+          <div className="min-w-0 lg:col-span-4">
+            <div className="lg:sticky lg:top-20">
+              <CarCompletenessSidebar
+                car={form}
+                images={[]}
+                activeTab={activeTab}
+                onSelectTab={handleSelectTab}
+                isNew={true}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </Tabs>
 
       {/* Sticky Editorial Bottom Action Bar */}
       <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-card/95 px-4 py-3 backdrop-blur-xs sm:-mx-6 sm:px-6 lg:mx-0 lg:border lg:px-5">

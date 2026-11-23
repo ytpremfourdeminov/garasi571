@@ -19,6 +19,7 @@ import { cn } from "cn"
 import {
   COMPLETENESS_TAB_LABELS,
   CarCompletenessSidebar,
+  scrollToCarField,
 } from "@/components/dash/car-completeness-sidebar"
 import { CarEvInsightsForm } from "@/components/dash/car-ev-insights-form"
 import { CarIdentitySpecsForm } from "@/components/dash/car-identity-specs-form"
@@ -97,7 +98,7 @@ export const Route = createFileRoute("/dash/cars/$carId")({
 function EditCarPending() {
   return (
     <div aria-busy="true" aria-label="Memuat detail unit" className="space-y-6 pb-8">
-      <section className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mb-0! flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-2">
           <Skeleton className="h-5 w-48" />
           <Skeleton className="h-9 w-72 max-w-full" />
@@ -382,9 +383,13 @@ function EditCarPage() {
     []
   )
 
-  const handleSelectTab = React.useCallback((nextTab: CompletenessTabKey) => {
-    setActiveTab(nextTab)
-  }, [])
+  const handleSelectTab = React.useCallback(
+    (nextTab: CompletenessTabKey, targetId?: string) => {
+      setActiveTab(nextTab)
+      scrollToCarField(targetId)
+    },
+    []
+  )
 
   const handleResetChanges = () => {
     if (isSaving) return
@@ -478,7 +483,7 @@ function EditCarPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* Page Header */}
-      <section className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mb-0! flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Link
@@ -643,22 +648,21 @@ function EditCarPage() {
         </div>
       ) : null}
 
-      {/* Main Layout: 5 Editor Tabs + Live Completeness Sidebar */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="min-w-0 lg:col-span-8">
-          <Tabs
-            value={activeTab}
-            onValueChange={(nextValue) => {
-              if (typeof nextValue === "string" && VALID_TABS.has(nextValue)) {
-                setActiveTab(nextValue as CompletenessTabKey)
-              }
-            }}
-          >
-            <TabsList
-              variant="line"
-              aria-label="Tab editor unit mobil"
-              className="border-b border-border bg-card px-2"
-            >
+      {/* Main Layout: Full-Width Tabs + Form & Completeness Sidebar */}
+      <Tabs
+        value={activeTab}
+        onValueChange={(nextValue) => {
+          if (typeof nextValue === "string" && VALID_TABS.has(nextValue)) {
+            setActiveTab(nextValue as CompletenessTabKey)
+          }
+        }}
+        className="mt-0!"
+      >
+        <TabsList
+          variant="line"
+          aria-label="Tab editor unit mobil"
+          className="w-full justify-start bg-card"
+        >
               <TabsTrigger value="identity">
                 <Car className="size-4" aria-hidden="true" />
                 <span>Identitas &amp; Spek</span>
@@ -706,9 +710,11 @@ function EditCarPage() {
                   </Badge>
                 ) : null}
               </TabsTrigger>
-            </TabsList>
+        </TabsList>
 
-            <TabsContent value="identity" className="pt-2">
+        <div className="mt-2 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-8">
+            <TabsContent value="identity">
               <CarIdentitySpecsForm
                 value={form}
                 onChange={handlePatchForm}
@@ -718,7 +724,7 @@ function EditCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="pricing" className="pt-2">
+            <TabsContent value="pricing">
               <CarPricingCreditForm
                 value={form}
                 onChange={handlePatchForm}
@@ -727,7 +733,7 @@ function EditCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="legality" className="pt-2">
+            <TabsContent value="legality">
               <CarLegalityInspectionForm
                 value={form}
                 onChange={handlePatchForm}
@@ -736,7 +742,7 @@ function EditCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="media" className="pt-2">
+            <TabsContent value="media">
               <CarMediaManager
                 carId={car.id}
                 carName={form.name.trim() || car.name}
@@ -746,7 +752,7 @@ function EditCarPage() {
               />
             </TabsContent>
 
-            <TabsContent value="insights" className="pt-2">
+            <TabsContent value="insights">
               <CarEvInsightsForm
                 value={form}
                 onChange={handlePatchForm}
@@ -754,21 +760,21 @@ function EditCarPage() {
                 disabled={isSaving}
               />
             </TabsContent>
-          </Tabs>
-        </div>
+          </div>
 
-        <div className="min-w-0 lg:col-span-4">
-          <div className="lg:sticky lg:top-20">
-            <CarCompletenessSidebar
-              car={form}
-              images={images}
-              activeTab={activeTab}
-              onSelectTab={handleSelectTab}
-              isNew={false}
-            />
+          <div className="min-w-0 lg:col-span-4">
+            <div className="lg:sticky lg:top-20">
+              <CarCompletenessSidebar
+                car={form}
+                images={images}
+                activeTab={activeTab}
+                onSelectTab={handleSelectTab}
+                isNew={false}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </Tabs>
 
       {/* Sticky Editorial Save Bar */}
       <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-card/95 px-4 py-3 backdrop-blur-xs sm:-mx-6 sm:px-6 lg:mx-0 lg:border lg:px-5">

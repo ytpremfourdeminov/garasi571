@@ -9,6 +9,12 @@ import {
   Circle,
   Sparkles,
 } from "lucide-react"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TruncatedTooltip } from "@/components/ui/tooltip"
@@ -30,9 +36,43 @@ export interface CarCompletenessSidebarProps {
   car: CompletenessInput
   images?: CarImage[]
   activeTab: CompletenessTabKey
-  onSelectTab: (tab: CompletenessTabKey) => void
+  onSelectTab: (tab: CompletenessTabKey, targetId?: string) => void
   isNew?: boolean
   className?: string
+}
+
+export function scrollToCarField(targetId?: string) {
+  if (typeof window === "undefined") return
+
+  window.requestAnimationFrame(() => {
+    window.setTimeout(() => {
+      const target = targetId
+        ? ((document.querySelector(
+            `[data-completeness-id="${targetId}"]`
+          ) as HTMLElement | null) ?? document.getElementById(targetId))
+        : (document.querySelector(
+            '[data-slot="tabs-list"]'
+          ) as HTMLElement | null)
+
+      if (!target) return
+
+      target.scrollIntoView({ behavior: "smooth", block: "center" })
+
+      const focusable = target.matches(
+        'input, select, textarea, button, [role="combobox"], [role="switch"]'
+      )
+        ? target
+        : target.querySelector<HTMLElement>(
+            'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [role="combobox"], [role="switch"]'
+          )
+
+      if (focusable) {
+        window.setTimeout(() => {
+          focusable.focus({ preventScroll: true })
+        }, 200)
+      }
+    }, 40)
+  })
 }
 
 function getScoreMeta(score: number): {
@@ -101,14 +141,28 @@ export function CarCompletenessSidebar({
 
   const scoreMeta = getScoreMeta(completeness.score)
 
-  const nextActionTab = React.useMemo<CompletenessTabKey>(() => {
+  const nextAction = React.useMemo<{
+    tab: CompletenessTabKey
+    targetId?: string
+  }>(() => {
     if (isNew) {
       const nonMediaDim = completeness.dimensions.find(
         (dim) => dim.targetTab !== "media" && dim.missingItems.length > 0
       )
-      if (nonMediaDim) return nonMediaDim.targetTab
+      if (nonMediaDim) {
+        return {
+          tab: nonMediaDim.targetTab,
+          targetId: nonMediaDim.missingItemTargets?.[0]?.targetId,
+        }
+      }
     }
-    return completeness.suggestedTab
+    const firstDim = completeness.dimensions.find(
+      (dim) => dim.targetTab === completeness.suggestedTab
+    )
+    return {
+      tab: completeness.suggestedTab,
+      targetId: firstDim?.missingItemTargets?.[0]?.targetId,
+    }
   }, [completeness.dimensions, completeness.suggestedTab, isNew])
 
   const visibleMissingItems = showAllMissing
@@ -117,88 +171,116 @@ export function CarCompletenessSidebar({
   const hiddenMissingCount =
     completeness.missingItems.length - visibleMissingItems.length
 
+  const completedDimensions = completeness.dimensions.filter(
+    (dim) => dim.completedCount >= dim.totalCount
+  ).length
+
   return (
     <aside
       aria-label="Skor Kelengkapan Data Riset"
       className={cn("border border-border bg-card", className)}
     >
-      {/* Overall Score Header */}
-      <div className="border-b border-border bg-secondary/45 p-4 sm:p-5">
-        <h2 className="font-heading text-base font-bold tracking-tight text-foreground">
-          Kelengkapan Data
-        </h2>
+      <Accordion
+        multiple
+        defaultValue={["overview"]}
+      >
+        {/* Overall Score Header */}
+        <AccordionItem value="overview" className="border-border bg-secondary/45">
+          <AccordionTrigger className="cursor-pointer items-center px-4 py-3.5 hover:no-underline sm:px-5">
+            <div className="flex flex-1 items-center justify-between gap-2 pr-2">
+              <span className="font-heading text-base font-bold tracking-tight text-foreground">
+                Kelengkapan Data
+              </span>
+              <span
+                className={cn(
+                  "font-heading text-sm font-bold tabular-nums",
+                  scoreMeta.scoreTextClass
+                )}
+              >
+                {completeness.score}%
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 sm:px-5 sm:pb-5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-baseline gap-1.5">
+                <span
+                  className={cn(
+                    "font-heading text-3xl font-bold tracking-tight tabular-nums",
+                    scoreMeta.scoreTextClass
+                  )}
+                >
+                  {completeness.score}%
+                </span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  / 100%
+                </span>
+              </div>
+              <Badge variant={scoreMeta.badgeVariant} className="shrink-0">
+                {scoreMeta.label}
+              </Badge>
+            </div>
 
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <div className="flex items-baseline gap-1.5">
-            <span
-              className={cn(
-                "font-heading text-3xl font-bold tracking-tight tabular-nums",
-                scoreMeta.scoreTextClass
-              )}
+            <div
+              role="progressbar"
+              aria-label="Persentase kelengkapan data unit"
+              aria-valuenow={completeness.score}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              className="mt-3 h-2.5 w-full overflow-hidden border border-border bg-card"
             >
-              {completeness.score}%
-            </span>
-            <span className="text-sm font-medium text-muted-foreground">
-              / 100%
-            </span>
-          </div>
-          <Badge variant={scoreMeta.badgeVariant} className="shrink-0">
-            {scoreMeta.label}
-          </Badge>
-        </div>
+              <div
+                className={cn(
+                  "h-full transition-all duration-300",
+                  scoreMeta.barClass
+                )}
+                style={{ width: `${completeness.score}%` }}
+              />
+            </div>
 
-        <div
-          role="progressbar"
-          aria-label="Persentase kelengkapan data unit"
-          aria-valuenow={completeness.score}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          className="mt-3 h-2.5 w-full overflow-hidden border border-border bg-card"
-        >
-          <div
-            className={cn(
-              "h-full transition-all duration-300",
-              scoreMeta.barClass
+            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+              {scoreMeta.helper}
+            </p>
+
+            {completeness.missingItems.length > 0 ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onSelectTab(nextAction.tab, nextAction.targetId)}
+                className="mt-3 w-full justify-between text-sm"
+              >
+                <TruncatedTooltip
+                  content={`Lengkapi: ${COMPLETENESS_TAB_LABELS[nextAction.tab]}`}
+                  render={<span className="truncate" />}
+                >
+                  Lengkapi: {COMPLETENESS_TAB_LABELS[nextAction.tab]}
+                </TruncatedTooltip>
+                <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
+              </Button>
+            ) : (
+              <div className="mt-3 flex items-center gap-2 border border-emerald-800/30 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-950">
+                <CheckCircle2 className="size-4 shrink-0 text-emerald-700" aria-hidden="true" />
+                <span>Semua data wajib lengkap.</span>
+              </div>
             )}
-            style={{ width: `${completeness.score}%` }}
-          />
-        </div>
+          </AccordionContent>
+        </AccordionItem>
 
-        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
-          {scoreMeta.helper}
-        </p>
-
-        {completeness.missingItems.length > 0 ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => onSelectTab(nextActionTab)}
-            className="mt-3 w-full justify-between text-sm"
-          >
-            <TruncatedTooltip
-              content={`Lengkapi: ${COMPLETENESS_TAB_LABELS[nextActionTab]}`}
-              render={<span className="truncate" />}
-            >
-              Lengkapi: {COMPLETENESS_TAB_LABELS[nextActionTab]}
-            </TruncatedTooltip>
-            <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
-          </Button>
-        ) : (
-          <div className="mt-3 flex items-center gap-2 border border-emerald-800/30 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-950">
-            <CheckCircle2 className="size-4 shrink-0 text-emerald-700" aria-hidden="true" />
-            <span>Semua data wajib lengkap.</span>
-          </div>
-        )}
-      </div>
-
-      {/* Breakdown Across All 6 Research Dimensions */}
-      <div className="border-b border-border p-4 sm:p-5">
-        <h2 className="font-heading text-sm font-bold tracking-tight text-foreground">
-          Rincian Kelengkapan
-        </h2>
-
-        <ul className="mt-3 space-y-2">
+        {/* Breakdown Across All 6 Research Dimensions */}
+        <AccordionItem value="dimensions" className="border-border">
+          <AccordionTrigger className="cursor-pointer items-center px-4 py-3.5 hover:no-underline sm:px-5">
+            <div className="flex flex-1 items-center justify-between gap-2 pr-2">
+              <span className="font-heading text-sm font-bold tracking-tight text-foreground">
+                Rincian Kelengkapan
+              </span>
+              <span className="text-sm font-medium text-muted-foreground tabular-nums">
+                {completedDimensions}/{completeness.dimensions.length}
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 sm:px-5 sm:pb-5">
+            <ul className="space-y-2">
           {completeness.dimensions.map((dim) => {
             const isComplete = dim.completedCount >= dim.totalCount
             const isActiveDim = activeTab === dim.targetTab
@@ -208,7 +290,12 @@ export function CarCompletenessSidebar({
               <li key={dim.key}>
                 <button
                   type="button"
-                  onClick={() => onSelectTab(dim.targetTab)}
+                  onClick={() =>
+                    onSelectTab(
+                      dim.targetTab,
+                      dim.missingItemTargets?.[0]?.targetId
+                    )
+                  }
                   className={cn(
                     "group w-full cursor-pointer border p-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                     isActiveDim
@@ -264,7 +351,7 @@ export function CarCompletenessSidebar({
                   </div>
 
                   {isLockedMedia ? (
-                    <p className="mt-1.5 text-xs text-muted-foreground">
+                    <p className="mt-1.5 text-sm text-muted-foreground">
                       Tersedia setelah unit disimpan.
                     </p>
                   ) : null}
@@ -272,39 +359,42 @@ export function CarCompletenessSidebar({
               </li>
             )
           })}
-        </ul>
-      </div>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
 
-      {/* Missing Items Checklist */}
-      <div className="p-4 sm:p-5">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="flex items-center gap-2 font-heading text-sm font-bold tracking-tight text-foreground">
-            {completeness.missingItems.length > 0 ? (
-              <AlertTriangle
-                className="size-4 shrink-0 text-primary"
-                aria-hidden="true"
-              />
-            ) : (
-              <Sparkles
-                className="size-4 shrink-0 text-emerald-700"
-                aria-hidden="true"
-              />
-            )}
-            <span>
-              {completeness.missingItems.length > 0
-                ? "Perlu Dilengkapi"
-                : "Checklist Lengkap"}
-            </span>
-          </h2>
-          {completeness.missingItems.length > 0 ? (
-            <span className="text-xs font-semibold text-muted-foreground tabular-nums">
-              {completeness.missingItems.length} poin
-            </span>
-          ) : null}
-        </div>
-
-        {completeness.missingItems.length === 0 ? (
-          <div className="mt-3 space-y-2 border border-border bg-secondary/35 p-3 text-sm text-muted-foreground">
+        {/* Missing Items Checklist */}
+        <AccordionItem value="missing" className="border-border">
+          <AccordionTrigger className="cursor-pointer items-center px-4 py-3.5 hover:no-underline sm:px-5">
+            <div className="flex flex-1 items-center justify-between gap-2 pr-2">
+              <span className="flex items-center gap-2 font-heading text-sm font-bold tracking-tight text-foreground">
+                {completeness.missingItems.length > 0 ? (
+                  <AlertTriangle
+                    className="size-4 shrink-0 text-primary"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Sparkles
+                    className="size-4 shrink-0 text-emerald-700"
+                    aria-hidden="true"
+                  />
+                )}
+                <span>
+                  {completeness.missingItems.length > 0
+                    ? "Perlu Dilengkapi"
+                    : "Checklist Lengkap"}
+                </span>
+              </span>
+              {completeness.missingItems.length > 0 ? (
+                <span className="text-sm font-semibold text-muted-foreground tabular-nums">
+                  {completeness.missingItems.length} poin
+                </span>
+              ) : null}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 sm:px-5 sm:pb-5">
+            {completeness.missingItems.length === 0 ? (
+              <div className="space-y-2 border border-border bg-secondary/35 p-3 text-sm text-muted-foreground">
             <p className="font-medium text-foreground">
               Semua poin wajib sudah terisi.
             </p>
@@ -328,13 +418,13 @@ export function CarCompletenessSidebar({
                 <li key={`${item.dimensionKey}-${item.label}`}>
                   <button
                     type="button"
-                    onClick={() => onSelectTab(item.targetTab)}
+                    onClick={() => onSelectTab(item.targetTab, item.targetId)}
                     className="group flex w-full cursor-pointer items-center justify-between gap-3 px-1 py-2.5 text-left text-sm transition-colors hover:bg-secondary/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     <span className="min-w-0 leading-snug text-foreground group-hover:text-primary">
                       {item.label}
                     </span>
-                    <span className="shrink-0 text-xs font-medium text-muted-foreground group-hover:text-foreground">
+                    <span className="shrink-0 text-sm font-medium text-muted-foreground group-hover:text-foreground">
                       {COMPLETENESS_TAB_LABELS[item.targetTab].split(" ")[0]}
                     </span>
                   </button>
@@ -365,7 +455,9 @@ export function CarCompletenessSidebar({
             ) : null}
           </>
         )}
-      </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </aside>
   )
 }

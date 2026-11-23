@@ -59,6 +59,7 @@ function hasPositiveNumber(val: number | null | undefined): boolean {
 interface CheckItem {
   label: string
   passed: boolean
+  targetId?: string
 }
 
 function buildDimension(
@@ -73,7 +74,12 @@ function buildDimension(
   const ratio = totalCount > 0 ? completedCount / totalCount : 1
   const earnedWeight = Math.round(weight * ratio * 10) / 10
   const percentage = Math.round(ratio * 100)
-  const missingItems = checks.filter((c) => !c.passed).map((c) => c.label)
+  const failedChecks = checks.filter((c) => !c.passed)
+  const missingItems = failedChecks.map((c) => c.label)
+  const missingItemTargets = failedChecks.map((c) => ({
+    label: c.label,
+    targetId: c.targetId,
+  }))
 
   return {
     key,
@@ -84,6 +90,7 @@ function buildDimension(
     completedCount,
     totalCount,
     missingItems,
+    missingItemTargets,
     targetTab,
   }
 }
@@ -111,18 +118,28 @@ export function computeCarCompleteness(
       label: "Merek, nama lengkap, dan nama singkat unit",
       passed:
         hasText(car.brand) && hasText(car.name) && hasText(car.shortName),
+      targetId: !hasText(car.brand)
+        ? "car-brand"
+        : !hasText(car.name)
+          ? "car-name"
+          : "car-short-name",
     },
     {
       label: "Tahun perakitan & kategori katalog",
       passed: hasText(car.year) && hasText(car.category),
+      targetId: !hasText(car.year) ? "car-year" : "car-category",
     },
     {
       label: "Warna eksterior & detail transmisi",
       passed: hasText(car.color) && hasText(car.transmission),
+      targetId: !hasText(car.color) ? "car-color" : "car-transmission",
     },
     {
       label: "Tipe bodi & kapasitas kursi penumpang",
       passed: hasText(car.bodyType) && hasPositiveNumber(car.seatCapacity),
+      targetId: !hasText(car.bodyType)
+        ? "car-body-type"
+        : "car-seat-capacity",
     },
     {
       label: isEv
@@ -131,6 +148,7 @@ export function computeCarCompleteness(
       passed: isEv
         ? hasText(car.fuelType)
         : hasText(car.fuelType) && hasPositiveNumber(car.engineCc),
+      targetId: !hasText(car.fuelType) ? "car-fuel-type" : "car-engine-cc",
     },
   ]
 
@@ -140,23 +158,27 @@ export function computeCarCompleteness(
     {
       label: "Harga cash utama (> Rp0)",
       passed: hasPositiveNumber(car.cashPrice),
+      targetId: "pricing-cash-price",
     },
     {
       label: "Mode pembayaran (Cash & Kredit / Cash Only)",
       passed:
         car.paymentMode === "cash-credit" || car.paymentMode === "cash-only",
+      targetId: "pricing-payment-mode",
     },
     ...(isCashCredit
       ? [
           {
             label: "Harga khusus kredit",
             passed: hasPositiveNumber(car.creditPrice),
+            targetId: "pricing-credit-price",
           },
           {
             label: "Minimal 1 paket simulasi kredit (DP, angsuran, tenor)",
             passed:
               Array.isArray(car.creditSimulations) &&
               car.creditSimulations.length > 0,
+            targetId: "pricing-simulations",
           },
         ]
       : [
@@ -165,6 +187,7 @@ export function computeCarCompleteness(
             passed:
               hasPositiveNumber(car.cashPrice) &&
               (hasText(car.creditPriceNote) || car.paymentMode === "cash-only"),
+            targetId: "pricing-cash-note",
           },
         ]),
   ]
@@ -174,20 +197,26 @@ export function computeCarCompleteness(
     {
       label: "Angka odometer (KM) & label tampilan KM",
       passed: hasPositiveNumber(car.mileageKm) && hasText(car.mileageLabel),
+      targetId: !hasPositiveNumber(car.mileageKm)
+        ? "car-mileage-km"
+        : "car-mileage-label",
     },
     {
       label: "Status verifikasi odometer & sumber verifikasi",
       passed:
         Boolean(car.mileageVerified) ||
         hasText(car.mileageVerificationSource),
+      targetId: "car-mileage-verified",
     },
     {
       label: "Daftar highlight keunggulan utama (minimal 3 poin)",
       passed: Array.isArray(car.highlights) && car.highlights.length >= 3,
+      targetId: "car-highlights-new",
     },
     {
       label: "Daftar detail kondisi fisik & fitur (minimal 4 poin)",
       passed: Array.isArray(car.conditions) && car.conditions.length >= 4,
+      targetId: "car-conditions-new",
     },
   ]
 
@@ -205,25 +234,36 @@ export function computeCarCompleteness(
     {
       label: "Ringkasan plat & kode wilayah plat",
       passed: hasText(car.plateInfo) && hasText(car.plateAreaCode),
+      targetId: !hasText(car.plateInfo)
+        ? "legality-plate-info"
+        : "legality-plate-area",
     },
     {
       label: "Status pajak & jatuh tempo pajak/STNK",
       passed:
         hasText(car.taxStatus) &&
         (hasText(car.taxExpiryDate) || hasText(car.stnk5yrExpiryDate)),
+      targetId: !hasText(car.taxStatus)
+        ? "legality-tax-status"
+        : "legality-tax-expiry",
     },
     {
       label: "Estimasi pajak tahunan (PKB)",
       passed: hasPositiveNumber(car.estimatedAnnualTax),
+      targetId: "legality-annual-tax",
     },
     {
       label: "Status kepemilikan (Perorangan/PT & tangan ke-berapa)",
       passed:
         hasText(car.ownershipType) && hasPositiveNumber(car.ownershipHand),
+      targetId: !hasText(car.ownershipType)
+        ? "legality-ownership-type"
+        : "legality-ownership-hand",
     },
     {
       label: "Checklist dokumen utama (STNK, BPKB, Faktur + kelengkapan)",
       passed: coreDocsComplete && extraDocsCount >= 1,
+      targetId: "legality-documents",
     },
   ]
 
@@ -240,16 +280,21 @@ export function computeCarCompleteness(
       passed:
         inspection.floodFree === true &&
         inspection.majorAccidentFree === true,
+      targetId: "legality-trust-switches",
     },
     {
       label: "Penilaian kondisi Eksterior, Interior & Mesin/Transmisi",
       passed: hasSectorGrades,
+      targetId: "legality-grades",
     },
     {
       label: "Kondisi kaki-kaki/kolong & ketebalan ban",
       passed:
         hasText(inspection.undercarriageSuspensionGrade) ||
         hasText(inspection.tireCondition),
+      targetId: !hasText(inspection.undercarriageSuspensionGrade)
+        ? "legality-undercarriage-grade"
+        : "legality-tire-condition",
     },
     {
       label: "Informasi garansi showroom / riwayat peremajaan part",
@@ -257,6 +302,7 @@ export function computeCarCompleteness(
         hasText(car.warrantyInfo) ||
         (Array.isArray(car.recentMaintenance) &&
           car.recentMaintenance.length > 0),
+      targetId: "legality-warranty",
     },
   ]
 
@@ -270,6 +316,7 @@ export function computeCarCompleteness(
     ({ tag, label }) => ({
       label,
       passed: presentAngles.has(tag),
+      targetId: "media-gallery",
     }),
   )
 
@@ -322,11 +369,15 @@ export function computeCarCompleteness(
   const score = Math.min(100, Math.max(0, Math.round(rawScore)))
 
   const missingItems = dimensions.flatMap((dim) =>
-    dim.missingItems.map((label) => ({
-      label,
-      dimensionKey: dim.key,
-      targetTab: dim.targetTab,
-    })),
+    (dim.missingItemTargets ??
+      dim.missingItems.map((label) => ({ label, targetId: undefined }))).map(
+      (item) => ({
+        label: item.label,
+        targetId: item.targetId,
+        dimensionKey: dim.key,
+        targetTab: dim.targetTab,
+      }),
+    ),
   )
 
   const firstIncompleteDimension = dimensions.find(
