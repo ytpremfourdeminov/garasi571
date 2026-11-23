@@ -1,14 +1,13 @@
 import { Link } from "@tanstack/react-router"
 import { AtSign, Clock, ExternalLink, MapPin, MessageCircle } from "lucide-react"
-import { SHOWROOM } from "@/data/showroom"
+import { useShowroom } from "@/components/showroom-context"
 import { Button } from "@/components/ui/button"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 
-const DEFAULT_FOOTER_WA_MESSAGE =
-  "Halo Garasi 571, saya ingin menanyakan stok unit atau membuat janji kunjungan showroom."
-
 export function SiteFooter() {
+  const showroom = useShowroom()
   const { openWhatsAppDialog } = useWhatsAppDialog()
+  const defaultFooterWaMessage = `Halo ${showroom.name}, saya ingin menanyakan stok unit atau membuat janji kunjungan showroom.`
 
   return (
     <footer className="border-t border-border bg-secondary">
@@ -17,22 +16,22 @@ export function SiteFooter() {
           <div className="space-y-3">
             <Link
               to="/"
-              aria-label="Beranda Garasi 571 Surakarta"
+              aria-label={`Beranda ${showroom.name} ${showroom.city}`}
               className="inline-flex items-center gap-2.5 bg-[#161514] px-3 py-2 text-[#FAF9F7] no-underline"
             >
               <img
-                src={SHOWROOM.logoSrc}
-                alt="Garasi 571"
+                src={showroom.logoSrc}
+                alt={showroom.name}
                 width={150}
                 height={150}
                 className="size-9 shrink-0 object-contain"
               />
               <span className="flex flex-col leading-none">
-                <span className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
-                  GARASI 571
+                <span className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7] uppercase">
+                  {showroom.name}
                 </span>
                 <span className="text-[10px] font-medium tracking-widest text-[#C7C2BC] uppercase">
-                  Surakarta
+                  {showroom.city}
                 </span>
               </span>
             </Link>
@@ -40,11 +39,11 @@ export function SiteFooter() {
             <div className="space-y-1 text-sm text-muted-foreground">
               <p className="inline-flex items-center gap-2 text-foreground">
                 <MapPin className="size-4 text-primary" aria-hidden="true" />
-                <span>{SHOWROOM.city}</span>
+                <span>{showroom.city}</span>
               </p>
               <p className="flex items-center gap-2">
                 <Clock className="size-4 text-primary" aria-hidden="true" />
-                <span>{SHOWROOM.hours}</span>
+                <span>{showroom.hours}</span>
               </p>
             </div>
           </div>
@@ -92,7 +91,7 @@ export function SiteFooter() {
               <ul className="mt-2 flex flex-col gap-1">
                 <li>
                   <a
-                    href={SHOWROOM.mapsUrl}
+                    href={showroom.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-foreground no-underline transition-colors hover:text-primary"
@@ -104,7 +103,7 @@ export function SiteFooter() {
                 </li>
                 <li>
                   <a
-                    href={SHOWROOM.instagramUrl}
+                    href={showroom.instagramUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-foreground no-underline transition-colors hover:text-primary"
@@ -113,7 +112,7 @@ export function SiteFooter() {
                       className="size-4 text-primary"
                       aria-hidden="true"
                     />
-                    <span>Instagram {SHOWROOM.instagramHandle}</span>
+                    <span>Instagram {showroom.instagramHandle}</span>
                     <ExternalLink className="size-3.5" aria-hidden="true" />
                   </a>
                 </li>
@@ -122,7 +121,7 @@ export function SiteFooter() {
                     type="button"
                     variant="default"
                     onClick={() =>
-                      openWhatsAppDialog({ message: DEFAULT_FOOTER_WA_MESSAGE })
+                      openWhatsAppDialog({ message: defaultFooterWaMessage })
                     }
                   >
                     <MessageCircle className="size-4" aria-hidden="true" />
@@ -136,7 +135,8 @@ export function SiteFooter() {
 
         <div className="mt-8 flex flex-col gap-2 border-t border-border pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            Garasi 571 Surakarta. Inspeksi unit langsung di showroom.
+            {showroom.name} ({showroom.city}). Inspeksi unit langsung di
+            showroom.
           </p>
           <p>Cash, Kredit, dan Tukar Tambah.</p>
         </div>

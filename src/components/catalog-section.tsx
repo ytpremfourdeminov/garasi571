@@ -1,15 +1,15 @@
 import * as React from "react"
 import { MessageCircle, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
-import {
-  CARS,
-  filterAndSortCars,
-  type BudgetBand,
-  type CarCategory,
-  type CatalogFilterState,
-  type PaymentMode,
-  type SortOption,
-  type TransmissionGroup,
-} from "@/data/cars"
+import { filterAndSortCars } from "@/lib/domain/formatters"
+import type {
+  BudgetBand,
+  CarCategory,
+  CarUnit,
+  CatalogFilterState,
+  PaymentMode,
+  SortOption,
+  TransmissionGroup,
+} from "@/lib/domain/types"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -31,6 +31,7 @@ import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 import { cn } from "cn"
 
 export interface CatalogSectionProps {
+  cars: CarUnit[]
   filters: CatalogFilterState
   onChangeFilters: (next: Partial<CatalogFilterState>) => void
   onResetFilters: () => void
@@ -99,6 +100,7 @@ const SORT_LABELS: Record<"default" | SortOption, string> = {
 }
 
 export function CatalogSection({
+  cars,
   filters,
   onChangeFilters,
   onResetFilters,
@@ -115,20 +117,20 @@ export function CatalogSection({
 
   const categoryCounts = React.useMemo(() => {
     const counts: Record<"all" | CarCategory, number> = {
-      all: CARS.length,
+      all: cars.length,
       keluarga: 0,
       harian: 0,
       "hobi-eropa": 0,
     }
-    for (const car of CARS) {
+    for (const car of cars) {
       counts[car.category] += 1
     }
     return counts
-  }, [])
+  }, [cars])
 
   const filteredCars = React.useMemo(
-    () => filterAndSortCars(CARS, filters),
-    [filters]
+    () => filterAndSortCars(cars, filters),
+    [cars, filters]
   )
 
   const secondaryFilterCount =
@@ -690,7 +692,7 @@ export function CatalogSection({
             aria-live="polite"
             className="text-sm font-medium text-foreground tabular-nums"
           >
-            Menampilkan {filteredCars.length} dari {CARS.length} unit
+            Menampilkan {filteredCars.length} dari {cars.length} unit
           </p>
 
           {hasActiveFilters ? (

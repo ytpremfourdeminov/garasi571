@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowRight, GitCompareArrows, MessageCircle, Trash2, X } from "lucide-react"
-import { formatRupiah, formatShortJuta } from "@/data/cars"
-import { buildCarInquiryMessage } from "@/data/showroom"
+import {
+  buildCarInquiryMessage,
+  formatRupiah,
+  formatShortJuta,
+} from "@/lib/domain/formatters"
 import { useCompare } from "@/components/compare-context"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"

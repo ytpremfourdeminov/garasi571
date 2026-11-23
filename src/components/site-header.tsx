@@ -8,7 +8,8 @@ import {
   Menu,
   MessageCircle,
 } from "lucide-react"
-import { SHOWROOM, buildWhatsAppUrl } from "@/data/showroom"
+import { buildWhatsAppUrl } from "@/lib/domain/formatters"
+import { useShowroom } from "@/components/showroom-context"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { cn } from "cn"
 import {
@@ -21,9 +22,6 @@ import {
 } from "@/components/ui/sheet"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 
-const DEFAULT_INQUIRY_MESSAGE =
-  "Halo Garasi 571, saya ingin menanyakan ketersediaan stok mobil bekas dan jadwal kunjungan showroom."
-
 const NAV_ITEMS = [
   { label: "Unit Tersedia", hash: "stok" },
   { label: "Simulasi Kredit", hash: "simulasi" },
@@ -31,8 +29,10 @@ const NAV_ITEMS = [
 ] as const
 
 export function SiteHeader() {
+  const showroom = useShowroom()
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { openWhatsAppDialog } = useWhatsAppDialog()
+  const defaultInquiryMessage = `Halo ${showroom.name}, saya ingin menanyakan ketersediaan stok mobil bekas dan jadwal kunjungan showroom.`
 
   return (
     <>
@@ -47,22 +47,22 @@ export function SiteHeader() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
           <Link
             to="/"
-            aria-label="Beranda Garasi 571 Surakarta"
+            aria-label={`Beranda ${showroom.name} ${showroom.city}`}
             className="inline-flex shrink-0 items-center gap-2.5 bg-[#161514] px-2.5 py-1.5 text-[#FAF9F7] no-underline transition-opacity hover:opacity-95"
           >
             <img
-              src={SHOWROOM.logoSrc}
-              alt="Garasi 571"
+              src={showroom.logoSrc}
+              alt={showroom.name}
               width={150}
               height={150}
               className="size-8 shrink-0 object-contain sm:size-9"
             />
             <span className="flex flex-col leading-none">
-              <span className="font-heading text-xs font-bold tracking-tight text-[#FAF9F7] sm:text-sm">
-                GARASI 571
+              <span className="font-heading text-xs font-bold tracking-tight text-[#FAF9F7] uppercase sm:text-sm">
+                {showroom.name}
               </span>
               <span className="hidden text-[10px] font-medium tracking-widest text-[#C7C2BC] uppercase sm:block">
-                Surakarta
+                {showroom.city}
               </span>
             </span>
           </Link>
@@ -87,7 +87,7 @@ export function SiteHeader() {
             <Button
               type="button"
               onClick={() =>
-                openWhatsAppDialog({ message: DEFAULT_INQUIRY_MESSAGE })
+                openWhatsAppDialog({ message: defaultInquiryMessage })
               }
             >
               <MessageCircle className="size-4" aria-hidden="true" />
@@ -101,7 +101,7 @@ export function SiteHeader() {
               size="default"
               className="px-3 text-xs sm:text-sm"
               onClick={() =>
-                openWhatsAppDialog({ message: DEFAULT_INQUIRY_MESSAGE })
+                openWhatsAppDialog({ message: defaultInquiryMessage })
               }
             >
               <MessageCircle className="size-4" aria-hidden="true" />
@@ -123,8 +123,8 @@ export function SiteHeader() {
 
               <SheetContent side="right" closeLabel="Tutup menu navigasi">
                 <SheetHeader>
-                  <SheetTitle>Garasi 571 Surakarta</SheetTitle>
-                  <SheetDescription>{SHOWROOM.city}</SheetDescription>
+                  <SheetTitle>{showroom.name}</SheetTitle>
+                  <SheetDescription>{showroom.city}</SheetDescription>
                 </SheetHeader>
 
                 <nav
@@ -154,46 +154,48 @@ export function SiteHeader() {
                       <span>Jam Operasional</span>
                     </p>
                     <p className="mt-1 text-muted-foreground">
-                      {SHOWROOM.hours}
+                      {showroom.hours}
                     </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                      Kontak WhatsApp Sales
-                    </p>
-                    {SHOWROOM.sales.map((person) => (
-                      <a
-                        key={person.id}
-                        href={buildWhatsAppUrl(
-                          person.phoneE164,
-                          DEFAULT_INQUIRY_MESSAGE
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setMenuOpen(false)}
-                        className="flex min-h-12 items-center justify-between border border-input bg-card px-3.5 py-2.5 text-sm text-foreground no-underline transition-colors hover:bg-secondary"
-                      >
-                        <span>
-                          <span className="font-semibold">{person.name}</span>
-                          <span className="block text-xs text-muted-foreground tabular-nums">
-                            {person.phoneDisplay}
+                  {showroom.sales.length > 0 ? (
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                        Kontak WhatsApp Sales
+                      </p>
+                      {showroom.sales.map((person) => (
+                        <a
+                          key={person.id}
+                          href={buildWhatsAppUrl(
+                            person.phoneE164,
+                            defaultInquiryMessage
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setMenuOpen(false)}
+                          className="flex min-h-12 items-center justify-between border border-input bg-card px-3.5 py-2.5 text-sm text-foreground no-underline transition-colors hover:bg-secondary"
+                        >
+                          <span>
+                            <span className="font-semibold">{person.name}</span>
+                            <span className="block text-xs text-muted-foreground tabular-nums">
+                              {person.phoneDisplay}
+                            </span>
                           </span>
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                          <span>WhatsApp</span>
-                          <ExternalLink
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </a>
-                    ))}
-                  </div>
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                            <span>WhatsApp</span>
+                            <ExternalLink
+                              className="size-3.5"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
 
                   <div className="flex flex-col gap-2 pt-2">
                     <a
-                      href={SHOWROOM.mapsUrl}
+                      href={showroom.mapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex min-h-11 items-center justify-between border border-border px-3.5 py-2 text-sm font-medium text-foreground no-underline transition-colors hover:bg-secondary"
@@ -209,7 +211,7 @@ export function SiteHeader() {
                     </a>
 
                     <a
-                      href={SHOWROOM.instagramUrl}
+                      href={showroom.instagramUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex min-h-11 items-center justify-between border border-border px-3.5 py-2 text-sm font-medium text-foreground no-underline transition-colors hover:bg-secondary"
@@ -219,7 +221,7 @@ export function SiteHeader() {
                           className="size-4 text-primary"
                           aria-hidden="true"
                         />
-                        <span>Instagram {SHOWROOM.instagramHandle}</span>
+                        <span>Instagram {showroom.instagramHandle}</span>
                       </span>
                       <ExternalLink className="size-4" aria-hidden="true" />
                     </a>

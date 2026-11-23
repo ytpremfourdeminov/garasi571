@@ -1,16 +1,13 @@
 import * as React from "react"
 import { createFileRoute } from "@tanstack/react-router"
-import {
-  CARS,
-  HERO_FEATURED_SLUGS,
-  type BudgetBand,
-  type CarCategory,
-  type CatalogFilterState,
-  type PaymentMode,
-  type SortOption,
-  type TransmissionGroup,
-} from "@/data/cars"
-import { SHOWROOM_FAQS } from "@/data/faq"
+import type {
+  BudgetBand,
+  CarCategory,
+  CatalogFilterState,
+  PaymentMode,
+  SortOption,
+  TransmissionGroup,
+} from "@/lib/domain/types"
 import {
   buildAutoDealerJsonLd,
   buildCanonicalLink,
@@ -19,6 +16,7 @@ import {
   buildSocialMeta,
   serializeJsonLd,
 } from "@/lib/seo"
+import { getPublicCarsFn, getPublicFaqsFn } from "@/server/public-catalog"
 import { HeroSection } from "@/components/hero-section"
 import { CatalogSection } from "@/components/catalog-section"
 import { CreditSection } from "@/components/credit-section"
@@ -28,10 +26,6 @@ import { ShowroomSection } from "@/components/showroom-section"
 const HOME_TITLE = "Garasi 571 Surakarta | Katalog Mobil Bekas Pilihan"
 const HOME_DESCRIPTION =
   "Pilihan mobil bekas siap pakai di Garasi 571 Surakarta. Tersedia cash, kredit, dan tukar tambah, buka setiap hari 08:00 - 16:00 WIB."
-
-const featuredCar =
-  CARS.find((car) => car.slug === HERO_FEATURED_SLUGS[0]) ?? CARS.at(0)
-const featuredImage = featuredCar?.images.at(0)
 
 const VALID_CATEGORIES = new Set<CarCategory>([
   "keluarga",
@@ -104,46 +98,68 @@ function normalizeCatalogSearch(
 export const Route = createFileRoute("/_public/")({
   validateSearch: (search: Record<string, unknown>): CatalogFilterState =>
     normalizeCatalogSearch(search),
-  head: () => ({
-    links: [buildCanonicalLink("/")],
-    meta: [
-      {
-        title: HOME_TITLE,
-      },
-      {
-        name: "description",
-        content: HOME_DESCRIPTION,
-      },
-      ...buildSocialMeta({
-        title: HOME_TITLE,
-        description: HOME_DESCRIPTION,
-        path: "/",
-        imagePath: featuredImage?.src,
-        imageWidth: featuredImage?.width,
-        imageHeight: featuredImage?.height,
-        imageAlt: featuredImage?.alt,
-        type: "website",
-      }),
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: serializeJsonLd(buildAutoDealerJsonLd()),
-      },
-      {
-        type: "application/ld+json",
-        children: serializeJsonLd(buildItemListJsonLd(CARS)),
-      },
-      {
-        type: "application/ld+json",
-        children: serializeJsonLd(buildFaqPageJsonLd(SHOWROOM_FAQS)),
-      },
-    ],
-  }),
+  loader: async () => {
+    const [cars, faqs] = await Promise.all([
+      getPublicCarsFn({ data: { includeSold: false } }).catch(() => []),
+      getPublicFaqsFn().catch(() => []),
+    ])
+    return { cars, faqs }
+  },
+  head: ({ loaderData }) => {
+    const cars = loaderData?.cars ?? []
+    const faqs = loaderData?.faqs ?? []
+    const featuredCars = cars
+      .filter((car) => car.isFeatured)
+      .sort(
+        (a, b) =>
+          (a.featuredOrder ?? Number.MAX_SAFE_INTEGER) -
+          (b.featuredOrder ?? Number.MAX_SAFE_INTEGER),
+      )
+    const featuredCar = featuredCars.at(0) ?? cars.at(0)
+    const featuredImage = featuredCar?.images.at(0)
+
+    return {
+      links: [buildCanonicalLink("/")],
+      meta: [
+        {
+          title: HOME_TITLE,
+        },
+        {
+          name: "description",
+          content: HOME_DESCRIPTION,
+        },
+        ...buildSocialMeta({
+          title: HOME_TITLE,
+          description: HOME_DESCRIPTION,
+          path: "/",
+          imagePath: featuredImage?.src,
+          imageWidth: featuredImage?.width,
+          imageHeight: featuredImage?.height,
+          imageAlt: featuredImage?.alt,
+          type: "website",
+        }),
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: serializeJsonLd(buildAutoDealerJsonLd()),
+        },
+        {
+          type: "application/ld+json",
+          children: serializeJsonLd(buildItemListJsonLd(cars)),
+        },
+        {
+          type: "application/ld+json",
+          children: serializeJsonLd(buildFaqPageJsonLd(faqs)),
+        },
+      ],
+    }
+  },
   component: HomePage,
 })
 
 function HomePage() {
+  const { cars, faqs } = Route.useLoaderData()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
 
@@ -209,15 +225,16 @@ function HomePage() {
 
   return (
     <>
-      <HeroSection onApplyQuickFinder={handleApplyQuickFinder} />
+      <HeroSection cars={cars} onApplyQuickFinder={handleApplyQuickFinder} />
       <CatalogSection
+        cars={cars}
         filters={search}
         onChangeFilters={handleChangeFilters}
         onResetFilters={handleResetFilters}
       />
-      <CreditSection />
+      <CreditSection cars={cars} />
       <ShowroomSection />
-      <FaqSection />
+      <FaqSection faqs={faqs} />
     </>
   )
 }

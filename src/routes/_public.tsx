@@ -8,11 +8,12 @@ import {
   RefreshCw,
 } from "lucide-react"
 import { cn } from "cn"
-import { buildWhatsAppUrl } from "@/data/showroom"
-import { getPublicShowroomFn } from "@/server/public-catalog"
+import { buildWhatsAppUrl } from "@/lib/domain/formatters"
+import { getPublicCarsFn, getPublicShowroomFn } from "@/server/public-catalog"
 import {
   DEFAULT_SHOWROOM_CONFIG,
   ShowroomProvider,
+  useShowroom,
 } from "@/components/showroom-context"
 import {
   WhatsAppDialogProvider,
@@ -26,19 +27,18 @@ import { Button, buttonVariants } from "@/components/ui/button"
 
 export const Route = createFileRoute("/_public")({
   loader: async () => {
-    try {
-      const showroom = await getPublicShowroomFn()
-      return {
-        showroom:
-          showroom.sales.length > 0
-            ? showroom
-            : { ...showroom, sales: DEFAULT_SHOWROOM_CONFIG.sales },
-      }
-    } catch {
-      return {
-        showroom: DEFAULT_SHOWROOM_CONFIG,
-      }
-    }
+    const [showroom, cars] = await Promise.all([
+      getPublicShowroomFn()
+        .then((data) =>
+          data.sales.length > 0
+            ? data
+            : { ...data, sales: DEFAULT_SHOWROOM_CONFIG.sales }
+        )
+        .catch(() => DEFAULT_SHOWROOM_CONFIG),
+      getPublicCarsFn({ data: { includeSold: false } }).catch(() => []),
+    ])
+
+    return { showroom, cars }
   },
   component: PublicLayout,
   notFoundComponent: PublicNotFound,
@@ -46,12 +46,12 @@ export const Route = createFileRoute("/_public")({
 })
 
 function PublicLayout() {
-  const { showroom } = Route.useLoaderData()
+  const { showroom, cars } = Route.useLoaderData()
 
   return (
     <ShowroomProvider value={showroom}>
       <WhatsAppDialogProvider>
-        <CompareProvider>
+        <CompareProvider cars={cars}>
           <AppShell>
             <Outlet />
           </AppShell>
@@ -83,6 +83,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
 
 function PublicNotFoundContent() {
   const { openWhatsAppDialog } = useWhatsAppDialog()
+  const showroom = useShowroom()
 
   return (
     <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -96,7 +97,7 @@ function PublicNotFoundContent() {
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           Halaman atau unit yang Anda cari tidak tersedia atau tautannya sudah
           berubah. Anda dapat kembali ke katalog stok atau langsung menanyakan
-          ketersediaan unit ke tim sales kami di Surakarta.
+          ketersediaan unit ke tim sales kami di {showroom.city}.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -117,10 +118,8 @@ function PublicNotFoundContent() {
             onClick={() =>
               openWhatsAppDialog({
                 title: "Tanya Ketersediaan Stok",
-                description:
-                  "Hubungi tim sales Garasi 571 Surakarta untuk menanyakan unit yang Anda cari.",
-                message:
-                  "Halo Garasi 571, saya mencari unit mobil bekas di katalog Anda. Boleh info stok yang saat ini tersedia?",
+                description: `Hubungi tim sales ${showroom.name} (${showroom.city}) untuk menanyakan unit yang Anda cari.`,
+                message: `Halo ${showroom.name}, saya mencari unit mobil bekas di katalog Anda. Boleh info stok yang saat ini tersedia?`,
               })
             }
           >
@@ -148,11 +147,15 @@ function PublicNotFound() {
 }
 
 function PublicErrorBoundary({ reset }: ErrorComponentProps) {
-  const primarySales = DEFAULT_SHOWROOM_CONFIG.sales[0]
-  const fallbackWaUrl = buildWhatsAppUrl(
-    primarySales.phoneE164,
-    "Halo Garasi 571, saya mengalami kendala saat membuka halaman katalog dan ingin menanyakan stok mobil bekas yang tersedia."
-  )
+  const showroom = useShowroom()
+  const primarySales =
+    showroom.sales.at(0) ?? DEFAULT_SHOWROOM_CONFIG.sales.at(0)
+  const fallbackWaUrl = primarySales
+    ? buildWhatsAppUrl(
+        primarySales.phoneE164,
+        `Halo ${showroom.name}, saya mengalami kendala saat membuka halaman katalog dan ingin menanyakan stok mobil bekas yang tersedia.`
+      )
+    : null
 
   const handleReload = () => {
     reset()
@@ -174,8 +177,8 @@ function PublicErrorBoundary({ reset }: ErrorComponentProps) {
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Maaf, halaman belum dapat ditampilkan saat ini. Silakan muat ulang
-              halaman, kembali ke beranda, atau hubungi tim sales Garasi 571
-              melalui WhatsApp.
+              halaman, kembali ke beranda, atau hubungi tim sales{" "}
+              {showroom.name} melalui WhatsApp.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -195,18 +198,20 @@ function PublicErrorBoundary({ reset }: ErrorComponentProps) {
                 <span>Kembali ke Beranda</span>
               </Link>
 
-              <a
-                href={fallbackWaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: "secondary" }),
-                  "no-underline"
-                )}
-              >
-                <MessageCircle className="size-4" aria-hidden="true" />
-                <span>Hubungi WhatsApp</span>
-              </a>
+              {fallbackWaUrl ? (
+                <a
+                  href={fallbackWaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants({ variant: "secondary" }),
+                    "no-underline"
+                  )}
+                >
+                  <MessageCircle className="size-4" aria-hidden="true" />
+                  <span>Hubungi WhatsApp</span>
+                </a>
+              ) : null}
             </div>
           </div>
         </section>
