@@ -96,7 +96,7 @@ flowchart TD
 
 | Task ID | Wave | Parallel Lane | Judul Task | Dokumen Lokal | GitHub Issue | Dependensi | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `W0-T1` | Wave 0 | Gate - Infra & Cloudflare | Provision R2 bucket, custom domain dash.*, wrangler & env helper | [tasks/W0-T1.md](./tasks/W0-T1.md) | [#3](https://github.com/ytpremfourdeminov/garasi571/issues/3) | - | `open` |
+| `W0-T1` | Wave 0 | Gate - Infra & Cloudflare | Provision R2 bucket, custom domain dash.*, wrangler & env helper | [tasks/W0-T1.md](./tasks/W0-T1.md) | [#3](https://github.com/ytpremfourdeminov/garasi571/issues/3) | - | `done` |
 | `W0-T2` | Wave 0 | Gate - Dependencies & Supabase Client | Install Supabase/Zod deps and create server/public client factories | [tasks/W0-T2.md](./tasks/W0-T2.md) | [#4](https://github.com/ytpremfourdeminov/garasi571/issues/4) | - | `done` |
 | `W0-T3` | Wave 0 | Gate - Database & RLS | Apply Supabase schema migrations, RLS policies & generate DB types | [tasks/W0-T3.md](./tasks/W0-T3.md) | [#5](https://github.com/ytpremfourdeminov/garasi571/issues/5) | - | `open` |
 | `W0-T4` | Wave 0 | Gate - Shared Domain Contracts | Lock canonical domain types, Zod schemas, DB mappers & completeness score | [tasks/W0-T4.md](./tasks/W0-T4.md) | [#6](https://github.com/ytpremfourdeminov/garasi571/issues/6) | `W0-T1` (#3), `W0-T2` (#4), `W0-T3` (#5) | `open` |
