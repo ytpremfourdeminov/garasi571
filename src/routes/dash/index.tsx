@@ -15,6 +15,7 @@ import { cn } from "cn"
 import { CarStatusBadge } from "@/components/dash/car-status-badge"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import { computeCarCompleteness } from "@/lib/domain/completeness"
 import { formatRupiah, getCategoryLabel } from "@/lib/domain/formatters"
 import type {
@@ -205,7 +206,7 @@ function DashOverviewPage() {
               )}
             >
               <div className="flex items-start justify-between gap-2">
-                <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                   {card.label}
                 </p>
                 <ArrowRight
@@ -214,7 +215,7 @@ function DashOverviewPage() {
                 />
               </div>
 
-              <div className="mt-4 flex items-baseline justify-between gap-2">
+              <div className="mt-4 flex items-baseline gap-2">
                 <p
                   className={cn(
                     "font-heading text-3xl font-bold tracking-tight tabular-nums sm:text-4xl",
@@ -223,12 +224,12 @@ function DashOverviewPage() {
                 >
                   {card.count}
                 </p>
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="text-sm font-medium text-muted-foreground">
                   unit
                 </span>
               </div>
 
-              <p className="mt-2 text-xs text-muted-foreground">
+              <p className="mt-2 text-sm text-muted-foreground">
                 {card.sublabel}
               </p>
             </Link>
@@ -241,7 +242,7 @@ function DashOverviewPage() {
         <div className="flex items-center justify-between gap-2">
           <h2
             id="shortcuts-heading"
-            className="font-heading text-xs font-bold tracking-[0.16em] text-muted-foreground uppercase"
+            className="font-heading text-sm font-bold tracking-[0.16em] text-muted-foreground uppercase"
           >
             Aksi Cepat
           </h2>
@@ -257,12 +258,20 @@ function DashOverviewPage() {
                 <Plus className="size-5" aria-hidden="true" />
               </span>
               <div className="min-w-0">
-                <p className="truncate font-heading text-sm font-semibold text-[#FAF9F7]">
+                <TruncatedTooltip
+                  content="Tambah Unit Baru"
+                  render={
+                    <p className="truncate font-heading text-sm font-semibold text-[#FAF9F7]" />
+                  }
+                >
                   Tambah Unit Baru
-                </p>
-                <p className="truncate text-xs text-[#C7C2BC]">
+                </TruncatedTooltip>
+                <TruncatedTooltip
+                  content="Input data, foto, & simulasi kredit"
+                  render={<p className="truncate text-sm text-[#C7C2BC]" />}
+                >
                   Input data, foto, &amp; simulasi kredit
-                </p>
+                </TruncatedTooltip>
               </div>
             </div>
             <ArrowRight
@@ -280,12 +289,22 @@ function DashOverviewPage() {
                 <Car className="size-5" aria-hidden="true" />
               </span>
               <div className="min-w-0">
-                <p className="truncate font-heading text-sm font-semibold text-foreground">
+                <TruncatedTooltip
+                  content="Kelola Inventaris"
+                  render={
+                    <p className="truncate font-heading text-sm font-semibold text-foreground" />
+                  }
+                >
                   Kelola Inventaris
-                </p>
-                <p className="truncate text-xs text-muted-foreground">
+                </TruncatedTooltip>
+                <TruncatedTooltip
+                  content="Ubah status stok & slot unggulan"
+                  render={
+                    <p className="truncate text-sm text-muted-foreground" />
+                  }
+                >
                   Ubah status stok &amp; slot unggulan
-                </p>
+                </TruncatedTooltip>
               </div>
             </div>
             <ArrowRight
@@ -304,22 +323,32 @@ function DashOverviewPage() {
               </span>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="truncate font-heading text-sm font-semibold text-foreground">
+                  <TruncatedTooltip
+                    content="Pengaturan Showroom"
+                    render={
+                      <p className="truncate font-heading text-sm font-semibold text-foreground" />
+                    }
+                  >
                     Pengaturan Showroom
-                  </p>
+                  </TruncatedTooltip>
                   {!isAdmin ? (
                     <Badge
                       variant="secondary"
-                      className="px-1.5 py-0 text-[10px] text-muted-foreground"
+                      className="px-1.5 py-0 text-sm text-muted-foreground"
                     >
                       <Shield className="size-2.5" aria-hidden="true" />
                       <span>Admin</span>
                     </Badge>
                   ) : null}
                 </div>
-                <p className="truncate text-xs text-muted-foreground">
+                <TruncatedTooltip
+                  content="Jam operasional, alamat, & kontak sales"
+                  render={
+                    <p className="truncate text-sm text-muted-foreground" />
+                  }
+                >
                   Jam operasional, alamat, &amp; kontak sales
-                </p>
+                </TruncatedTooltip>
               </div>
             </div>
             <ArrowRight
@@ -431,12 +460,17 @@ function DashOverviewPage() {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <p className="truncate font-heading text-sm font-bold text-foreground sm:text-base">
+                            <TruncatedTooltip
+                              content={car.name}
+                              render={
+                                <p className="truncate font-heading text-sm font-bold text-foreground sm:text-base" />
+                              }
+                            >
                               {car.name}
-                            </p>
+                            </TruncatedTooltip>
                             <CarStatusBadge status={car.status} />
                           </div>
-                          <p className="mt-0.5 text-xs text-muted-foreground">
+                          <p className="mt-0.5 text-sm text-muted-foreground">
                             <span className="tabular-nums">{car.year}</span>{" "}
                             &middot; {getCategoryLabel(car.category)} &middot;{" "}
                             <span className="font-medium text-foreground tabular-nums">
@@ -461,7 +495,7 @@ function DashOverviewPage() {
 
                     {/* Progress bar + score */}
                     <div className="space-y-1.5">
-                      <div className="flex items-center justify-between gap-2 text-xs">
+                      <div className="flex items-center justify-between gap-2 text-sm">
                         <span className="font-medium text-muted-foreground">
                           Kelengkapan Data
                         </span>
@@ -495,10 +529,10 @@ function DashOverviewPage() {
                     {/* Top missing items */}
                     {topMissing.length > 0 ? (
                       <div className="border-l-2 border-border pl-3">
-                        <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                        <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                           Data yang perlu dilengkapi
                         </p>
-                        <ul className="mt-1 space-y-1 text-xs text-foreground">
+                        <ul className="mt-1 space-y-1 text-sm text-foreground">
                           {topMissing.map((item) => (
                             <li
                               key={`${item.dimensionKey}-${item.label}`}
@@ -513,7 +547,7 @@ function DashOverviewPage() {
                           ))}
                         </ul>
                         {remainingMissing > 0 ? (
-                          <p className="mt-1.5 text-xs font-medium text-muted-foreground tabular-nums">
+                          <p className="mt-1.5 text-sm font-medium text-muted-foreground tabular-nums">
                             +{remainingMissing} item lainnya
                           </p>
                         ) : null}
@@ -553,13 +587,13 @@ function DashOverviewPage() {
           </div>
 
           <div className="flex-1 p-4 sm:p-5">
-            <p className="text-xs leading-relaxed text-muted-foreground">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               Maksimal 3 unit tampil di sorotan utama beranda.
             </p>
 
             {featuredUnits.length === 0 ? (
               <div className="mt-4 border border-dashed border-border bg-secondary/30 p-4 text-center">
-                <p className="text-xs font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-muted-foreground">
                   Belum ada unit unggulan beranda.
                 </p>
               </div>
@@ -571,14 +605,19 @@ function DashOverviewPage() {
                     className="flex items-start justify-between gap-3 border border-border bg-background p-3"
                   >
                     <div className="flex min-w-0 items-start gap-2.5">
-                      <span className="flex size-6 shrink-0 items-center justify-center bg-[#161514] font-heading text-xs font-bold text-[#FAF9F7] tabular-nums">
+                      <span className="flex size-6 shrink-0 items-center justify-center bg-[#161514] font-heading text-sm font-bold text-[#FAF9F7] tabular-nums">
                         #{car.featuredOrder ?? index + 1}
                       </span>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-foreground">
+                        <TruncatedTooltip
+                          content={car.shortName || car.name}
+                          render={
+                            <p className="truncate text-sm font-semibold text-foreground" />
+                          }
+                        >
                           {car.shortName || car.name}
-                        </p>
-                        <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">
+                        </TruncatedTooltip>
+                        <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
                           {car.year} &middot; {formatRupiah(car.cashPrice)}
                         </p>
                       </div>

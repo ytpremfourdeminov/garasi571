@@ -10,12 +10,13 @@ import {
 } from "@tanstack/react-router"
 import {
   Car,
+  ChevronRight,
   ExternalLink,
   HelpCircle,
   LayoutDashboard,
   Loader2,
   LogOut,
-  Menu,
+  PanelLeft,
   Shield,
   Store,
   Users,
@@ -33,6 +34,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import type { StaffProfile } from "@/lib/domain/types"
 import { getPublicSiteOrigin, isDashHostname } from "@/lib/host"
 import {
@@ -106,11 +108,58 @@ function isNavItemActive(pathname: string, item: DashNavItem): boolean {
   )
 }
 
-function getSectionTitle(pathname: string): string {
+interface BreadcrumbItem {
+  label: string
+  to?: DashNavPath
+}
+
+function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
+  const normalized =
+    pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname
+  const subPath = normalized.startsWith("/dash")
+    ? normalized.slice("/dash".length) || "/"
+    : normalized || "/"
+
+  if (subPath === "/") {
+    return [{ label: "Dashboard", to: "/dash" }, { label: "Ringkasan" }]
+  }
+
+  if (subPath === "/cars") {
+    return [{ label: "Dashboard", to: "/dash" }, { label: "Inventaris Mobil" }]
+  }
+
+  if (subPath === "/cars/new") {
+    return [
+      { label: "Dashboard", to: "/dash" },
+      { label: "Inventaris Mobil", to: "/dash/cars" },
+      { label: "Tambah Unit" },
+    ]
+  }
+
+  if (subPath.startsWith("/cars/")) {
+    return [
+      { label: "Dashboard", to: "/dash" },
+      { label: "Inventaris Mobil", to: "/dash/cars" },
+      { label: "Edit Unit" },
+    ]
+  }
+
   const activeItem = DASH_NAV_ITEMS.find((item) =>
     isNavItemActive(pathname, item)
   )
-  return activeItem?.label ?? "Dashboard"
+  return [
+    { label: "Dashboard", to: "/dash" },
+    { label: activeItem?.label ?? "Dashboard" },
+  ]
+}
+
+function getStaffInitials(staff: StaffProfile): string {
+  const source = (staff.fullName || staff.email || "ST").trim()
+  const parts = source.split(/\s+/).filter(Boolean)
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  }
+  return source.slice(0, 2).toUpperCase()
 }
 
 function getRoleLabel(role: StaffProfile["role"]): string {
@@ -158,6 +207,7 @@ interface SidebarContentProps {
   onLogout: () => void
   onNavigate?: () => void
   showDrawerClose?: boolean
+  collapsed?: boolean
 }
 
 function SidebarContent({
@@ -169,19 +219,32 @@ function SidebarContent({
   onLogout,
   onNavigate,
   showDrawerClose = false,
+  collapsed = false,
 }: SidebarContentProps) {
   const isAdmin = staff.role === "admin"
   const visibleItems = DASH_NAV_ITEMS.filter(
     (item) => !item.adminOnly || isAdmin
   )
+  const displayName = staff.fullName || staff.email
+  const initials = getStaffInitials(staff)
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between gap-2 border-b border-[#2F2D2B] bg-[#161514] px-4 py-4 text-[#FAF9F7]">
+      <div
+        className={cn(
+          "flex h-[72px] shrink-0 items-center border-b border-[#2F2D2B] bg-[#161514] text-[#FAF9F7]",
+          collapsed ? "justify-center px-2" : "justify-between gap-2 px-4"
+        )}
+      >
         <Link
           to="/dash"
           onClick={onNavigate}
-          className="inline-flex min-h-11 items-center gap-3 text-[#FAF9F7] no-underline transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FAF9F7]"
+          title={collapsed ? "Garasi 571 Dashboard" : undefined}
+          aria-label={collapsed ? "Garasi 571 Dashboard" : undefined}
+          className={cn(
+            "inline-flex min-h-11 items-center text-[#FAF9F7] no-underline transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FAF9F7]",
+            collapsed ? "justify-center" : "gap-3"
+          )}
         >
           <img
             src="/images/brand/garasi-571-logo.png"
@@ -190,17 +253,19 @@ function SidebarContent({
             height={150}
             className="size-9 shrink-0 object-contain"
           />
-          <span className="flex flex-col leading-none">
-            <span className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
-              GARASI 571
+          {!collapsed ? (
+            <span className="flex flex-col leading-none">
+              <span className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
+                GARASI 571
+              </span>
+              <span className="mt-1 text-sm font-semibold tracking-[0.2em] text-[#C7C2BC] uppercase">
+                Dashboard
+              </span>
             </span>
-            <span className="mt-1 text-[10px] font-semibold tracking-[0.2em] text-[#C7C2BC] uppercase">
-              Dashboard
-            </span>
-          </span>
+          ) : null}
         </Link>
 
-        {showDrawerClose ? (
+        {showDrawerClose && !collapsed ? (
           <SheetClose
             aria-label="Tutup menu navigasi dashboard"
             className="inline-flex size-11 shrink-0 items-center justify-center rounded-none border border-[#2F2D2B] bg-[#1F1E1C] text-[#FAF9F7] transition-colors hover:border-[#544F4A] hover:bg-[#2A2826] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FAF9F7]"
@@ -210,25 +275,60 @@ function SidebarContent({
         ) : null}
       </div>
 
-      <div className="border-b border-border bg-secondary/50 px-4 py-3.5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground">
-              {staff.fullName || staff.email}
-            </p>
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">
-              {staff.email}
-            </p>
+      <div className="border-b border-border bg-secondary/50">
+        {collapsed ? (
+          <div
+            title={`${displayName} (${getRoleLabel(staff.role)})`}
+            className="flex flex-col items-center"
+          >
+            <div className="py-2.5">
+              <div className="flex size-9 items-center justify-center border border-border bg-card font-heading text-sm font-bold text-foreground">
+                {initials}
+              </div>
+            </div>
+            <Badge
+              variant={isAdmin ? "primary" : "outline"}
+              className="w-full justify-center rounded-none border-x-0 border-b-0 px-0 py-0.5 tracking-normal"
+            >
+              {getRoleLabel(staff.role)}
+            </Badge>
           </div>
-          <Badge variant={isAdmin ? "primary" : "outline"} className="shrink-0">
-            {getRoleLabel(staff.role)}
-          </Badge>
-        </div>
+        ) : (
+          <div>
+            <div className="min-w-0 px-4 py-3">
+              <TruncatedTooltip
+                content={displayName}
+                render={
+                  <p className="truncate text-sm font-semibold text-foreground" />
+                }
+              >
+                {displayName}
+              </TruncatedTooltip>
+              <TruncatedTooltip
+                content={staff.email}
+                render={
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground" />
+                }
+              >
+                {staff.email}
+              </TruncatedTooltip>
+            </div>
+            <Badge
+              variant={isAdmin ? "primary" : "outline"}
+              className="w-full justify-center rounded-none border-x-0 border-b-0 py-1"
+            >
+              {getRoleLabel(staff.role)}
+            </Badge>
+          </div>
+        )}
       </div>
 
       <nav
         aria-label="Navigasi Dashboard"
-        className="flex-1 overflow-y-auto px-3 py-4"
+        className={cn(
+          "flex-1 overflow-y-auto py-4",
+          collapsed ? "px-2" : "px-3"
+        )}
       >
         <ul className="space-y-1">
           {visibleItems.map((item) => {
@@ -240,15 +340,23 @@ function SidebarContent({
                 <Link
                   to={item.to}
                   onClick={onNavigate}
+                  title={collapsed ? item.label : undefined}
+                  aria-label={collapsed ? item.label : undefined}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group flex min-h-11 items-center justify-between gap-2 border-l-2 px-3 py-2.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    "group flex min-h-11 items-center border-l-2 py-2.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    collapsed ? "justify-center px-0" : "justify-between gap-2 px-3",
                     active
                       ? "border-primary bg-secondary font-semibold text-foreground"
                       : "border-transparent font-medium text-muted-foreground hover:border-border hover:bg-secondary/60 hover:text-foreground"
                   )}
                 >
-                  <span className="inline-flex min-w-0 items-center gap-2.5">
+                  <span
+                    className={cn(
+                      "inline-flex min-w-0 items-center",
+                      collapsed ? "justify-center" : "gap-2.5"
+                    )}
+                  >
                     <Icon
                       className={cn(
                         "size-4 shrink-0 transition-colors",
@@ -258,13 +366,20 @@ function SidebarContent({
                       )}
                       aria-hidden={true}
                     />
-                    <span className="truncate">{item.label}</span>
+                    {!collapsed ? (
+                      <TruncatedTooltip
+                        content={item.label}
+                        render={<span className="truncate" />}
+                      >
+                        {item.label}
+                      </TruncatedTooltip>
+                    ) : null}
                   </span>
 
-                  {item.showAdminHintForSales && !isAdmin ? (
+                  {!collapsed && item.showAdminHintForSales && !isAdmin ? (
                     <Badge
                       variant="secondary"
-                      className="px-1.5 py-0 text-[10px] tracking-wider text-muted-foreground"
+                      className="px-1.5 py-0 text-sm tracking-wider text-muted-foreground"
                     >
                       <Shield className="size-2.5" aria-hidden="true" />
                       <span>Admin</span>
@@ -277,11 +392,16 @@ function SidebarContent({
         </ul>
       </nav>
 
-      <div className="mt-auto space-y-2 border-t border-border bg-card p-3">
-        {logoutError ? (
+      <div
+        className={cn(
+          "mt-auto space-y-2 border-t border-border bg-card",
+          collapsed ? "p-2" : "p-3"
+        )}
+      >
+        {!collapsed && logoutError ? (
           <p
             role="alert"
-            className="border border-destructive/30 bg-destructive/10 px-2.5 py-2 text-xs text-[#991B1B]"
+            className="border border-destructive/30 bg-destructive/10 px-2.5 py-2 text-sm text-[#991B1B]"
           >
             {logoutError}
           </p>
@@ -291,28 +411,40 @@ function SidebarContent({
           href={publicSiteUrl}
           target="_blank"
           rel="noopener noreferrer"
+          title={collapsed ? "Lihat Website Publik" : undefined}
+          aria-label={collapsed ? "Lihat Website Publik" : undefined}
           className={cn(
-            buttonVariants({ variant: "outline", size: "default" }),
-            "w-full justify-between text-xs no-underline"
+            buttonVariants({
+              variant: "outline",
+              size: collapsed ? "icon" : "default",
+            }),
+            collapsed ? "w-full justify-center" : "w-full justify-between text-sm",
+            "no-underline"
           )}
         >
-          <span>Lihat Website Publik</span>
-          <ExternalLink className="size-3.5" aria-hidden="true" />
+          {!collapsed ? <span>Lihat Website Publik</span> : null}
+          <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
         </a>
 
         <Button
           type="button"
           variant="secondary"
-          size="default"
+          size={collapsed ? "icon" : "default"}
           disabled={isLoggingOut}
           onClick={onLogout}
-          className="w-full justify-between text-xs"
+          title={collapsed ? "Keluar" : undefined}
+          aria-label={collapsed ? "Keluar" : undefined}
+          className={cn(
+            collapsed ? "w-full justify-center" : "w-full justify-between text-sm"
+          )}
         >
-          <span>{isLoggingOut ? "Mengakhiri Sesi..." : "Keluar"}</span>
+          {!collapsed ? (
+            <span>{isLoggingOut ? "Mengakhiri Sesi..." : "Keluar"}</span>
+          ) : null}
           {isLoggingOut ? (
-            <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+            <Loader2 className="size-3.5 shrink-0 animate-spin" aria-hidden="true" />
           ) : (
-            <LogOut className="size-3.5" aria-hidden="true" />
+            <LogOut className="size-3.5 shrink-0" aria-hidden="true" />
           )}
         </Button>
       </div>
@@ -328,6 +460,7 @@ function DashLayout() {
   })
 
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false)
   const [logoutError, setLogoutError] = React.useState<string | null>(null)
   const [publicSiteUrl, setPublicSiteUrl] = React.useState(() =>
@@ -359,12 +492,16 @@ function DashLayout() {
     }
   }
 
-  const isAdmin = staff.role === "admin"
-  const sectionTitle = getSectionTitle(pathname)
+  const breadcrumbs = getBreadcrumbs(pathname)
 
   return (
     <div className="flex min-h-svh w-full bg-background text-foreground">
-      <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-svh lg:w-64 lg:shrink-0 lg:flex-col lg:border-r lg:border-border lg:bg-card">
+      <aside
+        className={cn(
+          "hidden lg:sticky lg:top-0 lg:flex lg:h-svh lg:shrink-0 lg:flex-col lg:border-r lg:border-border lg:bg-card lg:transition-[width] lg:duration-200 lg:ease-linear",
+          sidebarCollapsed ? "lg:w-[4.25rem]" : "lg:w-64"
+        )}
+      >
         <SidebarContent
           staff={staff}
           pathname={pathname}
@@ -372,22 +509,23 @@ function DashLayout() {
           isLoggingOut={isLoggingOut}
           logoutError={logoutError}
           onLogout={handleLogout}
+          collapsed={sidebarCollapsed}
         />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-3 border-b border-border bg-card px-4 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-30 flex h-[72px] shrink-0 items-center justify-between gap-3 border-b border-border bg-card px-4 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
               <SheetTrigger
                 type="button"
                 aria-label="Buka menu navigasi dashboard"
                 className={cn(
-                  buttonVariants({ variant: "outline", size: "icon" }),
-                  "lg:hidden"
+                  buttonVariants({ variant: "ghost", size: "icon" }),
+                  "shrink-0 lg:hidden"
                 )}
               >
-                <Menu className="size-5" aria-hidden="true" />
+                <PanelLeft className="size-4" aria-hidden="true" />
               </SheetTrigger>
 
               <SheetContent
@@ -415,46 +553,69 @@ function DashLayout() {
               </SheetContent>
             </Sheet>
 
-            <Link
-              to="/dash"
-              className="inline-flex min-h-11 items-center gap-2.5 bg-[#161514] px-2.5 py-1.5 text-[#FAF9F7] no-underline lg:hidden"
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed((prev) => !prev)}
+              aria-label={sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
+              aria-expanded={!sidebarCollapsed}
+              title={sidebarCollapsed ? "Buka sidebar" : "Tutup sidebar"}
+              className="hidden shrink-0 lg:inline-flex"
             >
-              <img
-                src="/images/brand/garasi-571-logo.png"
-                alt="Garasi 571"
-                width={150}
-                height={150}
-                className="size-7 shrink-0 object-contain"
-              />
-              <span className="flex flex-col leading-none">
-                <span className="font-heading text-xs font-bold tracking-tight text-[#FAF9F7]">
-                  GARASI 571
-                </span>
-                <span className="mt-0.5 text-[9px] font-semibold tracking-[0.18em] text-[#C7C2BC] uppercase">
-                  Dashboard
-                </span>
-              </span>
-            </Link>
+              <PanelLeft className="size-4" aria-hidden="true" />
+            </Button>
 
-            <div className="hidden min-w-0 lg:block">
-              <p className="truncate font-heading text-base font-bold tracking-tight text-foreground">
-                {sectionTitle}
-              </p>
-            </div>
-          </div>
+            <span
+              aria-hidden="true"
+              className="h-4 w-px shrink-0 bg-border"
+            />
 
-          <div className="flex shrink-0 items-center gap-3">
-            <div className="hidden text-right sm:block">
-              <p className="max-w-48 truncate text-sm font-semibold text-foreground">
-                {staff.fullName || staff.email}
-              </p>
-              <p className="max-w-48 truncate text-xs text-muted-foreground">
-                {staff.email}
-              </p>
-            </div>
-            <Badge variant={isAdmin ? "primary" : "outline"}>
-              {getRoleLabel(staff.role)}
-            </Badge>
+            <nav aria-label="Breadcrumb" className="min-w-0">
+              <ol className="flex items-center gap-1.5 text-sm">
+                {breadcrumbs.map((crumb, index) => {
+                  const isLast = index === breadcrumbs.length - 1
+                  return (
+                    <li
+                      key={`${crumb.label}-${index}`}
+                      className="flex min-w-0 items-center gap-1.5"
+                    >
+                      {index > 0 ? (
+                        <ChevronRight
+                          className="size-3.5 shrink-0 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                      {crumb.to && !isLast ? (
+                        <TruncatedTooltip
+                          content={crumb.label}
+                          render={
+                            <Link
+                              to={crumb.to}
+                              className="truncate text-muted-foreground no-underline transition-colors hover:text-foreground"
+                            />
+                          }
+                        >
+                          {crumb.label}
+                        </TruncatedTooltip>
+                      ) : (
+                        <TruncatedTooltip
+                          content={crumb.label}
+                          render={
+                            <span
+                              aria-current={isLast ? "page" : undefined}
+                              className="truncate font-semibold text-foreground"
+                            />
+                          }
+                        >
+                          {crumb.label}
+                        </TruncatedTooltip>
+                      )}
+                    </li>
+                  )
+                })}
+              </ol>
+            </nav>
           </div>
         </header>
 
