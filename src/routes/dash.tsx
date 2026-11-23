@@ -654,7 +654,7 @@ function DashLayout() {
               <SheetContent
                 side="left"
                 showCloseButton={false}
-                className="w-[min(100vw,18.5rem)] p-0"
+                className="w-[min(100vw,18.5rem)] p-0 sm:p-0"
               >
                 <SheetHeader className="sr-only">
                   <SheetTitle>Dashboard Garasi 571</SheetTitle>
