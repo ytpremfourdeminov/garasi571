@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Link, createFileRoute, notFound } from "@tanstack/react-router"
 import {
+  AlertCircle,
   ArrowLeft,
   Check,
   Clock,
@@ -9,19 +10,16 @@ import {
   Link2,
   MapPin,
   MessageCircle,
+  Sparkles,
 } from "lucide-react"
 import { cn } from "cn"
 import {
-  formatRupiah,
-  formatShortJuta,
-  getCarBySlug,
-  getSimilarCars,
-} from "@/data/cars"
-import {
-  SHOWROOM,
   buildCarInquiryMessage,
   buildWhatsAppUrl,
-} from "@/data/showroom"
+  formatRupiah,
+  formatShortJuta,
+} from "@/lib/domain/formatters"
+import type { FuelType } from "@/lib/domain/types"
 import {
   buildBreadcrumbJsonLd,
   buildCanonicalLink,
@@ -29,20 +27,36 @@ import {
   buildSocialMeta,
   serializeJsonLd,
 } from "@/lib/seo"
+import { getPublicCarBySlugFn } from "@/server/public-catalog"
 import { CarGallery } from "@/components/car-gallery"
 import { CarAnswerSummary } from "@/components/car-answer-summary"
+import { CarLegalitySection } from "@/components/car-legality-section"
+import { CarInspectionSection } from "@/components/car-inspection-section"
+import { CarInsightsSection } from "@/components/car-insights-section"
 import { CarCard } from "@/components/car-card"
 import { useCompare } from "@/components/compare-context"
+import {
+  DEFAULT_SHOWROOM_CONFIG,
+  useShowroom,
+} from "@/components/showroom-context"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"
 
+const FUEL_TYPE_LABELS: Record<FuelType, string> = {
+  bensin: "Bensin",
+  diesel: "Diesel",
+  hybrid: "Hybrid",
+  phev: "PHEV",
+  ev: "Listrik EV",
+}
+
 export const Route = createFileRoute("/_public/mobil/$slug")({
-  loader: ({ params }) => {
-    const car = getCarBySlug(params.slug)
-    if (!car) {
+  loader: async ({ params }) => {
+    const result = await getPublicCarBySlugFn({ data: { slug: params.slug } })
+    if (!result) {
       throw notFound()
     }
-    return { car }
+    return result
   },
   head: ({ loaderData }) => {
     if (!loaderData?.car) {
@@ -184,7 +198,8 @@ function CarDetailNotFound() {
 }
 
 function CarDetailPage() {
-  const { car } = Route.useLoaderData()
+  const { car, similarCars } = Route.useLoaderData()
+  const showroom = useShowroom()
   const { isSelected, toggleCompare } = useCompare()
 
   const creditPrice =
@@ -223,14 +238,47 @@ function CarDetailPage() {
     activeSchemeLabel,
   )
 
-  const [farrel, abbad] = SHOWROOM.sales
-  const compared = isSelected(car.slug)
-  const similarCars = React.useMemo(() => getSimilarCars(car, 3), [car])
+  const salesList =
+    showroom.sales.length > 0 ? showroom.sales : DEFAULT_SHOWROOM_CONFIG.sales
+  const primarySales = salesList.at(0)
+  const secondarySales = salesList.at(1)
 
-  const specs = [
+  const compared = isSelected(car.slug)
+  const offerBadge = car.offerBadge?.trim() ?? ""
+
+  const specs: Array<{ label: string; value: string }> = [
     { label: "Tahun", value: car.year },
     { label: "Warna", value: car.color },
+    ...(car.interiorColor?.trim()
+      ? [{ label: "Warna Interior", value: car.interiorColor.trim() }]
+      : []),
     { label: "Transmisi", value: car.transmission },
+    {
+      label: "Bahan Bakar",
+      value: FUEL_TYPE_LABELS[car.fuelType],
+    },
+    ...(car.engineCc !== null && car.engineCc > 0
+      ? [
+          {
+            label: "Kapasitas Mesin",
+            value: `${car.engineCc.toLocaleString("id-ID")} cc`,
+          },
+        ]
+      : []),
+    ...(car.bodyType?.trim()
+      ? [{ label: "Tipe Bodi", value: car.bodyType.trim() }]
+      : []),
+    ...(car.seatCapacity !== null && car.seatCapacity > 0
+      ? [
+          {
+            label: "Kapasitas Kursi",
+            value: `${car.seatCapacity} penumpang`,
+          },
+        ]
+      : []),
+    ...(car.drivetrain?.trim()
+      ? [{ label: "Penggerak", value: car.drivetrain.trim() }]
+      : []),
     { label: "Kilometer", value: car.mileageLabel },
     { label: "Nomor Polisi", value: car.plateInfo },
     { label: "Lokasi", value: car.location },
@@ -300,6 +348,38 @@ function CarDetailPage() {
         </span>
       </nav>
 
+      {car.status === "booked" ? (
+        <div
+          role="status"
+          className="mt-6 flex items-start gap-3 border border-amber-500/40 bg-[#161514] p-4 text-[#FAF9F7] sm:items-center sm:p-5"
+        >
+          <AlertCircle
+            className="mt-0.5 size-5 shrink-0 text-amber-300 sm:mt-0"
+            aria-hidden="true"
+          />
+          <p className="text-sm font-semibold leading-relaxed">
+            Unit Sedang Dibooking — Hubungi sales untuk antrean atau rekomendasi
+            unit serupa
+          </p>
+        </div>
+      ) : null}
+
+      {car.status === "sold" ? (
+        <div
+          role="status"
+          className="mt-6 flex items-start gap-3 border border-border bg-[#161514] p-4 text-[#FAF9F7] sm:items-center sm:p-5"
+        >
+          <AlertCircle
+            className="mt-0.5 size-5 shrink-0 text-primary sm:mt-0"
+            aria-hidden="true"
+          />
+          <p className="text-sm font-semibold leading-relaxed">
+            Unit Sudah Terjual — Silakan lihat unit serupa yang masih tersedia
+            di bawah
+          </p>
+        </div>
+      ) : null}
+
       <header className="mt-6 space-y-2">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold tracking-wider uppercase">
           <span className="border border-border bg-secondary px-2.5 py-1 text-foreground">
@@ -308,6 +388,12 @@ function CarDetailPage() {
           <span className="border border-border bg-card px-2.5 py-1 text-muted-foreground">
             {supportsCredit ? "Cash & Kredit" : "Khusus Cash"}
           </span>
+          {offerBadge ? (
+            <span className="inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 text-primary-foreground">
+              <Sparkles className="size-3.5" aria-hidden="true" />
+              <span>{offerBadge}</span>
+            </span>
+          ) : null}
         </div>
 
         <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
@@ -321,7 +407,7 @@ function CarDetailPage() {
       <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
         <div className="min-w-0 space-y-8 lg:col-span-7">
           <CarGallery images={car.images} carName={car.name} />
-          <CarAnswerSummary car={car} />
+          <CarAnswerSummary car={car} showroomName={showroom.name} />
 
           <section aria-labelledby="specs-heading" className="space-y-4">
             <h2
@@ -348,31 +434,37 @@ function CarDetailPage() {
             </dl>
           </section>
 
-          <section aria-labelledby="conditions-heading" className="space-y-4">
-            <h2
-              id="conditions-heading"
-              className="font-heading text-xl font-semibold tracking-tight text-foreground"
-            >
-              Kondisi &amp; Kelengkapan
-            </h2>
+          <CarLegalitySection car={car} />
+          <CarInspectionSection car={car} />
+          <CarInsightsSection car={car} />
 
-            <div className="border border-border bg-card p-5">
-              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {car.conditions.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground"
-                  >
-                    <Check
-                      className="mt-0.5 size-4 shrink-0 text-primary"
-                      aria-hidden="true"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+          {car.conditions.length > 0 ? (
+            <section aria-labelledby="conditions-heading" className="space-y-4">
+              <h2
+                id="conditions-heading"
+                className="font-heading text-xl font-semibold tracking-tight text-foreground"
+              >
+                Kondisi &amp; Kelengkapan
+              </h2>
+
+              <div className="border border-border bg-card p-5">
+                <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {car.conditions.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground"
+                    >
+                      <Check
+                        className="mt-0.5 size-4 shrink-0 text-primary"
+                        aria-hidden="true"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          ) : null}
         </div>
 
         <aside
@@ -418,38 +510,40 @@ function CarDetailPage() {
                   </div>
 
                   <div className="border border-border bg-secondary p-4">
-                  {selectedScheme === "cash" ? (
-                    <>
-                      <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                        Harga Cash
-                      </p>
-                      <p className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums sm:text-3xl">
-                        {formatRupiah(car.cashPrice)}
-                      </p>
-                      <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">
-                        Harga khusus kredit:{" "}
-                        <span className="font-semibold text-primary">
+                    {selectedScheme === "cash" ? (
+                      <>
+                        <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                          Harga Cash
+                        </p>
+                        <p className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums sm:text-3xl">
+                          {formatRupiah(car.cashPrice)}
+                        </p>
+                        <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">
+                          Harga khusus kredit:{" "}
+                          <span className="font-semibold text-primary">
+                            {formatRupiah(creditPrice)}
+                          </span>
+                          {car.creditPriceNote
+                            ? ` (${car.creditPriceNote})`
+                            : ""}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+                          Harga Kredit
+                        </p>
+                        <p className="mt-1 font-heading text-2xl font-bold tracking-tight text-primary tabular-nums sm:text-3xl">
                           {formatRupiah(creditPrice)}
-                        </span>
-                        {car.creditPriceNote ? ` (${car.creditPriceNote})` : ""}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-xs font-semibold tracking-wider text-primary uppercase">
-                        Harga Kredit
-                      </p>
-                      <p className="mt-1 font-heading text-2xl font-bold tracking-tight text-primary tabular-nums sm:text-3xl">
-                        {formatRupiah(creditPrice)}
-                      </p>
-                      <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">
-                        {car.creditPriceNote
-                          ? `${car.creditPriceNote}. `
-                          : ""}
-                        Harga cash: {formatRupiah(car.cashPrice)}
-                      </p>
-                    </>
-                  )}
+                        </p>
+                        <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">
+                          {car.creditPriceNote
+                            ? `${car.creditPriceNote}. `
+                            : ""}
+                          Harga cash: {formatRupiah(car.cashPrice)}
+                        </p>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -528,52 +622,79 @@ function CarDetailPage() {
                 Konsultasi &amp; Jadwal Cek Unit
               </p>
 
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                <a
-                  href={buildWhatsAppUrl(farrel.phoneE164, inquiryMessage)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    buttonVariants({ variant: "default", size: "default" }),
-                    "h-auto w-full justify-between gap-2 px-3 py-2.5 text-left whitespace-normal no-underline",
-                  )}
-                >
-                  <span className="inline-flex min-w-0 items-center gap-2.5">
-                    <MessageCircle className="size-4 shrink-0" aria-hidden="true" />
-                    <span className="flex min-w-0 flex-col">
-                      <span className="text-sm font-semibold leading-tight">
-                        {farrel.name}
-                      </span>
-                      <span className="mt-0.5 text-[11px] font-normal leading-tight opacity-85 tabular-nums">
-                        {farrel.phoneDisplay}
+              <div
+                className={cn(
+                  "grid grid-cols-1 gap-2.5",
+                  secondarySales ? "sm:grid-cols-2" : "sm:grid-cols-1",
+                )}
+              >
+                {primarySales ? (
+                  <a
+                    href={buildWhatsAppUrl(
+                      primarySales.phoneE164,
+                      inquiryMessage,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      buttonVariants({ variant: "default", size: "default" }),
+                      "h-auto w-full justify-between gap-2 px-3 py-2.5 text-left whitespace-normal no-underline",
+                    )}
+                  >
+                    <span className="inline-flex min-w-0 items-center gap-2.5">
+                      <MessageCircle
+                        className="size-4 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <span className="flex min-w-0 flex-col">
+                        <span className="text-sm font-semibold leading-tight">
+                          {primarySales.name}
+                        </span>
+                        <span className="mt-0.5 text-[11px] font-normal leading-tight opacity-85 tabular-nums">
+                          {primarySales.phoneDisplay}
+                        </span>
                       </span>
                     </span>
-                  </span>
-                  <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
-                </a>
+                    <ExternalLink
+                      className="size-3.5 shrink-0"
+                      aria-hidden="true"
+                    />
+                  </a>
+                ) : null}
 
-                <a
-                  href={buildWhatsAppUrl(abbad.phoneE164, inquiryMessage)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    buttonVariants({ variant: "outline", size: "default" }),
-                    "h-auto w-full justify-between gap-2 px-3 py-2.5 text-left whitespace-normal no-underline",
-                  )}
-                >
-                  <span className="inline-flex min-w-0 items-center gap-2.5">
-                    <MessageCircle className="size-4 shrink-0 text-primary" aria-hidden="true" />
-                    <span className="flex min-w-0 flex-col">
-                      <span className="text-sm font-semibold leading-tight">
-                        {abbad.name}
-                      </span>
-                      <span className="mt-0.5 text-[11px] font-normal leading-tight text-muted-foreground tabular-nums">
-                        {abbad.phoneDisplay}
+                {secondarySales ? (
+                  <a
+                    href={buildWhatsAppUrl(
+                      secondarySales.phoneE164,
+                      inquiryMessage,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "default" }),
+                      "h-auto w-full justify-between gap-2 px-3 py-2.5 text-left whitespace-normal no-underline",
+                    )}
+                  >
+                    <span className="inline-flex min-w-0 items-center gap-2.5">
+                      <MessageCircle
+                        className="size-4 shrink-0 text-primary"
+                        aria-hidden="true"
+                      />
+                      <span className="flex min-w-0 flex-col">
+                        <span className="text-sm font-semibold leading-tight">
+                          {secondarySales.name}
+                        </span>
+                        <span className="mt-0.5 text-[11px] font-normal leading-tight text-muted-foreground tabular-nums">
+                          {secondarySales.phoneDisplay}
+                        </span>
                       </span>
                     </span>
-                  </span>
-                  <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
-                </a>
+                    <ExternalLink
+                      className="size-3.5 shrink-0"
+                      aria-hidden="true"
+                    />
+                  </a>
+                ) : null}
               </div>
             </div>
 
@@ -585,7 +706,8 @@ function CarDetailPage() {
                 onClick={() => toggleCompare(car.slug)}
                 className={cn(
                   "w-full",
-                  compared && "border-[#161514] bg-[#161514] text-[#FAF9F7] hover:bg-[#2B2825]",
+                  compared &&
+                    "border-[#161514] bg-[#161514] text-[#FAF9F7] hover:bg-[#2B2825]",
                 )}
               >
                 {compared ? (
@@ -627,15 +749,21 @@ function CarDetailPage() {
 
             <div className="space-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
               <p className="flex items-center gap-2 text-foreground">
-                <Clock className="size-4 shrink-0 text-primary" aria-hidden="true" />
-                <span>{SHOWROOM.hours}</span>
+                <Clock
+                  className="size-4 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+                <span>{showroom.hours}</span>
               </p>
               <p className="flex items-center gap-2">
-                <MapPin className="size-4 shrink-0 text-primary" aria-hidden="true" />
-                <span>{SHOWROOM.city}</span>
+                <MapPin
+                  className="size-4 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+                <span>{showroom.city}</span>
               </p>
               <a
-                href={SHOWROOM.mapsUrl}
+                href={showroom.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-foreground underline underline-offset-4 transition-colors hover:text-primary"
