@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Link, createFileRoute, useRouter } from "@tanstack/react-router"
 import {
-  AlertCircle,
   ArrowLeft,
   Camera,
   Car,
@@ -13,11 +12,9 @@ import {
   RotateCcw,
   Save,
   Sparkles,
-  X,
 } from "lucide-react"
 import { cn } from "cn"
 import {
-  COMPLETENESS_TAB_LABELS,
   CarCompletenessSidebar,
   scrollToCarField,
 } from "@/components/dash/car-completeness-sidebar"
@@ -31,11 +28,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { toast } from "@/components/ui/toast"
 import { carUpsertSchema, type CarUpsertInput } from "@/lib/domain/schemas"
 import type {
   CarImage,
@@ -296,12 +289,6 @@ function EditCarPage() {
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>(
     {}
   )
-  const [saveError, setSaveError] = React.useState<string | null>(null)
-  const [saveSuccess, setSaveSuccess] = React.useState<string | null>(
-    search.created === "1"
-      ? "Unit berhasil dibuat. Silakan unggah foto pada tab Galeri Foto."
-      : null
-  )
   const [isSaving, setIsSaving] = React.useState(false)
   const [publicSiteOrigin, setPublicSiteOrigin] = React.useState(() =>
     getPublicSiteOrigin()
@@ -318,8 +305,6 @@ function EditCarPage() {
       setSavedForm(mapped)
       setImages(loadedCar.images)
       setFieldErrors({})
-      setSaveError(null)
-      setSaveSuccess(null)
       setActiveTab(search.tab ?? "identity")
     }
   }, [loadedCar, search.tab])
@@ -356,14 +341,12 @@ function EditCarPage() {
     return counts
   }, [fieldErrors])
 
-  const totalErrorCount = Object.keys(fieldErrors).length
   const previewUrl = `${publicSiteOrigin}/mobil/${car.slug}`
   const updatedAtLabel = formatUpdatedAt(car.updatedAt)
 
   const handlePatchForm = React.useCallback(
     (patch: Partial<CarUpsertInput>) => {
       setForm((prev) => ({ ...prev, ...patch }))
-      setSaveSuccess(null)
       const changedKeys = Object.keys(patch)
       if (changedKeys.length > 0) {
         setFieldErrors((prev) => {
@@ -395,15 +378,10 @@ function EditCarPage() {
     if (isSaving) return
     setForm(savedForm)
     setFieldErrors({})
-    setSaveError(null)
-    setSaveSuccess(null)
   }
 
   const handleSave = async () => {
     if (isSaving) return
-
-    setSaveError(null)
-    setSaveSuccess(null)
 
     const payload: CarUpsertInput = {
       ...form,
@@ -441,9 +419,10 @@ function EditCarPage() {
         ) ?? "identity"
 
       setActiveTab(firstTabWithError)
-      setSaveError(
-        `Terdapat ${Object.keys(nextErrors).length} kolom yang perlu diperbaiki sebelum menyimpan perubahan.`
-      )
+      toast.add({
+        type: "error",
+        title: `Terdapat ${Object.keys(nextErrors).length} kolom yang perlu diperbaiki sebelum menyimpan perubahan.`,
+      })
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "smooth" })
       }
@@ -460,14 +439,20 @@ function EditCarPage() {
       setForm(nextMapped)
       setSavedForm(nextMapped)
       setImages(updated.images)
-      setSaveSuccess("Perubahan data unit berhasil disimpan.")
+      toast.add({
+        type: "success",
+        title: "Perubahan data unit berhasil disimpan.",
+      })
       void router.invalidate()
     } catch (err) {
       const message = extractErrorMessage(
         err,
         "Gagal menyimpan perubahan unit mobil. Silakan coba lagi."
       )
-      setSaveError(message)
+      toast.add({
+        type: "error",
+        title: message,
+      })
       if (message.toLowerCase().includes("slug")) {
         setFieldErrors({ slug: message })
         setActiveTab("identity")
@@ -556,97 +541,6 @@ function EditCarPage() {
           </Button>
         </div>
       </section>
-
-      {/* Success Banner */}
-      {saveSuccess ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="flex items-start justify-between gap-3 border border-emerald-800/30 bg-emerald-50 px-4 py-3 text-sm text-emerald-950"
-        >
-          <div className="flex min-w-0 items-start gap-2.5 pt-1">
-            <CheckCircle2
-              className="mt-0.5 size-4 shrink-0 text-emerald-700"
-              aria-hidden="true"
-            />
-            <p className="font-medium">{saveSuccess}</p>
-          </div>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSaveSuccess(null)}
-                  aria-label="Tutup notifikasi sukses"
-                  className="shrink-0 text-emerald-900"
-                />
-              }
-            >
-              <X className="size-4" aria-hidden="true" />
-            </TooltipTrigger>
-            <TooltipContent>Tutup notifikasi</TooltipContent>
-          </Tooltip>
-        </div>
-      ) : null}
-
-      {/* Error Banner */}
-      {saveError ? (
-        <div
-          role="alert"
-          className="border border-destructive/40 bg-destructive/10 p-4 text-sm text-[#991B1B]"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-start gap-2.5">
-              <AlertCircle
-                className="mt-0.5 size-4 shrink-0"
-                aria-hidden="true"
-              />
-              <div className="space-y-2">
-                <p className="font-semibold">{saveError}</p>
-                {totalErrorCount > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {TAB_ORDER.filter((tab) => errorCountsByTab[tab] > 0).map(
-                      (tab) => (
-                        <button
-                          key={tab}
-                          type="button"
-                          onClick={() => handleSelectTab(tab)}
-                          className="inline-flex min-h-8 cursor-pointer items-center gap-1.5 border border-destructive/40 bg-card px-2.5 py-1 text-sm font-semibold text-[#991B1B] transition-colors hover:bg-destructive hover:text-primary-foreground"
-                        >
-                          <span>{COMPLETENESS_TAB_LABELS[tab]}</span>
-                          <span className="tabular-nums">
-                            ({errorCountsByTab[tab]})
-                          </span>
-                        </button>
-                      )
-                    )}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setSaveError(null)}
-                    aria-label="Tutup pesan error"
-                    className="shrink-0 text-[#991B1B]"
-                  />
-                }
-              >
-                <X className="size-4" aria-hidden="true" />
-              </TooltipTrigger>
-              <TooltipContent>Tutup pesan error</TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-      ) : null}
 
       {/* Main Layout: Full-Width Tabs + Form & Completeness Sidebar */}
       <Tabs

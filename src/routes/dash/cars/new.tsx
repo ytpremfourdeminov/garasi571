@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Link, createFileRoute, useRouter } from "@tanstack/react-router"
 import {
-  AlertCircle,
   ArrowLeft,
   Camera,
   Car,
@@ -11,11 +10,9 @@ import {
   Save,
   Send,
   Sparkles,
-  X,
 } from "lucide-react"
 import { cn } from "cn"
 import {
-  COMPLETENESS_TAB_LABELS,
   CarCompletenessSidebar,
   scrollToCarField,
 } from "@/components/dash/car-completeness-sidebar"
@@ -26,11 +23,7 @@ import { CarPricingCreditForm } from "@/components/dash/car-pricing-credit-form"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { toast } from "@/components/ui/toast"
 import { getCategoryLabel } from "@/lib/domain/formatters"
 import { carUpsertSchema, type CarUpsertInput } from "@/lib/domain/schemas"
 import type { CarStatus, CompletenessTabKey } from "@/lib/domain/types"
@@ -185,7 +178,6 @@ function NewCarPage() {
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>(
     {}
   )
-  const [submitError, setSubmitError] = React.useState<string | null>(null)
   const [submittingMode, setSubmittingMode] = React.useState<CarStatus | null>(
     null
   )
@@ -206,8 +198,6 @@ function NewCarPage() {
     }
     return counts
   }, [fieldErrors])
-
-  const totalErrorCount = Object.keys(fieldErrors).length
 
   const handlePatchForm = React.useCallback(
     (patch: Partial<CarUpsertInput>) => {
@@ -241,8 +231,6 @@ function NewCarPage() {
 
   const handleSubmit = async (targetStatus: "draft" | "ready") => {
     if (isSubmitting) return
-
-    setSubmitError(null)
 
     const payload: CarUpsertInput = {
       ...form,
@@ -280,9 +268,10 @@ function NewCarPage() {
         ) ?? "identity"
 
       setActiveTab(firstTabWithError)
-      setSubmitError(
-        `Terdapat ${Object.keys(nextErrors).length} kolom wajib yang perlu dilengkapi atau diperbaiki sebelum menyimpan.`
-      )
+      toast.add({
+        type: "error",
+        title: `Terdapat ${Object.keys(nextErrors).length} kolom wajib yang perlu dilengkapi atau diperbaiki sebelum menyimpan.`,
+      })
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "smooth" })
       }
@@ -294,6 +283,10 @@ function NewCarPage() {
 
     try {
       const created = await createCarFn({ data: parsed.data })
+      toast.add({
+        type: "success",
+        title: "Unit berhasil dibuat. Silakan unggah foto pada tab Galeri Foto.",
+      })
       await router.invalidate()
       await router.navigate({
         to: "/dash/cars/$carId",
@@ -306,7 +299,10 @@ function NewCarPage() {
         err,
         "Gagal menyimpan unit mobil baru. Periksa data lalu coba lagi."
       )
-      setSubmitError(message)
+      toast.add({
+        type: "error",
+        title: message,
+      })
       if (message.toLowerCase().includes("slug")) {
         setFieldErrors({ slug: message })
         setActiveTab("identity")
@@ -348,63 +344,6 @@ function NewCarPage() {
           </p>
         </div>
       </section>
-
-      {/* Validation / Server Error Banner */}
-      {submitError ? (
-        <div
-          role="alert"
-          className="border border-destructive/40 bg-destructive/10 p-4 text-sm text-[#991B1B]"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-start gap-2.5">
-              <AlertCircle
-                className="mt-0.5 size-4 shrink-0"
-                aria-hidden="true"
-              />
-              <div className="space-y-2">
-                <p className="font-semibold">{submitError}</p>
-                {totalErrorCount > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {TAB_ORDER.filter((tab) => errorCountsByTab[tab] > 0).map(
-                      (tab) => (
-                        <button
-                          key={tab}
-                          type="button"
-                          onClick={() => handleSelectTab(tab)}
-                          className="inline-flex min-h-8 cursor-pointer items-center gap-1.5 border border-destructive/40 bg-card px-2.5 py-1 text-sm font-semibold text-[#991B1B] transition-colors hover:bg-destructive hover:text-primary-foreground"
-                        >
-                          <span>{COMPLETENESS_TAB_LABELS[tab]}</span>
-                          <span className="tabular-nums">
-                            ({errorCountsByTab[tab]})
-                          </span>
-                        </button>
-                      )
-                    )}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setSubmitError(null)}
-                    aria-label="Tutup pesan error"
-                    className="shrink-0 text-[#991B1B]"
-                  />
-                }
-              >
-                <X className="size-4" aria-hidden="true" />
-              </TooltipTrigger>
-              <TooltipContent>Tutup pesan error</TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-      ) : null}
 
       {/* Main Layout: Full-Width Tabs + Form & Completeness Sidebar */}
       <Tabs

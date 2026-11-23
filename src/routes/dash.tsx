@@ -32,6 +32,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { toast } from "@/components/ui/toast"
 import {
   Dialog,
   DialogContent,
@@ -278,7 +279,6 @@ interface SidebarContentProps {
   pathname: string
   publicSiteUrl: string
   isLoggingOut: boolean
-  logoutError: string | null
   onLogout: () => void
   onNavigate?: () => void
   showDrawerClose?: boolean
@@ -290,7 +290,6 @@ function SidebarContent({
   pathname,
   publicSiteUrl,
   isLoggingOut,
-  logoutError,
   onLogout,
   onNavigate,
   showDrawerClose = false,
@@ -470,15 +469,6 @@ function SidebarContent({
           collapsed ? "p-2" : "p-3"
         )}
       >
-        {!collapsed && logoutError ? (
-          <p
-            role="alert"
-            className="border border-destructive/30 bg-destructive/10 px-2.5 py-2 text-sm text-[#991B1B]"
-          >
-            {logoutError}
-          </p>
-        ) : null}
-
         <a
           href={publicSiteUrl}
           target="_blank"
@@ -556,7 +546,6 @@ function DashLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = React.useState(false)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false)
-  const [logoutError, setLogoutError] = React.useState<string | null>(null)
   const [publicSiteUrl, setPublicSiteUrl] = React.useState(() =>
     getPublicSiteOrigin()
   )
@@ -568,25 +557,30 @@ function DashLayout() {
   }, [])
 
   const handleOpenLogoutDialog = () => {
-    setLogoutError(null)
     setLogoutDialogOpen(true)
   }
 
   const handleLogout = async () => {
-    setLogoutError(null)
     setIsLoggingOut(true)
 
     try {
       await logoutFn()
       setLogoutDialogOpen(false)
       setMobileNavOpen(false)
+      toast.add({
+        title: "Berhasil keluar dari sesi.",
+        type: "success",
+      })
       await router.invalidate()
       await router.navigate({
         to: "/dash/login",
         replace: true,
       })
     } catch {
-      setLogoutError("Gagal keluar dari sesi. Silakan coba lagi.")
+      toast.add({
+        title: "Gagal keluar dari sesi. Silakan coba lagi.",
+        type: "error",
+      })
     } finally {
       setIsLoggingOut(false)
     }
@@ -635,7 +629,6 @@ function DashLayout() {
           pathname={pathname}
           publicSiteUrl={publicSiteUrl}
           isLoggingOut={isLoggingOut}
-          logoutError={logoutError}
           onLogout={handleOpenLogoutDialog}
           collapsed={sidebarCollapsed}
         />
@@ -673,7 +666,6 @@ function DashLayout() {
                   pathname={pathname}
                   publicSiteUrl={publicSiteUrl}
                   isLoggingOut={isLoggingOut}
-                  logoutError={logoutError}
                   onLogout={handleOpenLogoutDialog}
                   onNavigate={() => setMobileNavOpen(false)}
                   showDrawerClose={true}
@@ -764,7 +756,6 @@ function DashLayout() {
         onOpenChange={(open) => {
           if (isLoggingOut) return
           setLogoutDialogOpen(open)
-          if (!open) setLogoutError(null)
         }}
       >
         <DialogContent
@@ -789,15 +780,6 @@ function DashLayout() {
                 Apakah Anda yakin ingin keluar dari sesi dashboard ini?
               </DialogDescription>
             </DialogHeader>
-
-            {logoutError ? (
-              <p
-                role="alert"
-                className="mt-4 w-full border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-sm text-[#991B1B]"
-              >
-                {logoutError}
-              </p>
-            ) : null}
 
             <DialogFooter className="mt-6 w-full flex-row items-center justify-center gap-3 sm:justify-center">
               <Button

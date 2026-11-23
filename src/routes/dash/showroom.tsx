@@ -1,8 +1,6 @@
 import * as React from "react"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import {
-  AlertCircle,
-  CheckCircle2,
   ChevronDown,
   ChevronUp,
   ExternalLink,
@@ -36,6 +34,7 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/toast"
 import {
   Tooltip,
   TooltipContent,
@@ -79,11 +78,6 @@ interface SalesFormState {
   phoneE164: string
   isActive: boolean
   sortOrder: number
-}
-
-interface FeedbackMessage {
-  type: "success" | "error"
-  text: string
 }
 
 function toShowroomFormState(config: ShowroomConfig): ShowroomFormState {
@@ -220,17 +214,11 @@ function DashShowroomPage() {
     Partial<Record<keyof ShowroomFormState, string>>
   >({})
   const [isSavingProfile, setIsSavingProfile] = React.useState(false)
-  const [profileFeedback, setProfileFeedback] =
-    React.useState<FeedbackMessage | null>(null)
 
   const fileInputRef = React.useRef<HTMLInputElement | null>(null)
   const [isUploadingLogo, setIsUploadingLogo] = React.useState(false)
   const [isLogoPreviewOpen, setIsLogoPreviewOpen] = React.useState(false)
-  const [logoUploadFeedback, setLogoUploadFeedback] =
-    React.useState<FeedbackMessage | null>(null)
 
-  const [salesFeedback, setSalesFeedback] =
-    React.useState<FeedbackMessage | null>(null)
   const [busySalesId, setBusySalesId] = React.useState<string | null>(null)
   const [isReorderingSales, setIsReorderingSales] = React.useState(false)
 
@@ -248,9 +236,6 @@ function DashShowroomPage() {
   const [salesFormErrors, setSalesFormErrors] = React.useState<
     Partial<Record<keyof SalesFormState, string>>
   >({})
-  const [salesDialogError, setSalesDialogError] = React.useState<string | null>(
-    null
-  )
   const [isSavingSales, setIsSavingSales] = React.useState(false)
 
   const [deleteTarget, setDeleteTarget] = React.useState<SalesContact | null>(
@@ -291,20 +276,18 @@ function DashShowroomPage() {
       return
     }
 
-    setLogoUploadFeedback(null)
-
     if (!ALLOWED_LOGO_TYPES.has(file.type.toLowerCase())) {
-      setLogoUploadFeedback({
+      toast.add({
         type: "error",
-        text: "Format logo harus WebP, JPG, atau PNG.",
+        title: "Format logo harus WebP, JPG, atau PNG.",
       })
       return
     }
 
     if (file.size > MAX_LOGO_SIZE_BYTES) {
-      setLogoUploadFeedback({
+      toast.add({
         type: "error",
-        text: "Ukuran file logo maksimal 5 MB.",
+        title: "Ukuran file logo maksimal 5 MB.",
       })
       return
     }
@@ -332,14 +315,14 @@ function DashShowroomPage() {
       }
 
       updateFormField("logoUrl", payload.url)
-      setLogoUploadFeedback({
+      toast.add({
         type: "success",
-        text: `Logo berhasil diunggah ke ${payload.url}. Klik "Simpan Profil Showroom" untuk menerapkan perubahan.`,
+        title: `Logo berhasil diunggah ke ${payload.url}. Klik "Simpan Profil Showroom" untuk menerapkan perubahan.`,
       })
     } catch (err) {
-      setLogoUploadFeedback({
+      toast.add({
         type: "error",
-        text: extractErrorMessage(err, "Gagal mengunggah logo showroom."),
+        title: extractErrorMessage(err, "Gagal mengunggah logo showroom."),
       })
     } finally {
       setIsUploadingLogo(false)
@@ -350,7 +333,6 @@ function DashShowroomPage() {
     event.preventDefault()
     if (!isAdmin) return
 
-    setProfileFeedback(null)
     const parsed = showroomUpdateSchema.safeParse(form)
 
     if (!parsed.success) {
@@ -362,9 +344,9 @@ function DashShowroomPage() {
         }
       }
       setFormErrors(nextErrors)
-      setProfileFeedback({
+      toast.add({
         type: "error",
-        text: "Periksa kembali kolom profil showroom yang ditandai.",
+        title: "Periksa kembali kolom profil showroom yang ditandai.",
       })
       return
     }
@@ -376,16 +358,15 @@ function DashShowroomPage() {
       const updated = await updateShowroomSettingsFn({ data: parsed.data })
       setForm(toShowroomFormState(updated))
       setSales(updated.sales)
-      setLogoUploadFeedback(null)
-      setProfileFeedback({
+      toast.add({
         type: "success",
-        text: "Pengaturan profil showroom berhasil disimpan.",
+        title: "Pengaturan profil showroom berhasil disimpan.",
       })
       await router.invalidate()
     } catch (err) {
-      setProfileFeedback({
+      toast.add({
         type: "error",
-        text: extractErrorMessage(
+        title: extractErrorMessage(
           err,
           "Gagal menyimpan pengaturan profil showroom."
         ),
@@ -408,7 +389,6 @@ function DashShowroomPage() {
     })
     setSalesE164Edited(false)
     setSalesFormErrors({})
-    setSalesDialogError(null)
     setSalesDialogOpen(true)
   }
 
@@ -426,7 +406,6 @@ function DashShowroomPage() {
     })
     setSalesE164Edited(true)
     setSalesFormErrors({})
-    setSalesDialogError(null)
     setSalesDialogOpen(true)
   }
 
@@ -435,8 +414,6 @@ function DashShowroomPage() {
   ) => {
     event.preventDefault()
     if (!isAdmin) return
-
-    setSalesDialogError(null)
 
     const payload = {
       ...(salesForm.id ? { id: salesForm.id } : {}),
@@ -475,17 +452,18 @@ function DashShowroomPage() {
         return [...updatedList].sort((a, b) => a.sortOrder - b.sortOrder)
       })
       setSalesDialogOpen(false)
-      setSalesFeedback({
+      toast.add({
         type: "success",
-        text: salesForm.id
+        title: salesForm.id
           ? `Kontak sales "${saved.name}" berhasil diperbarui.`
           : `Kontak sales "${saved.name}" berhasil ditambahkan.`,
       })
       await router.invalidate()
     } catch (err) {
-      setSalesDialogError(
-        extractErrorMessage(err, "Gagal menyimpan kontak sales.")
-      )
+      toast.add({
+        type: "error",
+        title: extractErrorMessage(err, "Gagal menyimpan kontak sales."),
+      })
     } finally {
       setIsSavingSales(false)
     }
@@ -497,7 +475,6 @@ function DashShowroomPage() {
   ) => {
     if (!isAdmin) return
 
-    setSalesFeedback(null)
     setBusySalesId(contact.id)
 
     try {
@@ -516,15 +493,15 @@ function DashShowroomPage() {
       setSales((prev) =>
         prev.map((item) => (item.id === updated.id ? updated : item))
       )
-      setSalesFeedback({
+      toast.add({
         type: "success",
-        text: `Status kontak "${updated.name}" diubah menjadi ${updated.isActive ? "Aktif" : "Nonaktif"}.`,
+        title: `Status kontak "${updated.name}" diubah menjadi ${updated.isActive ? "Aktif" : "Nonaktif"}.`,
       })
       await router.invalidate()
     } catch (err) {
-      setSalesFeedback({
+      toast.add({
         type: "error",
-        text: extractErrorMessage(err, "Gagal mengubah status kontak sales."),
+        title: extractErrorMessage(err, "Gagal mengubah status kontak sales."),
       })
     } finally {
       setBusySalesId(null)
@@ -546,7 +523,6 @@ function DashShowroomPage() {
 
     const previousSales = sales
     setSales(reordered)
-    setSalesFeedback(null)
     setIsReorderingSales(true)
 
     try {
@@ -554,16 +530,16 @@ function DashShowroomPage() {
         data: { orderedIds: reordered.map((item) => item.id) },
       })
       setSales(updated)
-      setSalesFeedback({
+      toast.add({
         type: "success",
-        text: "Urutan kontak sales berhasil diperbarui.",
+        title: "Urutan kontak sales berhasil diperbarui.",
       })
       await router.invalidate()
     } catch (err) {
       setSales(previousSales)
-      setSalesFeedback({
+      toast.add({
         type: "error",
-        text: extractErrorMessage(err, "Gagal mengubah urutan kontak sales."),
+        title: extractErrorMessage(err, "Gagal mengubah urutan kontak sales."),
       })
     } finally {
       setIsReorderingSales(false)
@@ -573,7 +549,6 @@ function DashShowroomPage() {
   const handleConfirmDeleteSales = async () => {
     if (!isAdmin || !deleteTarget) return
 
-    setSalesFeedback(null)
     setIsDeletingSales(true)
 
     try {
@@ -581,15 +556,15 @@ function DashShowroomPage() {
       const deletedName = deleteTarget.name
       setSales((prev) => prev.filter((item) => item.id !== deleteTarget.id))
       setDeleteTarget(null)
-      setSalesFeedback({
+      toast.add({
         type: "success",
-        text: `Kontak sales "${deletedName}" telah dihapus.`,
+        title: `Kontak sales "${deletedName}" telah dihapus.`,
       })
       await router.invalidate()
     } catch (err) {
-      setSalesFeedback({
+      toast.add({
         type: "error",
-        text: extractErrorMessage(err, "Gagal menghapus kontak sales."),
+        title: extractErrorMessage(err, "Gagal menghapus kontak sales."),
       })
     } finally {
       setIsDeletingSales(false)
@@ -639,30 +614,6 @@ function DashShowroomPage() {
         </div>
 
         <form onSubmit={handleSaveProfile} noValidate className="p-5 sm:p-6">
-          {profileFeedback ? (
-            <div
-              role={profileFeedback.type === "error" ? "alert" : "status"}
-              className={
-                profileFeedback.type === "success"
-                  ? "mb-6 flex items-start gap-2.5 border border-l-2 border-emerald-700/30 border-l-emerald-700 bg-emerald-50 px-3.5 py-3 text-sm text-emerald-950"
-                  : "mb-6 flex items-start gap-2.5 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3.5 py-3 text-sm text-[#991B1B]"
-              }
-            >
-              {profileFeedback.type === "success" ? (
-                <CheckCircle2
-                  className="mt-0.5 size-4 shrink-0 text-emerald-700"
-                  aria-hidden="true"
-                />
-              ) : (
-                <AlertCircle
-                  className="mt-0.5 size-4 shrink-0 text-destructive"
-                  aria-hidden="true"
-                />
-              )}
-              <span>{profileFeedback.text}</span>
-            </div>
-          ) : null}
-
           <div className="grid gap-6 lg:grid-cols-12">
             <div className="space-y-5 lg:col-span-7">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -978,21 +929,6 @@ function DashShowroomPage() {
                       {formErrors.logoUrl}
                     </p>
                   ) : null}
-
-                  {logoUploadFeedback ? (
-                    <p
-                      role={
-                        logoUploadFeedback.type === "error" ? "alert" : "status"
-                      }
-                      className={
-                        logoUploadFeedback.type === "success"
-                          ? "border border-emerald-700/30 bg-emerald-50 px-3 py-2 text-sm text-emerald-950"
-                          : "border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-[#991B1B]"
-                      }
-                    >
-                      {logoUploadFeedback.text}
-                    </p>
-                  ) : null}
                 </div>
 
                 <Dialog
@@ -1120,30 +1056,6 @@ function DashShowroomPage() {
         </div>
 
         <div className="p-5 sm:p-6">
-          {salesFeedback ? (
-            <div
-              role={salesFeedback.type === "error" ? "alert" : "status"}
-              className={
-                salesFeedback.type === "success"
-                  ? "mb-5 flex items-start gap-2.5 border border-l-2 border-emerald-700/30 border-l-emerald-700 bg-emerald-50 px-3.5 py-3 text-sm text-emerald-950"
-                  : "mb-5 flex items-start gap-2.5 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3.5 py-3 text-sm text-[#991B1B]"
-              }
-            >
-              {salesFeedback.type === "success" ? (
-                <CheckCircle2
-                  className="mt-0.5 size-4 shrink-0 text-emerald-700"
-                  aria-hidden="true"
-                />
-              ) : (
-                <AlertCircle
-                  className="mt-0.5 size-4 shrink-0 text-destructive"
-                  aria-hidden="true"
-                />
-              )}
-              <span>{salesFeedback.text}</span>
-            </div>
-          ) : null}
-
           {sales.length === 0 ? (
             <div className="border border-dashed border-border bg-secondary/20 px-6 py-10 text-center">
               <Users
@@ -1338,19 +1250,6 @@ function DashShowroomPage() {
             noValidate
             className="mt-4 space-y-4"
           >
-            {salesDialogError ? (
-              <div
-                role="alert"
-                className="flex items-start gap-2 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3 py-2.5 text-sm text-[#991B1B]"
-              >
-                <AlertCircle
-                  className="mt-0.5 size-4 shrink-0 text-destructive"
-                  aria-hidden="true"
-                />
-                <span>{salesDialogError}</span>
-              </div>
-            ) : null}
-
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <label

@@ -28,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { toast } from "@/components/ui/toast"
 import type { StaffProfile, StaffRole } from "@/lib/domain/types"
 import { listTeamProfilesFn, updateStaffProfileFn } from "@/server/dash-team"
 
@@ -35,11 +36,6 @@ const STAFF_ROLE_ITEMS: Array<{ value: StaffRole; label: string }> = [
   { value: "admin", label: "Admin" },
   { value: "sales", label: "Sales" },
 ]
-
-interface FeedbackMessage {
-  type: "success" | "error"
-  text: string
-}
 
 type RowSaveState =
   | { status: "idle" }
@@ -138,7 +134,6 @@ function DashTeamPage() {
   const [rowStates, setRowStates] = React.useState<
     Record<string, RowSaveState>
   >({})
-  const [feedback, setFeedback] = React.useState<FeedbackMessage | null>(null)
   const savedTimersRef = React.useRef<Record<string, number>>({})
 
   React.useEffect(() => {
@@ -177,7 +172,6 @@ function DashTeamPage() {
       delete savedTimersRef.current[profile.id]
     }
 
-    setFeedback(null)
     setRowStates((prev) => ({
       ...prev,
       [profile.id]: { status: "saving" },
@@ -204,9 +198,9 @@ function DashTeamPage() {
       const roleLabel = updated.role === "admin" ? "Admin" : "Sales"
       const statusLabel = updated.isActive ? "Aktif" : "Nonaktif"
 
-      setFeedback({
+      toast.add({
+        title: `Perubahan untuk ${displayName} tersimpan (${roleLabel} · ${statusLabel}).`,
         type: "success",
-        text: `Perubahan untuk ${displayName} tersimpan (${roleLabel} · ${statusLabel}).`,
       })
 
       savedTimersRef.current[profile.id] = window.setTimeout(() => {
@@ -227,9 +221,9 @@ function DashTeamPage() {
         ...prev,
         [profile.id]: { status: "error", message },
       }))
-      setFeedback({
+      toast.add({
+        title: message,
         type: "error",
-        text: message,
       })
     }
   }
@@ -357,31 +351,6 @@ function DashTeamPage() {
           terakhir tidak bisa dinonaktifkan atau diubah ke Sales.
         </p>
       </div>
-
-      {feedback ? (
-        <div
-          role={feedback.type === "error" ? "alert" : "status"}
-          aria-live="polite"
-          className={
-            feedback.type === "success"
-              ? "flex items-start gap-2.5 border border-l-2 border-emerald-700/30 border-l-emerald-700 bg-emerald-50 px-4 py-3 text-sm text-emerald-950"
-              : "flex items-start gap-2.5 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-4 py-3 text-sm text-[#991B1B]"
-          }
-        >
-          {feedback.type === "success" ? (
-            <CheckCircle2
-              className="mt-0.5 size-4 shrink-0 text-emerald-700"
-              aria-hidden="true"
-            />
-          ) : (
-            <AlertCircle
-              className="mt-0.5 size-4 shrink-0 text-destructive"
-              aria-hidden="true"
-            />
-          )}
-          <span>{feedback.text}</span>
-        </div>
-      ) : null}
 
       <section
         aria-labelledby="team-table-heading"

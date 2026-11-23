@@ -6,7 +6,6 @@ import {
   useRouter,
 } from "@tanstack/react-router"
 import {
-  AlertCircle,
   ArrowLeft,
   Eye,
   EyeOff,
@@ -15,6 +14,7 @@ import {
   ShieldCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/components/ui/toast"
 import { getPublicSiteOrigin, isDashHostname } from "@/lib/host"
 import { getCurrentStaffFn, loginWithPasswordFn } from "@/server/auth"
 
@@ -55,7 +55,7 @@ function DashLoginPage() {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [showPassword, setShowPassword] = React.useState(false)
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
+  const [hasError, setHasError] = React.useState(false)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [publicSiteUrl, setPublicSiteUrl] = React.useState(() =>
     getPublicSiteOrigin()
@@ -72,15 +72,23 @@ function DashLoginPage() {
 
     const trimmedEmail = email.trim()
     if (!trimmedEmail) {
-      setErrorMessage("Email staf wajib diisi.")
+      setHasError(true)
+      toast.add({
+        title: "Email staf wajib diisi.",
+        type: "error",
+      })
       return
     }
     if (!password) {
-      setErrorMessage("Kata sandi wajib diisi.")
+      setHasError(true)
+      toast.add({
+        title: "Kata sandi wajib diisi.",
+        type: "error",
+      })
       return
     }
 
-    setErrorMessage(null)
+    setHasError(false)
     setIsSubmitting(true)
 
     try {
@@ -92,19 +100,30 @@ function DashLoginPage() {
       })
 
       if (!result.ok) {
-        setErrorMessage(result.error)
+        setHasError(true)
+        toast.add({
+          title: result.error,
+          type: "error",
+        })
         return
       }
 
+      toast.add({
+        title: "Berhasil masuk ke dashboard.",
+        type: "success",
+      })
       await router.invalidate()
       await router.navigate({
         href: "/",
         replace: true,
       })
     } catch {
-      setErrorMessage(
-        "Tidak dapat terhubung ke layanan autentikasi. Coba beberapa saat lagi."
-      )
+      setHasError(true)
+      toast.add({
+        title:
+          "Tidak dapat terhubung ke layanan autentikasi. Coba beberapa saat lagi.",
+        type: "error",
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -174,20 +193,6 @@ function DashLoginPage() {
                 </h2>
               </div>
 
-              {errorMessage ? (
-                <div
-                  role="alert"
-                  aria-live="assertive"
-                  className="mt-6 flex items-start gap-2.5 border border-l-2 border-primary/30 border-l-primary bg-primary/5 px-3.5 py-3 text-sm text-foreground"
-                >
-                  <AlertCircle
-                    className="mt-0.5 size-4 shrink-0 text-primary"
-                    aria-hidden="true"
-                  />
-                  <span>{errorMessage}</span>
-                </div>
-              ) : null}
-
               <form
                 onSubmit={handleSubmit}
                 noValidate
@@ -211,9 +216,12 @@ function DashLoginPage() {
                     required
                     disabled={isSubmitting}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (hasError) setHasError(false)
+                    }}
                     placeholder="nama@garasi571.id"
-                    aria-invalid={errorMessage ? true : undefined}
+                    aria-invalid={hasError ? true : undefined}
                     className="min-h-11 w-full rounded-none border border-input bg-card px-3.5 py-2.5 text-sm text-foreground transition-colors placeholder:text-muted-foreground/70 focus-visible:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:bg-secondary disabled:opacity-60"
                   />
                 </div>
@@ -234,9 +242,12 @@ function DashLoginPage() {
                       required
                       disabled={isSubmitting}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                        if (hasError) setHasError(false)
+                      }}
                       placeholder="Masukkan kata sandi"
-                      aria-invalid={errorMessage ? true : undefined}
+                      aria-invalid={hasError ? true : undefined}
                       className="min-h-11 w-full rounded-none border border-input bg-card py-2.5 pr-12 pl-3.5 text-sm text-foreground transition-colors placeholder:text-muted-foreground/70 focus-visible:border-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:bg-secondary disabled:opacity-60"
                     />
                     <button

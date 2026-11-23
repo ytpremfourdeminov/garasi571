@@ -1,8 +1,6 @@
 import * as React from "react"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import {
-  AlertCircle,
-  CheckCircle2,
   ChevronDown,
   ChevronUp,
   HelpCircle,
@@ -29,6 +27,7 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/toast"
 import {
   Tooltip,
   TooltipContent,
@@ -53,11 +52,6 @@ interface FaqFormState {
   answer: string
   isPublished: boolean
   sortOrder: number
-}
-
-interface FeedbackMessage {
-  type: "success" | "error"
-  text: string
 }
 
 function extractErrorMessage(err: unknown, fallback: string): string {
@@ -113,7 +107,6 @@ function DashFaqsPage() {
   const [searchQuery, setSearchQuery] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<FaqStatusFilter>("all")
 
-  const [feedback, setFeedback] = React.useState<FeedbackMessage | null>(null)
   const [busyFaqId, setBusyFaqId] = React.useState<string | null>(null)
   const [isReordering, setIsReordering] = React.useState(false)
 
@@ -128,7 +121,6 @@ function DashFaqsPage() {
   const [formErrors, setFormErrors] = React.useState<
     Partial<Record<keyof FaqFormState, string>>
   >({})
-  const [dialogError, setDialogError] = React.useState<string | null>(null)
   const [isSaving, setIsSaving] = React.useState(false)
 
   const [deleteTarget, setDeleteTarget] =
@@ -168,7 +160,6 @@ function DashFaqsPage() {
       sortOrder: faqs.length,
     })
     setFormErrors({})
-    setDialogError(null)
     setDialogOpen(true)
   }
 
@@ -182,13 +173,11 @@ function DashFaqsPage() {
       sortOrder: faq.sortOrder,
     })
     setFormErrors({})
-    setDialogError(null)
     setDialogOpen(true)
   }
 
   const handleSaveFaq = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setDialogError(null)
 
     const payload = {
       ...(faqForm.id ? { id: faqForm.id } : {}),
@@ -225,15 +214,18 @@ function DashFaqsPage() {
         return [...nextList].sort((a, b) => a.sortOrder - b.sortOrder)
       })
       setDialogOpen(false)
-      setFeedback({
-        type: "success",
-        text: faqForm.id
+      toast.add({
+        title: faqForm.id
           ? "FAQ berhasil diperbarui."
           : "FAQ baru berhasil ditambahkan.",
+        type: "success",
       })
       await router.invalidate()
     } catch (err) {
-      setDialogError(extractErrorMessage(err, "Gagal menyimpan FAQ."))
+      toast.add({
+        title: extractErrorMessage(err, "Gagal menyimpan FAQ."),
+        type: "error",
+      })
     } finally {
       setIsSaving(false)
     }
@@ -243,7 +235,6 @@ function DashFaqsPage() {
     faq: ShowroomFaqItem,
     nextPublished: boolean
   ) => {
-    setFeedback(null)
     setBusyFaqId(faq.id)
 
     try {
@@ -260,15 +251,15 @@ function DashFaqsPage() {
       setFaqs((prev) =>
         prev.map((item) => (item.id === updated.id ? updated : item))
       )
-      setFeedback({
+      toast.add({
+        title: `Status FAQ diubah menjadi ${updated.isPublished ? "Dipublikasikan" : "Draft"}.`,
         type: "success",
-        text: `Status FAQ diubah menjadi ${updated.isPublished ? "Dipublikasikan" : "Draft"}.`,
       })
       await router.invalidate()
     } catch (err) {
-      setFeedback({
+      toast.add({
+        title: extractErrorMessage(err, "Gagal mengubah status publikasi FAQ."),
         type: "error",
-        text: extractErrorMessage(err, "Gagal mengubah status publikasi FAQ."),
       })
     } finally {
       setBusyFaqId(null)
@@ -290,7 +281,6 @@ function DashFaqsPage() {
 
     const previousFaqs = faqs
     setFaqs(reordered)
-    setFeedback(null)
     setIsReordering(true)
 
     try {
@@ -298,16 +288,16 @@ function DashFaqsPage() {
         data: { orderedIds: reordered.map((item) => item.id) },
       })
       setFaqs(updated)
-      setFeedback({
+      toast.add({
+        title: "Urutan FAQ berhasil diperbarui.",
         type: "success",
-        text: "Urutan FAQ berhasil diperbarui.",
       })
       await router.invalidate()
     } catch (err) {
       setFaqs(previousFaqs)
-      setFeedback({
+      toast.add({
+        title: extractErrorMessage(err, "Gagal memperbarui urutan FAQ."),
         type: "error",
-        text: extractErrorMessage(err, "Gagal memperbarui urutan FAQ."),
       })
     } finally {
       setIsReordering(false)
@@ -317,22 +307,21 @@ function DashFaqsPage() {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return
 
-    setFeedback(null)
     setIsDeleting(true)
 
     try {
       await deleteFaqFn({ data: { id: deleteTarget.id } })
       setFaqs((prev) => prev.filter((item) => item.id !== deleteTarget.id))
       setDeleteTarget(null)
-      setFeedback({
+      toast.add({
+        title: "FAQ berhasil dihapus.",
         type: "success",
-        text: "FAQ berhasil dihapus.",
       })
       await router.invalidate()
     } catch (err) {
-      setFeedback({
+      toast.add({
+        title: extractErrorMessage(err, "Gagal menghapus FAQ."),
         type: "error",
-        text: extractErrorMessage(err, "Gagal menghapus FAQ."),
       })
     } finally {
       setIsDeleting(false)
@@ -356,30 +345,6 @@ function DashFaqsPage() {
           <span>Tambah FAQ</span>
         </Button>
       </div>
-
-      {feedback ? (
-        <div
-          role={feedback.type === "error" ? "alert" : "status"}
-          className={
-            feedback.type === "success"
-              ? "flex items-start gap-2.5 border border-l-2 border-emerald-700/30 border-l-emerald-700 bg-emerald-50 px-4 py-3 text-sm text-emerald-950"
-              : "flex items-start gap-2.5 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-4 py-3 text-sm text-[#991B1B]"
-          }
-        >
-          {feedback.type === "success" ? (
-            <CheckCircle2
-              className="mt-0.5 size-4 shrink-0 text-emerald-700"
-              aria-hidden="true"
-            />
-          ) : (
-            <AlertCircle
-              className="mt-0.5 size-4 shrink-0 text-destructive"
-              aria-hidden="true"
-            />
-          )}
-          <span>{feedback.text}</span>
-        </div>
-      ) : null}
 
       <div className="flex flex-col gap-3 border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 sm:max-w-md">
@@ -625,19 +590,6 @@ function DashFaqsPage() {
           </DialogHeader>
 
           <form onSubmit={handleSaveFaq} noValidate className="mt-4 space-y-4">
-            {dialogError ? (
-              <div
-                role="alert"
-                className="flex items-start gap-2 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3 py-2.5 text-sm text-[#991B1B]"
-              >
-                <AlertCircle
-                  className="mt-0.5 size-4 shrink-0 text-destructive"
-                  aria-hidden="true"
-                />
-                <span>{dialogError}</span>
-              </div>
-            ) : null}
-
             <div className="space-y-1.5">
               <label
                 htmlFor="faq-question"

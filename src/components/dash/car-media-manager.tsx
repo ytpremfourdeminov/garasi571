@@ -29,6 +29,7 @@ import {
   useStableDialogData,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/toast"
 import {
   Select,
   SelectContent,
@@ -358,9 +359,6 @@ export function CarMediaManager({
   } | null>(null)
   const displayedDeleteTarget = useStableDialogData(deleteTarget)
 
-  const [errorBanner, setErrorBanner] = React.useState<string | null>(null)
-  const [statusNotice, setStatusNotice] = React.useState<string | null>(null)
-
   const fileInputRef = React.useRef<HTMLInputElement | null>(null)
   const lastEmittedRef = React.useRef<CarImage[] | null>(null)
   const draftImagesRef = React.useRef<CarImage[]>(draftImages)
@@ -378,8 +376,6 @@ export function CarMediaManager({
       setUploadQueue([])
       setDeleteTarget(null)
       setDeletingImageId(null)
-      setErrorBanner(null)
-      setStatusNotice(null)
       return
     }
 
@@ -463,8 +459,6 @@ export function CarMediaManager({
         return
       }
 
-      setErrorBanner(null)
-      setStatusNotice(null)
       setIsUploading(true)
 
       const chosenTag = uploadAngleTag
@@ -606,18 +600,22 @@ export function CarMediaManager({
       setIsUploading(false)
 
       if (uploadedCount > 0 && failedCount === 0) {
-        setStatusNotice(
-          `${uploadedCount} foto berhasil dikompresi WebP dan diunggah.`
-        )
+        toast.add({
+          type: "success",
+          title: `${uploadedCount} foto berhasil dikompresi WebP dan diunggah.`,
+        })
       } else if (uploadedCount > 0 && failedCount > 0) {
-        setStatusNotice(`${uploadedCount} foto berhasil diunggah.`)
-        setErrorBanner(
-          `${failedCount} foto gagal diunggah. Lihat detail di antrean unggahan.`
-        )
+        toast.add({
+          type: "warning",
+          title: `${uploadedCount} foto berhasil diunggah, ${failedCount} foto gagal.`,
+          description: "Lihat detail error pada antrean unggahan.",
+        })
       } else if (failedCount > 0) {
-        setErrorBanner(
-          `${failedCount} foto gagal diunggah. Periksa format dan ukuran file lalu coba lagi.`
-        )
+        toast.add({
+          type: "error",
+          title: `${failedCount} foto gagal diunggah.`,
+          description: "Periksa format dan ukuran file lalu coba lagi.",
+        })
       }
     },
     [
@@ -666,8 +664,6 @@ export function CarMediaManager({
   }
 
   const handleSetCover = (targetIndex: number) => {
-    setErrorBanner(null)
-    setStatusNotice(null)
     const next = draftImages.map((img, idx) => ({
       ...img,
       isCover: idx === targetIndex,
@@ -679,8 +675,6 @@ export function CarMediaManager({
     targetIndex: number,
     nextTag: ImageAngleTag
   ) => {
-    setErrorBanner(null)
-    setStatusNotice(null)
     const next = draftImages.map((img, idx) =>
       idx === targetIndex ? { ...img, angleTag: nextTag } : img
     )
@@ -688,8 +682,6 @@ export function CarMediaManager({
   }
 
   const handleChangeAlt = (targetIndex: number, nextAlt: string) => {
-    setErrorBanner(null)
-    setStatusNotice(null)
     const next = draftImages.map((img, idx) =>
       idx === targetIndex ? { ...img, alt: nextAlt } : img
     )
@@ -708,9 +700,6 @@ export function CarMediaManager({
       return
     }
 
-    setErrorBanner(null)
-    setStatusNotice(null)
-
     const reordered = [...draftImages]
     const temp = reordered[targetIndex]
     reordered[targetIndex] = reordered[swapIndex]
@@ -724,9 +713,6 @@ export function CarMediaManager({
   }
 
   const handleResetChanges = () => {
-    setErrorBanner(null)
-    setStatusNotice(null)
-
     const restored = draftImages
       .map((img) => {
         if (!img.id) return img
@@ -755,13 +741,11 @@ export function CarMediaManager({
       return
     }
 
-    setErrorBanner(null)
-    setStatusNotice(null)
-
     if (hasInvalidAlt) {
-      setErrorBanner(
-        "Deskripsi foto wajib diisi pada semua foto sebelum menyimpan."
-      )
+      toast.add({
+        type: "error",
+        title: "Deskripsi foto wajib diisi pada semua foto sebelum menyimpan.",
+      })
       return
     }
 
@@ -769,9 +753,11 @@ export function CarMediaManager({
       (img): img is CarImage & { id: string } => Boolean(img.id)
     )
     if (persistedImages.length !== draftImages.length) {
-      setErrorBanner(
-        "Sebagian foto belum memiliki ID tersimpan. Muat ulang halaman lalu coba lagi."
-      )
+      toast.add({
+        type: "error",
+        title:
+          "Sebagian foto belum memiliki ID tersimpan. Muat ulang halaman lalu coba lagi.",
+      })
       return
     }
 
@@ -792,11 +778,18 @@ export function CarMediaManager({
 
       setPersistedMetaById(buildPersistedMetaMap(savedImages))
       emitImages(savedImages)
-      setStatusNotice("Urutan, cover, dan metadata foto berhasil disimpan.")
+      toast.add({
+        type: "success",
+        title: "Urutan, cover, dan metadata foto berhasil disimpan.",
+      })
     } catch (err) {
-      setErrorBanner(
-        extractErrorMessage(err, "Gagal menyimpan urutan dan metadata foto.")
-      )
+      toast.add({
+        type: "error",
+        title: extractErrorMessage(
+          err,
+          "Gagal menyimpan urutan dan metadata foto."
+        ),
+      })
     } finally {
       setIsSaving(false)
     }
@@ -807,8 +800,6 @@ export function CarMediaManager({
       return
     }
 
-    setErrorBanner(null)
-    setStatusNotice(null)
     setDeletingImageId(target.id)
 
     try {
@@ -853,11 +844,15 @@ export function CarMediaManager({
 
       emitImages(nextList)
       setDeleteTarget(null)
-      setStatusNotice("Foto berhasil dihapus dari galeri dan penyimpanan.")
+      toast.add({
+        type: "success",
+        title: "Foto berhasil dihapus dari galeri dan penyimpanan.",
+      })
     } catch (err) {
-      setErrorBanner(
-        extractErrorMessage(err, "Gagal menghapus foto unit mobil.")
-      )
+      toast.add({
+        type: "error",
+        title: extractErrorMessage(err, "Gagal menghapus foto unit mobil."),
+      })
     } finally {
       setDeletingImageId(null)
       setDeleteTarget(null)
@@ -1171,31 +1166,6 @@ export function CarMediaManager({
           </div>
         ) : null}
       </div>
-
-      {/* Global Alerts & Live Status */}
-      {errorBanner ? (
-        <div
-          role="alert"
-          className="flex items-start gap-2.5 border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-[#991B1B]"
-        >
-          <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
-          <p className="flex-1">{errorBanner}</p>
-        </div>
-      ) : null}
-
-      {statusNotice ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="flex items-start gap-2.5 border border-emerald-700/35 bg-emerald-50 px-4 py-3 text-sm text-emerald-950"
-        >
-          <CheckCircle2
-            className="mt-0.5 size-4 shrink-0 text-emerald-700"
-            aria-hidden
-          />
-          <p className="flex-1">{statusNotice}</p>
-        </div>
-      ) : null}
 
       {/* Gallery Header & Save Controls */}
       <div className="border border-border bg-card p-4 sm:p-5">

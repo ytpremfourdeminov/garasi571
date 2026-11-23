@@ -5,10 +5,8 @@ import {
   useRouter,
 } from "@tanstack/react-router"
 import {
-  AlertCircle,
   Archive,
   Car,
-  CheckCircle2,
   ExternalLink,
   Loader2,
   Pencil,
@@ -46,6 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { toast } from "@/components/ui/toast"
 import {
   Tooltip,
   TooltipContent,
@@ -251,11 +250,6 @@ const FEATURED_SLOT_LABELS: Record<(typeof FEATURED_SLOT_OPTIONS)[number], strin
 
 type RowPendingAction = "status" | "featured" | "archive" | "delete"
 
-interface FeedbackState {
-  tone: "success" | "error"
-  message: string
-}
-
 function getCoverImage(car: CarUnit): CarImage | undefined {
   return car.images.find((image) => image.isCover) ?? car.images.at(0)
 }
@@ -306,10 +300,8 @@ function DashCarsPage() {
   const [pendingById, setPendingById] = React.useState<
     Record<string, RowPendingAction | undefined>
   >({})
-  const [feedback, setFeedback] = React.useState<FeedbackState | null>(null)
   const [deleteTarget, setDeleteTarget] = React.useState<CarUnit | null>(null)
   const displayedDeleteTarget = useStableDialogData(deleteTarget)
-  const [deleteError, setDeleteError] = React.useState<string | null>(null)
   const [isDeleting, setIsDeleting] = React.useState(false)
   const [publicSiteOrigin, setPublicSiteOrigin] = React.useState(() =>
     getPublicSiteOrigin()
@@ -435,7 +427,6 @@ function DashCarsPage() {
   ) => {
     if (car.status === nextStatus) return
 
-    setFeedback(null)
     setRowPending(car.id, "status")
 
     try {
@@ -443,18 +434,18 @@ function DashCarsPage() {
         data: { id: car.id, status: nextStatus },
       })
       replaceCarInState(updated)
-      setFeedback({
-        tone: "success",
-        message:
+      toast.add({
+        type: "success",
+        title:
           updated.status === "archived"
             ? `Status "${updated.name}" diubah menjadi Diarsipkan dan dilepas dari unggulan Hero.`
             : `Status "${updated.name}" berhasil diperbarui ke ${CAR_STATUS_LABELS[updated.status]}.`,
       })
       void router.invalidate()
     } catch (error) {
-      setFeedback({
-        tone: "error",
-        message: getErrorMessage(
+      toast.add({
+        type: "error",
+        title: getErrorMessage(
           error,
           `Gagal memperbarui status untuk "${car.name}".`
         ),
@@ -465,21 +456,19 @@ function DashCarsPage() {
   }
 
   const handleToggleFeatured = async (car: CarUnit, nextChecked: boolean) => {
-    setFeedback(null)
-
     if (nextChecked && car.status === "archived") {
-      setFeedback({
-        tone: "error",
-        message:
+      toast.add({
+        type: "error",
+        title:
           "Unit yang diarsipkan tidak dapat dijadikan unggulan Hero. Ubah status unit terlebih dahulu.",
       })
       return
     }
 
     if (nextChecked && !car.isFeatured && featuredCount >= 3) {
-      setFeedback({
-        tone: "error",
-        message:
+      toast.add({
+        type: "error",
+        title:
           "Maksimal 3 unit dapat dijadikan unggulan Hero. Nonaktifkan salah satu unit unggulan terlebih dahulu.",
       })
       return
@@ -496,17 +485,17 @@ function DashCarsPage() {
         },
       })
       replaceCarInState(updated)
-      setFeedback({
-        tone: "success",
-        message: updated.isFeatured
+      toast.add({
+        type: "success",
+        title: updated.isFeatured
           ? `"${updated.name}" ditandai sebagai unggulan Hero (Slot #${updated.featuredOrder ?? 1}).`
           : `"${updated.name}" dilepas dari daftar unggulan Hero.`,
       })
       void router.invalidate()
     } catch (error) {
-      setFeedback({
-        tone: "error",
-        message: getErrorMessage(
+      toast.add({
+        type: "error",
+        title: getErrorMessage(
           error,
           `Gagal memperbarui status unggulan Hero untuk "${car.name}".`
         ),
@@ -519,7 +508,6 @@ function DashCarsPage() {
   const handleFeaturedOrderChange = async (car: CarUnit, nextOrder: number) => {
     if (!car.isFeatured || car.featuredOrder === nextOrder) return
 
-    setFeedback(null)
     setRowPending(car.id, "featured")
 
     try {
@@ -531,15 +519,15 @@ function DashCarsPage() {
         },
       })
       replaceCarInState(updated)
-      setFeedback({
-        tone: "success",
-        message: `Urutan unggulan Hero "${updated.name}" diperbarui ke Slot #${updated.featuredOrder ?? nextOrder}.`,
+      toast.add({
+        type: "success",
+        title: `Urutan unggulan Hero "${updated.name}" diperbarui ke Slot #${updated.featuredOrder ?? nextOrder}.`,
       })
       void router.invalidate()
     } catch (error) {
-      setFeedback({
-        tone: "error",
-        message: getErrorMessage(
+      toast.add({
+        type: "error",
+        title: getErrorMessage(
           error,
           `Gagal mengubah urutan unggulan Hero untuk "${car.name}".`
         ),
@@ -552,7 +540,6 @@ function DashCarsPage() {
   const handleArchiveCar = async (car: CarUnit) => {
     if (car.status === "archived") return
 
-    setFeedback(null)
     setRowPending(car.id, "archive")
 
     try {
@@ -560,15 +547,15 @@ function DashCarsPage() {
         data: { id: car.id },
       })
       replaceCarInState(updated)
-      setFeedback({
-        tone: "success",
-        message: `Unit "${updated.name}" berhasil diarsipkan dan disembunyikan dari katalog publik.`,
+      toast.add({
+        type: "success",
+        title: `Unit "${updated.name}" berhasil diarsipkan dan disembunyikan dari katalog publik.`,
       })
       void router.invalidate()
     } catch (error) {
-      setFeedback({
-        tone: "error",
-        message: getErrorMessage(
+      toast.add({
+        type: "error",
+        title: getErrorMessage(
           error,
           `Gagal mengarsipkan unit "${car.name}".`
         ),
@@ -579,7 +566,6 @@ function DashCarsPage() {
   }
 
   const openDeleteDialog = (car: CarUnit) => {
-    setDeleteError(null)
     setDeleteTarget(car)
   }
 
@@ -589,7 +575,6 @@ function DashCarsPage() {
     const targetId = deleteTarget.id
     const targetName = deleteTarget.name
 
-    setDeleteError(null)
     setIsDeleting(true)
     setRowPending(targetId, "delete")
 
@@ -599,18 +584,19 @@ function DashCarsPage() {
       })
       setCars((prev) => prev.filter((item) => item.id !== targetId))
       setDeleteTarget(null)
-      setFeedback({
-        tone: "success",
-        message: `Unit "${targetName}" beserta seluruh fotonya telah dihapus permanen.`,
+      toast.add({
+        type: "success",
+        title: `Unit "${targetName}" beserta seluruh fotonya telah dihapus permanen.`,
       })
       void router.invalidate()
     } catch (error) {
-      setDeleteError(
-        getErrorMessage(
+      toast.add({
+        type: "error",
+        title: getErrorMessage(
           error,
           "Gagal menghapus unit secara permanen. Silakan coba lagi."
-        )
-      )
+        ),
+      })
     } finally {
       setIsDeleting(false)
       setRowPending(targetId, undefined)
@@ -662,52 +648,6 @@ function DashCarsPage() {
           </Link>
         </div>
       </section>
-
-      {/* Feedback Banner */}
-      {feedback ? (
-        <div
-          role={feedback.tone === "error" ? "alert" : "status"}
-          aria-live="polite"
-          className={cn(
-            "flex items-start justify-between gap-3 border px-4 py-3 text-sm",
-            feedback.tone === "error"
-              ? "border-destructive/40 bg-destructive/10 text-[#991B1B]"
-              : "border-emerald-800/30 bg-emerald-50 text-emerald-950"
-          )}
-        >
-          <div className="flex min-w-0 items-start gap-2.5 pt-1">
-            {feedback.tone === "error" ? (
-              <AlertCircle
-                className="mt-0.5 size-4 shrink-0"
-                aria-hidden="true"
-              />
-            ) : (
-              <CheckCircle2
-                className="mt-0.5 size-4 shrink-0"
-                aria-hidden="true"
-              />
-            )}
-            <p className="font-medium">{feedback.message}</p>
-          </div>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setFeedback(null)}
-                  aria-label="Tutup notifikasi"
-                  className="shrink-0"
-                />
-              }
-            >
-              <X className="size-4" aria-hidden="true" />
-            </TooltipTrigger>
-            <TooltipContent>Tutup notifikasi</TooltipContent>
-          </Tooltip>
-        </div>
-      ) : null}
 
       {/* Filter Toolbar */}
       <section
@@ -942,7 +882,7 @@ function DashCarsPage() {
                   const isRowBusy = Boolean(pendingAction)
                   const occupiedSlots = getOccupiedSlotsForCar(car.id)
                   const previewUrl = `${publicSiteOrigin}/mobil/${car.slug}`
-                  const plateLabel = car.plateInfo?.trim()
+                  const plateLabel = car.plateInfo.trim()
                     ? /^plat\b/i.test(car.plateInfo.trim())
                       ? car.plateInfo.trim()
                       : `Plat ${car.plateInfo.trim()}`
@@ -1566,7 +1506,6 @@ function DashCarsPage() {
           onOpenChange={(open) => {
             if (!open && !isDeleting) {
               setDeleteTarget(null)
-              setDeleteError(null)
             }
           }}
         >
@@ -1590,15 +1529,6 @@ function DashCarsPage() {
                   {formatRupiah(displayedDeleteTarget.cashPrice)}
                 </p>
               </div>
-            ) : null}
-
-            {deleteError ? (
-              <p
-                role="alert"
-                className="mt-3 border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm font-medium text-[#991B1B]"
-              >
-                {deleteError}
-              </p>
             ) : null}
 
             <DialogFooter>
