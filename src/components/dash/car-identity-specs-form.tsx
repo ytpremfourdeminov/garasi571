@@ -201,7 +201,6 @@ interface FieldShellProps {
   id: string
   label: string
   required?: boolean
-  hint?: string
   error?: string
   labelAction?: React.ReactNode
   className?: string
@@ -212,7 +211,6 @@ function FieldShell({
   id,
   label,
   required = false,
-  hint,
   error,
   labelAction,
   className,
@@ -246,10 +244,6 @@ function FieldShell({
             aria-hidden="true"
           />
           <span>{error}</span>
-        </p>
-      ) : hint ? (
-        <p id={`${id}-hint`} className="text-sm text-muted-foreground">
-          {hint}
         </p>
       ) : null}
     </div>
@@ -763,7 +757,6 @@ export function CarIdentitySpecsForm({
             label="Nama Lengkap Unit"
             required
             error={errors?.name}
-            hint="Sertakan varian dan tipe mesin agar mudah dicari."
             className="md:col-span-8"
           >
             <Input
@@ -771,9 +764,7 @@ export function CarIdentitySpecsForm({
               value={value.name}
               disabled={disabled}
               aria-invalid={Boolean(errors?.name)}
-              aria-describedby={
-                errors?.name ? "car-name-error" : "car-name-hint"
-              }
+              aria-describedby={errors?.name ? "car-name-error" : undefined}
               onChange={(event) => handleNameChange(event.target.value)}
               placeholder="Contoh: Toyota Kijang Innova Reborn 2.4 V Diesel"
             />
@@ -784,7 +775,6 @@ export function CarIdentitySpecsForm({
             label="Nama Singkat (Kartu & Beranda)"
             required
             error={errors?.shortName}
-            hint="Versi ringkas untuk judul kartu dan sorotan beranda."
             className="md:col-span-8"
           >
             <Input
@@ -793,9 +783,7 @@ export function CarIdentitySpecsForm({
               disabled={disabled}
               aria-invalid={Boolean(errors?.shortName)}
               aria-describedby={
-                errors?.shortName
-                  ? "car-short-name-error"
-                  : "car-short-name-hint"
+                errors?.shortName ? "car-short-name-error" : undefined
               }
               onChange={(event) => onChange({ shortName: event.target.value })}
               placeholder="Contoh: Innova Reborn 2.4 V"
@@ -807,7 +795,6 @@ export function CarIdentitySpecsForm({
             label="Tahun Tampil"
             required
             error={errors?.year}
-            hint="Bisa format tunggal (2021) atau pemakaian/NIK (2015/2014)."
             className="md:col-span-4"
           >
             <Input
@@ -815,9 +802,7 @@ export function CarIdentitySpecsForm({
               value={value.year}
               disabled={disabled}
               aria-invalid={Boolean(errors?.year)}
-              aria-describedby={
-                errors?.year ? "car-year-error" : "car-year-hint"
-              }
+              aria-describedby={errors?.year ? "car-year-error" : undefined}
               onChange={(event) => handleYearChange(event.target.value)}
               placeholder="Contoh: 2015/2014"
               className="tabular-nums"
@@ -829,7 +814,6 @@ export function CarIdentitySpecsForm({
             label="Tahun Urut"
             required
             error={errors?.yearSort}
-            hint="Untuk pengurutan di katalog."
             className="md:col-span-3"
           >
             <Input
@@ -841,9 +825,7 @@ export function CarIdentitySpecsForm({
               value={value.yearSort > 0 ? String(value.yearSort) : ""}
               disabled={disabled}
               aria-invalid={Boolean(errors?.yearSort)}
-              aria-describedby={
-                errors?.yearSort ? "car-year-sort-error" : "car-year-sort-hint"
-              }
+              aria-describedby={errors?.yearSort ? "car-year-sort-error" : undefined}
               onChange={(event) => handleYearSortChange(event.target.value)}
               placeholder="2015"
               className="tabular-nums"
@@ -855,7 +837,6 @@ export function CarIdentitySpecsForm({
             label="Kategori Katalog"
             required
             error={errors?.category ?? errors?.categoryLabel}
-            hint={`Label publik: ${value.categoryLabel || getCategoryLabel(value.category)}`}
             className="md:col-span-5"
           >
             <Select
@@ -923,7 +904,6 @@ export function CarIdentitySpecsForm({
             id="car-seat-capacity"
             label="Kapasitas Kursi"
             error={errors?.seatCapacity}
-            hint="Jumlah penumpang (contoh: 5 atau 7)."
             className="md:col-span-3"
           >
             <div className="relative">
@@ -940,11 +920,7 @@ export function CarIdentitySpecsForm({
                 }
                 disabled={disabled}
                 aria-invalid={Boolean(errors?.seatCapacity)}
-                aria-describedby={
-                  errors?.seatCapacity
-                    ? "car-seat-capacity-error"
-                    : "car-seat-capacity-hint"
-                }
+                aria-describedby={errors?.seatCapacity ? "car-seat-capacity-error" : undefined}
                 onChange={(event) =>
                   handleNumberChange("seatCapacity", event.target.value)
                 }
@@ -999,7 +975,6 @@ export function CarIdentitySpecsForm({
             id="car-interior-color"
             label="Warna Interior"
             error={errors?.interiorColor}
-            hint="Opsional, membantu pembeli melihat nuansa kabin."
             className="md:col-span-6"
           >
             <Input
@@ -1007,11 +982,7 @@ export function CarIdentitySpecsForm({
               value={value.interiorColor ?? ""}
               disabled={disabled}
               aria-invalid={Boolean(errors?.interiorColor)}
-              aria-describedby={
-                errors?.interiorColor
-                  ? "car-interior-color-error"
-                  : "car-interior-color-hint"
-              }
+              aria-describedby={errors?.interiorColor ? "car-interior-color-error" : undefined}
               onChange={(event) =>
                 onChange({
                   interiorColor: event.target.value.trim()
@@ -1027,7 +998,6 @@ export function CarIdentitySpecsForm({
             id="car-offer-badge"
             label="Label Promo (Opsional)"
             error={errors?.offerBadge}
-            hint="Label singkat di pojok kartu katalog."
             className="md:col-span-6"
           >
             <Input
@@ -1035,11 +1005,7 @@ export function CarIdentitySpecsForm({
               value={value.offerBadge ?? ""}
               disabled={disabled}
               aria-invalid={Boolean(errors?.offerBadge)}
-              aria-describedby={
-                errors?.offerBadge
-                  ? "car-offer-badge-error"
-                  : "car-offer-badge-hint"
-              }
+              aria-describedby={errors?.offerBadge ? "car-offer-badge-error" : undefined}
               onChange={(event) =>
                 onChange({
                   offerBadge: event.target.value.trim()
@@ -1080,7 +1046,6 @@ export function CarIdentitySpecsForm({
             label="Status Unit"
             required
             error={errors?.status}
-            hint="Hanya unit berstatus Ready (atau Booked/Sold sesuai kebijakan) yang tampil di situs publik."
             className="md:col-span-6"
           >
             <Select
@@ -1201,7 +1166,6 @@ export function CarIdentitySpecsForm({
             label="Detail Transmisi"
             required
             error={errors?.transmission}
-            hint="Tampil pada detail unit (mis. Automatic CVT, Manual 5-Speed)."
             className="md:col-span-6"
           >
             <Input
@@ -1209,11 +1173,7 @@ export function CarIdentitySpecsForm({
               value={value.transmission}
               disabled={disabled}
               aria-invalid={Boolean(errors?.transmission)}
-              aria-describedby={
-                errors?.transmission
-                  ? "car-transmission-error"
-                  : "car-transmission-hint"
-              }
+              aria-describedby={errors?.transmission ? "car-transmission-error" : undefined}
               onChange={(event) =>
                 onChange({ transmission: event.target.value })
               }
@@ -1226,7 +1186,6 @@ export function CarIdentitySpecsForm({
             label="Kelompok Transmisi"
             required
             error={errors?.transmissionGroup}
-            hint="Untuk filter Automatic / Manual di katalog."
             className="md:col-span-6"
           >
             <Select
@@ -1294,11 +1253,6 @@ export function CarIdentitySpecsForm({
             id="car-engine-cc"
             label="Kapasitas Mesin (CC)"
             error={errors?.engineCc}
-            hint={
-              isEv
-                ? "Kosongkan untuk unit listrik murni (EV)."
-                : "Masukkan angka kubikasi (contoh: 1496, 2393)."
-            }
             className="md:col-span-4"
           >
             <div className="relative">
@@ -1314,11 +1268,7 @@ export function CarIdentitySpecsForm({
                 }
                 disabled={disabled}
                 aria-invalid={Boolean(errors?.engineCc)}
-                aria-describedby={
-                  errors?.engineCc
-                    ? "car-engine-cc-error"
-                    : "car-engine-cc-hint"
-                }
+                aria-describedby={errors?.engineCc ? "car-engine-cc-error" : undefined}
                 onChange={(event) =>
                   handleNumberChange("engineCc", event.target.value)
                 }
@@ -1397,11 +1347,6 @@ export function CarIdentitySpecsForm({
             id="car-mileage-km"
             label="Angka Odometer (KM)"
             error={errors?.mileageKm}
-            hint={
-              typeof value.mileageKm === "number" && value.mileageKm > 0
-                ? `Terbaca: ${new Intl.NumberFormat("id-ID").format(value.mileageKm)} km`
-                : "Masukkan angka bulat tanpa titik (contoh: 65000)."
-            }
             className="md:col-span-5"
           >
             <div className="relative">
@@ -1417,11 +1362,7 @@ export function CarIdentitySpecsForm({
                 }
                 disabled={disabled}
                 aria-invalid={Boolean(errors?.mileageKm)}
-                aria-describedby={
-                  errors?.mileageKm
-                    ? "car-mileage-km-error"
-                    : "car-mileage-km-hint"
-                }
+                aria-describedby={errors?.mileageKm ? "car-mileage-km-error" : undefined}
                 onChange={(event) =>
                   handleNumberChange("mileageKm", event.target.value)
                 }
@@ -1439,7 +1380,6 @@ export function CarIdentitySpecsForm({
             label="Label Odometer Tampil"
             required
             error={errors?.mileageLabel}
-            hint="Teks yang tampil di kartu & detail unit (mis. 65 ribu km on going)."
             className="md:col-span-7"
           >
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -1448,11 +1388,7 @@ export function CarIdentitySpecsForm({
                 value={value.mileageLabel}
                 disabled={disabled}
                 aria-invalid={Boolean(errors?.mileageLabel)}
-                aria-describedby={
-                  errors?.mileageLabel
-                    ? "car-mileage-label-error"
-                    : "car-mileage-label-hint"
-                }
+                aria-describedby={errors?.mileageLabel ? "car-mileage-label-error" : undefined}
                 onChange={(event) =>
                   onChange({ mileageLabel: event.target.value })
                 }
@@ -1516,7 +1452,6 @@ export function CarIdentitySpecsForm({
                 id="car-mileage-verification-source"
                 label="Sumber Verifikasi Odometer"
                 error={errors?.mileageVerificationSource}
-                hint="Contoh: Buku servis bengkel resmi Toyota & hasil scan OBD."
                 className="md:col-span-7"
               >
                 <Input
@@ -1524,11 +1459,7 @@ export function CarIdentitySpecsForm({
                   value={value.mileageVerificationSource ?? ""}
                   disabled={disabled}
                   aria-invalid={Boolean(errors?.mileageVerificationSource)}
-                  aria-describedby={
-                    errors?.mileageVerificationSource
-                      ? "car-mileage-verification-source-error"
-                      : "car-mileage-verification-source-hint"
-                  }
+                  aria-describedby={errors?.mileageVerificationSource ? "car-mileage-verification-source-error" : undefined}
                   onChange={(event) =>
                     onChange({
                       mileageVerificationSource: event.target.value.trim()
