@@ -128,7 +128,7 @@ function DashLoginPage() {
                   <p className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
                     GARASI 571
                   </p>
-                  <p className="mt-1 text-[10px] font-medium tracking-[0.18em] text-[#C7C2BC] uppercase">
+                  <p className="mt-1 text-sm font-medium tracking-[0.18em] text-[#C7C2BC] uppercase">
                     Surakarta
                   </p>
                 </div>
@@ -146,7 +146,7 @@ function DashLoginPage() {
             </div>
 
             <div className="mt-8 border-t border-[#2F2D2B] pt-5">
-              <div className="flex items-start gap-2.5 text-xs leading-relaxed text-[#C7C2BC]">
+              <div className="flex items-start gap-2.5 text-sm leading-relaxed text-[#C7C2BC]">
                 <ShieldCheck
                   className="mt-0.5 size-4 shrink-0 text-primary"
                   aria-hidden="true"
@@ -196,7 +196,7 @@ function DashLoginPage() {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="staff-email"
-                    className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     Email Staf
                   </label>
@@ -221,7 +221,7 @@ function DashLoginPage() {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="staff-password"
-                    className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     Kata Sandi
                   </label>
@@ -281,13 +281,13 @@ function DashLoginPage() {
               </form>
 
               <div className="mt-7 flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Lupa akses? Hubungi Admin Garasi 571.
                 </p>
 
                 <a
                   href={publicSiteUrl}
-                  className="inline-flex min-h-11 items-center gap-1.5 text-xs font-semibold text-foreground no-underline transition-colors hover:text-primary"
+                  className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-foreground no-underline transition-colors hover:text-primary"
                 >
                   <ArrowLeft className="size-3.5" aria-hidden="true" />
                   <span>Website Publik</span>

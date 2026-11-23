@@ -334,7 +334,7 @@ function DashFaqsPage() {
 
       <div className="grid grid-cols-3 gap-3 sm:max-w-lg">
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Total FAQ
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-foreground tabular-nums">
@@ -342,7 +342,7 @@ function DashFaqsPage() {
           </p>
         </div>
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Publik
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-emerald-800 tabular-nums">
@@ -350,7 +350,7 @@ function DashFaqsPage() {
           </p>
         </div>
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Draft
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-muted-foreground tabular-nums">
@@ -437,7 +437,7 @@ function DashFaqsPage() {
       </div>
 
       {isFiltered && faqs.length > 1 ? (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Reset filter untuk mengubah urutan FAQ.
         </p>
       ) : null}
@@ -500,7 +500,7 @@ function DashFaqsPage() {
               >
                 <div className="flex flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-start lg:justify-between">
                   <div className="flex min-w-0 flex-1 items-start gap-3.5">
-                    <span className="inline-flex size-8 shrink-0 items-center justify-center border border-border bg-secondary font-mono text-xs font-semibold text-foreground tabular-nums">
+                    <span className="inline-flex size-8 shrink-0 items-center justify-center border border-border bg-secondary font-mono text-sm font-semibold text-foreground tabular-nums">
                       #{displayNumber}
                     </span>
 
@@ -533,7 +533,7 @@ function DashFaqsPage() {
                         }}
                         aria-label={`Publikasikan FAQ: ${faq.question}`}
                       />
-                      <span className="text-xs font-medium text-muted-foreground">
+                      <span className="text-sm font-medium text-muted-foreground">
                         {faq.isPublished ? "Dipublikasikan" : "Draft"}
                       </span>
                     </div>
@@ -608,7 +608,7 @@ function DashFaqsPage() {
             {dialogError ? (
               <div
                 role="alert"
-                className="flex items-start gap-2 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3 py-2.5 text-xs text-[#991B1B]"
+                className="flex items-start gap-2 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3 py-2.5 text-sm text-[#991B1B]"
               >
                 <AlertCircle
                   className="mt-0.5 size-4 shrink-0 text-destructive"
@@ -621,7 +621,7 @@ function DashFaqsPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="faq-question"
-                className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Pertanyaan
               </label>
@@ -643,7 +643,7 @@ function DashFaqsPage() {
                 placeholder="Apakah bisa tukar tambah dengan mobil lama saya?"
               />
               {formErrors.question ? (
-                <p className="text-xs text-destructive">
+                <p className="text-sm text-destructive">
                   {formErrors.question}
                 </p>
               ) : null}
@@ -652,7 +652,7 @@ function DashFaqsPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="faq-slug"
-                className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Slug Unik
               </label>
@@ -669,9 +669,9 @@ function DashFaqsPage() {
                 className="font-mono"
               />
               {formErrors.slug ? (
-                <p className="text-xs text-destructive">{formErrors.slug}</p>
+                <p className="text-sm text-destructive">{formErrors.slug}</p>
               ) : (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Huruf kecil, angka, dan tanda hubung (-). Otomatis terisi dari
                   pertanyaan saat menambah FAQ baru.
                 </p>
@@ -681,7 +681,7 @@ function DashFaqsPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="faq-answer"
-                className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Jawaban
               </label>
@@ -697,13 +697,13 @@ function DashFaqsPage() {
                 placeholder="Ya, kami melayani tukar tambah untuk berbagai merek mobil bekas dengan proses cek kondisi transparan di showroom Surakarta..."
               />
               {formErrors.answer ? (
-                <p className="text-xs text-destructive">{formErrors.answer}</p>
+                <p className="text-sm text-destructive">{formErrors.answer}</p>
               ) : null}
             </div>
 
             <div className="flex items-center justify-between border border-border bg-secondary/40 px-3.5 py-2.5">
               <div>
-                <p className="text-xs font-semibold text-foreground">
+                <p className="text-sm font-semibold text-foreground">
                   Tampilkan di Halaman Publik
                 </p>
               </div>

@@ -211,7 +211,7 @@ export function CatalogSection({
                 strokeLinecap="square"
               />
             </svg>
-            <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+            <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
               01 / Katalog
             </span>
           </div>
@@ -253,7 +253,7 @@ export function CatalogSection({
                   <span>{option.label}</span>
                   <span
                     className={cn(
-                      "text-xs tabular-nums",
+                      "text-sm tabular-nums",
                       isActive ? "text-[#C7C2BC]" : "text-muted-foreground"
                     )}
                   >
@@ -269,7 +269,7 @@ export function CatalogSection({
               <div className="md:col-span-6 lg:col-span-4">
                 <label
                   htmlFor="catalog-search-desktop"
-                  className="block text-xs font-semibold text-foreground"
+                  className="block text-sm font-semibold text-foreground"
                 >
                   Cari Unit
                 </label>
@@ -294,7 +294,7 @@ export function CatalogSection({
               <div className="md:col-span-3 lg:col-span-2">
                 <label
                   htmlFor="catalog-budget-desktop"
-                  className="block text-xs font-semibold text-foreground"
+                  className="block text-sm font-semibold text-foreground"
                 >
                   Budget
                 </label>
@@ -326,7 +326,7 @@ export function CatalogSection({
               <div className="md:col-span-3 lg:col-span-2">
                 <label
                   htmlFor="catalog-transmisi-desktop"
-                  className="block text-xs font-semibold text-foreground"
+                  className="block text-sm font-semibold text-foreground"
                 >
                   Transmisi
                 </label>
@@ -357,7 +357,7 @@ export function CatalogSection({
               <div className="md:col-span-3 lg:col-span-2">
                 <label
                   htmlFor="catalog-bayar-desktop"
-                  className="block text-xs font-semibold text-foreground"
+                  className="block text-sm font-semibold text-foreground"
                 >
                   Pembayaran
                 </label>
@@ -390,7 +390,7 @@ export function CatalogSection({
               <div className="md:col-span-3 lg:col-span-2">
                 <label
                   htmlFor="catalog-urut-desktop"
-                  className="block text-xs font-semibold text-foreground"
+                  className="block text-sm font-semibold text-foreground"
                 >
                   Urutkan
                 </label>
@@ -432,7 +432,7 @@ export function CatalogSection({
           <div>
             <label
               htmlFor="catalog-search-mobile"
-              className="block text-xs font-semibold text-foreground"
+              className="block text-sm font-semibold text-foreground"
             >
               Cari Unit
             </label>
@@ -472,7 +472,7 @@ export function CatalogSection({
                     })
                   }
                   className={cn(
-                    "inline-flex min-h-11 items-center gap-1.5 rounded-none border px-3 py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    "inline-flex min-h-11 items-center gap-1.5 rounded-none border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                     isActive
                       ? "border-[#161514] bg-[#161514] text-[#FAF9F7]"
                       : "border-input bg-card text-foreground hover:bg-secondary"
@@ -502,11 +502,11 @@ export function CatalogSection({
                 <span>Filter &amp; Urutkan</span>
               </span>
               {secondaryFilterCount > 0 ? (
-                <span className="bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground tabular-nums">
+                <span className="bg-primary px-2 py-0.5 text-sm font-semibold text-primary-foreground tabular-nums">
                   {secondaryFilterCount}
                 </span>
               ) : (
-                <span className="text-xs text-muted-foreground">Atur</span>
+                <span className="text-sm text-muted-foreground">Atur</span>
               )}
             </SheetTrigger>
 
@@ -519,7 +519,7 @@ export function CatalogSection({
                 <div>
                   <label
                     htmlFor="catalog-budget-mobile"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Rentang Budget
                   </label>
@@ -557,7 +557,7 @@ export function CatalogSection({
                 <div>
                   <label
                     htmlFor="catalog-transmisi-mobile"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Transmisi
                   </label>
@@ -588,7 +588,7 @@ export function CatalogSection({
                 <div>
                   <label
                     htmlFor="catalog-bayar-mobile"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Pembayaran
                   </label>
@@ -621,7 +621,7 @@ export function CatalogSection({
                 <div>
                   <label
                     htmlFor="catalog-urut-mobile"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Urutkan
                   </label>

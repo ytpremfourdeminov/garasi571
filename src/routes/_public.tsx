@@ -88,7 +88,7 @@ function PublicNotFoundContent() {
   return (
     <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="border border-border bg-card p-6 sm:p-8">
-        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
           404
         </p>
         <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">

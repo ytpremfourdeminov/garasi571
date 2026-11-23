@@ -58,10 +58,10 @@ export function SiteHeader() {
               className="size-8 shrink-0 object-contain sm:size-9"
             />
             <span className="flex flex-col leading-none">
-              <span className="font-heading text-xs font-bold tracking-tight text-[#FAF9F7] uppercase sm:text-sm">
+              <span className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7] uppercase sm:text-sm">
                 {showroom.name}
               </span>
-              <span className="hidden text-[10px] font-medium tracking-widest text-[#C7C2BC] uppercase sm:block">
+              <span className="hidden text-sm font-medium tracking-widest text-[#C7C2BC] uppercase sm:block">
                 {showroom.city}
               </span>
             </span>
@@ -99,7 +99,7 @@ export function SiteHeader() {
             <Button
               type="button"
               size="default"
-              className="px-3 text-xs sm:text-sm"
+              className="px-3 text-sm"
               onClick={() =>
                 openWhatsAppDialog({ message: defaultInquiryMessage })
               }
@@ -114,7 +114,7 @@ export function SiteHeader() {
                 aria-label="Buka menu navigasi"
                 className={cn(
                   buttonVariants({ variant: "outline" }),
-                  "px-3 text-xs sm:text-sm"
+                  "px-3 text-sm"
                 )}
               >
                 <Menu className="size-4" aria-hidden="true" />
@@ -160,7 +160,7 @@ export function SiteHeader() {
 
                   {showroom.sales.length > 0 ? (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                      <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                         Kontak WhatsApp Sales
                       </p>
                       {showroom.sales.map((person) => (
@@ -177,11 +177,11 @@ export function SiteHeader() {
                         >
                           <span>
                             <span className="font-semibold">{person.name}</span>
-                            <span className="block text-xs text-muted-foreground tabular-nums">
+                            <span className="block text-sm text-muted-foreground tabular-nums">
                               {person.phoneDisplay}
                             </span>
                           </span>
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                          <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
                             <span>WhatsApp</span>
                             <ExternalLink
                               className="size-3.5"

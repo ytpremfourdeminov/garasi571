@@ -68,7 +68,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
 
       <div className="flex flex-wrap gap-2.5">
         {summary.floodFree ? (
-          <div className="inline-flex items-center gap-2 border border-primary/40 bg-primary/10 px-3.5 py-2 text-xs font-semibold text-foreground">
+          <div className="inline-flex items-center gap-2 border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-foreground">
             <ShieldCheck
               className="size-4 shrink-0 text-primary"
               aria-hidden="true"
@@ -78,7 +78,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
         ) : null}
 
         {summary.majorAccidentFree ? (
-          <div className="inline-flex items-center gap-2 border border-primary/40 bg-primary/10 px-3.5 py-2 text-xs font-semibold text-foreground">
+          <div className="inline-flex items-center gap-2 border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-foreground">
             <ShieldCheck
               className="size-4 shrink-0 text-primary"
               aria-hidden="true"
@@ -88,7 +88,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
         ) : null}
 
         {car.mechanicCheckAllowed ? (
-          <div className="inline-flex items-center gap-2 border border-border bg-secondary px-3.5 py-2 text-xs font-semibold text-foreground">
+          <div className="inline-flex items-center gap-2 border border-border bg-secondary px-3.5 py-2 text-sm font-semibold text-foreground">
             <Wrench
               className="size-4 shrink-0 text-primary"
               aria-hidden="true"
@@ -98,7 +98,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
         ) : null}
 
         {warrantyInfo ? (
-          <div className="inline-flex items-center gap-2 border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground">
+          <div className="inline-flex items-center gap-2 border border-border bg-card px-3.5 py-2 text-sm font-semibold text-foreground">
             <Check
               className="size-4 shrink-0 text-primary"
               aria-hidden="true"
@@ -117,7 +117,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
                   key={sector.label}
                   className="border-r border-b border-border px-4 py-3.5 last:border-b-0"
                 >
-                  <dt className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                  <dt className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                     {sector.label}
                   </dt>
                   <dd className="mt-1 text-sm font-semibold text-foreground">
@@ -130,7 +130,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
 
           {inspectionNotes ? (
             <div className="p-4 sm:p-5">
-              <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Catatan Ringkasan Inspeksi
               </p>
               <p className="mt-1.5 text-sm leading-relaxed text-foreground">
@@ -143,7 +143,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
 
       {hasMaintenance ? (
         <div className="border border-border bg-card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-primary uppercase">
+          <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-primary uppercase">
             <Wrench className="size-4 shrink-0" aria-hidden="true" />
             <h3>Peremajaan &amp; Servis Terakhir</h3>
           </div>
@@ -168,14 +168,14 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
       {hasImperfections ? (
         <div className="border border-border bg-secondary/60 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-foreground uppercase">
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-foreground uppercase">
               <AlertTriangle
                 className="size-4 shrink-0 text-primary"
                 aria-hidden="true"
               />
               <h3>Transparansi Catatan Fisik / Minus Minor</h3>
             </div>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               Dicatat jujur agar pembeli tahu kondisi riil sebelum ke showroom
             </span>
           </div>
@@ -197,7 +197,7 @@ export function CarInspectionSection({ car }: CarInspectionSectionProps) {
 
                 <span
                   className={cn(
-                    "inline-flex w-fit shrink-0 items-center border px-2.5 py-0.5 text-xs font-semibold uppercase",
+                    "inline-flex w-fit shrink-0 items-center border px-2.5 py-0.5 text-sm font-semibold uppercase",
                     item.severity === "moderate"
                       ? "border-primary/50 bg-primary/15 text-primary"
                       : "border-border bg-secondary text-foreground",

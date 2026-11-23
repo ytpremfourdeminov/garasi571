@@ -30,7 +30,7 @@ export function SiteFooter() {
                 <span className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7] uppercase">
                   {showroom.name}
                 </span>
-                <span className="text-[10px] font-medium tracking-widest text-[#C7C2BC] uppercase">
+                <span className="text-sm font-medium tracking-widest text-[#C7C2BC] uppercase">
                   {showroom.city}
                 </span>
               </span>
@@ -50,7 +50,7 @@ export function SiteFooter() {
 
           <div className="flex flex-col gap-6 sm:flex-row sm:gap-12">
             <div>
-              <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <h2 className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Navigasi
               </h2>
               <ul className="mt-2 flex flex-col">
@@ -85,7 +85,7 @@ export function SiteFooter() {
             </div>
 
             <div>
-              <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <h2 className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Showroom & Kontak
               </h2>
               <ul className="mt-2 flex flex-col gap-1">
@@ -133,7 +133,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-2 border-t border-border pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-2 border-t border-border pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
             {showroom.name} ({showroom.city}). Inspeksi unit langsung di
             showroom.

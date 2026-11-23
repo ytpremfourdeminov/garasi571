@@ -175,7 +175,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
 
       {evSpecRows.length > 0 ? (
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-primary uppercase">
+          <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-primary uppercase">
             <BatteryCharging className="size-4 shrink-0" aria-hidden="true" />
             <h3>Spesifikasi Baterai &amp; Sistem EV / Hybrid</h3>
           </div>
@@ -186,7 +186,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
                 key={row.label}
                 className="border-r border-b border-border px-4 py-3.5"
               >
-                <dt className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                <dt className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                   {row.label}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-foreground tabular-nums">
@@ -200,7 +200,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
 
       {hasInsights && insights ? (
         <div className="space-y-4 border border-border bg-card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-primary uppercase">
+          <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-primary uppercase">
             <Lightbulb className="size-4 shrink-0" aria-hidden="true" />
             <h3>Catatan Ahli &amp; Estimasi Kepemilikan</h3>
           </div>
@@ -208,7 +208,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {insights.realWorldFuelConsumption?.trim() ? (
               <div className="border border-border bg-secondary/50 p-3.5">
-                <dt className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                <dt className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                   Konsumsi BBM / Energi Riil
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-foreground">
@@ -219,7 +219,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
 
             {insights.estimatedMaintenanceCost?.trim() ? (
               <div className="border border-border bg-secondary/50 p-3.5">
-                <dt className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                <dt className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                   Estimasi Biaya Perawatan Tahunan
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-foreground">
@@ -231,7 +231,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
 
           {insights.commonIssuesChecked?.trim() ? (
             <div className="border-t border-border pt-3.5">
-              <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Titik Penyakit Khas yang Sudah Dicek
               </p>
               <p className="mt-1 text-sm leading-relaxed text-foreground">
@@ -242,7 +242,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
 
           {insights.expertNotes?.trim() ? (
             <div className="border-t border-border pt-3.5">
-              <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Catatan Ahli Garasi 571
               </p>
               <p className="mt-1 text-sm leading-relaxed text-foreground">
@@ -256,7 +256,7 @@ export function CarInsightsSection({ car }: CarInsightsSectionProps) {
       {videoUrl ? (
         <div className="space-y-3 border border-border bg-card p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-primary uppercase">
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-primary uppercase">
               <PlayCircle className="size-4 shrink-0" aria-hidden="true" />
               <h3>Video Walkaround Unit</h3>
             </div>

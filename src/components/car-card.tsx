@@ -60,39 +60,39 @@ export function CarCard({ car }: CarCardProps) {
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
           ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-secondary px-4 text-center text-xs text-muted-foreground">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-secondary px-4 text-center text-sm text-muted-foreground">
               <Camera className="size-6 opacity-50" aria-hidden="true" />
               <span>Foto unit belum tersedia</span>
             </div>
           )}
 
-          <span className="absolute top-2.5 left-2.5 bg-[#161514] px-2.5 py-1 text-xs font-medium text-[#FAF9F7]">
+          <span className="absolute top-2.5 left-2.5 bg-[#161514] px-2.5 py-1 text-sm font-medium text-[#FAF9F7]">
             {car.categoryLabel}
           </span>
 
           {isBooked || offerBadge ? (
             <div className="absolute top-2.5 right-2.5 flex max-w-[60%] flex-wrap justify-end gap-1.5">
               {isBooked ? (
-                <span className="border border-amber-400/40 bg-[#161514]/90 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-amber-200 uppercase">
+                <span className="border border-amber-400/40 bg-[#161514]/90 px-2.5 py-1 text-sm font-semibold tracking-wide text-amber-200 uppercase">
                   Dibooking
                 </span>
               ) : null}
               {offerBadge ? (
-                <span className="bg-primary px-2.5 py-1 text-[11px] font-semibold text-primary-foreground">
+                <span className="bg-primary px-2.5 py-1 text-sm font-semibold text-primary-foreground">
                   {offerBadge}
                 </span>
               ) : null}
             </div>
           ) : null}
 
-          <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 bg-[#161514] px-2.5 py-1 text-xs font-medium text-[#FAF9F7] tabular-nums">
+          <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 bg-[#161514] px-2.5 py-1 text-sm font-medium text-[#FAF9F7] tabular-nums">
             <Camera className="size-3.5" aria-hidden="true" />
             <span>{car.images.length} foto</span>
           </span>
         </Link>
 
         <div className="p-4 sm:p-5">
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
             <span className="tabular-nums">{car.year}</span>
             <span aria-hidden="true">/</span>
             <span>{car.transmission}</span>
@@ -113,7 +113,7 @@ export function CarCard({ car }: CarCardProps) {
           <div className="mt-3 border-y border-border py-3 tabular-nums">
             {car.creditPrice !== null ? (
               <div className="space-y-1.5">
-                <div className="flex items-baseline justify-between gap-2 text-xs">
+                <div className="flex items-baseline justify-between gap-2 text-sm">
                   <span className="text-muted-foreground">Harga Cash</span>
                   <span className="text-sm font-semibold text-foreground">
                     {formatRupiah(car.cashPrice)}
@@ -121,7 +121,7 @@ export function CarCard({ car }: CarCardProps) {
                 </div>
 
                 <div className="flex items-baseline justify-between gap-2">
-                  <span className="text-xs font-semibold text-primary">
+                  <span className="text-sm font-semibold text-primary">
                     Harga Kredit
                   </span>
                   <span className="font-heading text-lg font-bold text-foreground">
@@ -130,7 +130,7 @@ export function CarCard({ car }: CarCardProps) {
                 </div>
 
                 {(car.creditPriceNote || startingDp !== null) && (
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 text-sm text-muted-foreground">
                     <span>{car.creditPriceNote ?? "Tersedia opsi kredit"}</span>
                     {startingDp !== null ? (
                       <span className="font-medium text-foreground">
@@ -143,10 +143,10 @@ export function CarCard({ car }: CarCardProps) {
             ) : (
               <div className="space-y-1">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-primary">
+                  <span className="text-sm font-semibold text-primary">
                     Special Price Cash
                   </span>
-                  <span className="border border-border bg-secondary px-2 py-0.5 text-[11px] font-semibold text-foreground">
+                  <span className="border border-border bg-secondary px-2 py-0.5 text-sm font-semibold text-foreground">
                     Khusus Cash
                   </span>
                 </div>
@@ -157,7 +157,7 @@ export function CarCard({ car }: CarCardProps) {
             )}
           </div>
 
-          <ul className="mt-3 space-y-1.5 text-xs leading-relaxed text-muted-foreground">
+          <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-muted-foreground">
             {car.highlights.slice(0, 3).map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <Check

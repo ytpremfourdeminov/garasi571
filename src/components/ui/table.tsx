@@ -79,7 +79,7 @@ function TableHead({
     <th
       data-slot="table-head"
       className={cn(
-        "h-11 px-3.5 text-left align-middle text-[11px] font-semibold tracking-wider whitespace-nowrap text-muted-foreground uppercase [&:has([role=checkbox])]:pr-0",
+        "h-11 px-3.5 text-left align-middle text-sm font-semibold tracking-wider whitespace-nowrap text-muted-foreground uppercase [&:has([role=checkbox])]:pr-0",
         numeric && "text-right tabular-nums",
         className
       )}
@@ -115,7 +115,7 @@ function TableCaption({
   return (
     <caption
       data-slot="table-caption"
-      className={cn("mt-3 text-xs text-muted-foreground", className)}
+      className={cn("mt-3 text-sm text-muted-foreground", className)}
       {...props}
     />
   )

@@ -119,7 +119,7 @@ export function WhatsAppDialogProvider({
 
           <div className="mt-4 space-y-4">
             <div className="border border-border bg-secondary p-3.5">
-              <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Pratinjau Pesan WhatsApp
               </p>
               <p className="mt-1.5 text-sm leading-relaxed text-foreground">
@@ -145,7 +145,7 @@ export function WhatsAppDialogProvider({
                         <p className="font-heading text-base font-semibold text-foreground">
                           {person.name}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           {person.role}
                         </p>
                         <p className="mt-1 text-sm font-medium text-foreground tabular-nums">
@@ -213,7 +213,7 @@ export function WhatsAppDialogProvider({
               )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="size-3.5" aria-hidden="true" />
                 <span>{showroom.city}</span>

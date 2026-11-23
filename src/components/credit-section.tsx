@@ -122,7 +122,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                   strokeLinecap="square"
                 />
               </svg>
-              <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+              <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
                 02 / Pembiayaan
               </span>
             </div>
@@ -175,7 +175,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
               </div>
             </div>
 
-            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
+            <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
               Butuh penyesuaian DP, tenor, atau taksiran tukar tambah?
               Diskusikan langsung dengan tim kami.
             </p>
@@ -186,7 +186,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
               <>
                 <p
                   id="credit-selector-label"
-                  className="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+                  className="text-sm font-semibold tracking-wider text-muted-foreground uppercase"
                 >
                   Pilih Unit
                 </p>
@@ -213,7 +213,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                         onClick={() => setSelectedSlug(car.slug)}
                         onKeyDown={(event) => handleTabKeyDown(event, index)}
                         className={cn(
-                          "inline-flex min-h-11 items-center rounded-none border px-3 py-2 text-left text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                          "inline-flex min-h-11 items-center rounded-none border px-3 py-2 text-left text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                           isSelected
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-input bg-card text-foreground hover:bg-background"
@@ -255,14 +255,14 @@ export function CreditSection({ cars }: CreditSectionProps) {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center px-3 text-center text-xs text-muted-foreground">
+                        <div className="flex h-full w-full items-center justify-center px-3 text-center text-sm text-muted-foreground">
                           Foto belum tersedia
                         </div>
                       )}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         {selectedCar.categoryLabel} /{" "}
                         <span className="tabular-nums">{selectedCar.year}</span>{" "}
                         / {selectedCar.transmission}
@@ -273,7 +273,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                       </h3>
 
                       {selectedCar.tradeInAvailable ? (
-                        <span className="mt-2 inline-flex items-center gap-1.5 border border-border bg-secondary px-2.5 py-1 text-xs font-semibold text-foreground">
+                        <span className="mt-2 inline-flex items-center gap-1.5 border border-border bg-secondary px-2.5 py-1 text-sm font-semibold text-foreground">
                           <ArrowLeftRight
                             className="size-3.5 text-primary"
                             aria-hidden="true"
@@ -284,7 +284,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
 
                       <div className="mt-3 grid grid-cols-1 gap-3 border-t border-border pt-3 sm:grid-cols-2 tabular-nums">
                         <div>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             Harga Cash
                           </p>
                           <p className="text-base font-semibold text-foreground">
@@ -294,7 +294,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
 
                         {selectedCar.creditPrice !== null ? (
                           <div>
-                            <p className="text-xs font-semibold text-primary">
+                            <p className="text-sm font-semibold text-primary">
                               Harga Kredit
                               {selectedCar.creditPriceNote
                                 ? ` (${selectedCar.creditPriceNote})`
@@ -310,7 +310,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                   </div>
 
                   <div className="mt-5 border-t border-border pt-5">
-                    <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                    <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                       Rincian Simulasi Leasing
                     </p>
 
@@ -326,7 +326,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                                 {sim.label}
                               </p>
                               {sim.provider ? (
-                                <span className="border border-border bg-card px-2 py-0.5 text-xs font-medium text-foreground">
+                                <span className="border border-border bg-card px-2 py-0.5 text-sm font-medium text-foreground">
                                   {sim.provider}
                                 </span>
                               ) : null}
@@ -334,7 +334,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
 
                             <dl className="mt-3 grid grid-cols-1 gap-3 border-t border-border pt-3 sm:grid-cols-3 tabular-nums">
                               <div>
-                                <dt className="text-xs text-muted-foreground">
+                                <dt className="text-sm text-muted-foreground">
                                   Uang Muka (DP)
                                 </dt>
                                 <dd className="mt-0.5 text-sm font-bold text-foreground">
@@ -343,7 +343,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                               </div>
 
                               <div>
-                                <dt className="text-xs text-muted-foreground">
+                                <dt className="text-sm text-muted-foreground">
                                   Angsuran
                                 </dt>
                                 <dd className="mt-0.5 text-sm font-bold text-primary">
@@ -352,7 +352,7 @@ export function CreditSection({ cars }: CreditSectionProps) {
                               </div>
 
                               <div>
-                                <dt className="text-xs text-muted-foreground">
+                                <dt className="text-sm text-muted-foreground">
                                   Tenor
                                 </dt>
                                 <dd className="mt-0.5 text-sm font-bold text-foreground">

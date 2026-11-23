@@ -150,7 +150,7 @@ function CarDetailNotFound() {
   return (
     <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="border border-border bg-card p-6 sm:p-8">
-        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
           Unit Tidak Ditemukan
         </p>
         <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -381,7 +381,7 @@ function CarDetailPage() {
       ) : null}
 
       <header className="mt-6 space-y-2">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold tracking-wider uppercase">
+        <div className="flex flex-wrap items-center gap-2 text-sm font-semibold tracking-wider uppercase">
           <span className="border border-border bg-secondary px-2.5 py-1 text-foreground">
             {car.categoryLabel}
           </span>
@@ -423,7 +423,7 @@ function CarDetailPage() {
                   key={spec.label}
                   className="border-r border-b border-border px-4 py-3.5"
                 >
-                  <dt className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                  <dt className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                     {spec.label}
                   </dt>
                   <dd className="mt-1 text-sm font-semibold text-foreground tabular-nums">
@@ -512,13 +512,13 @@ function CarDetailPage() {
                   <div className="border border-border bg-secondary p-4">
                     {selectedScheme === "cash" ? (
                       <>
-                        <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                        <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                           Harga Cash
                         </p>
                         <p className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums sm:text-3xl">
                           {formatRupiah(car.cashPrice)}
                         </p>
-                        <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">
+                        <p className="mt-1.5 text-sm text-muted-foreground tabular-nums">
                           Harga khusus kredit:{" "}
                           <span className="font-semibold text-primary">
                             {formatRupiah(creditPrice)}
@@ -530,13 +530,13 @@ function CarDetailPage() {
                       </>
                     ) : (
                       <>
-                        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+                        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
                           Harga Kredit
                         </p>
                         <p className="mt-1 font-heading text-2xl font-bold tracking-tight text-primary tabular-nums sm:text-3xl">
                           {formatRupiah(creditPrice)}
                         </p>
-                        <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">
+                        <p className="mt-1.5 text-sm text-muted-foreground tabular-nums">
                           {car.creditPriceNote
                             ? `${car.creditPriceNote}. `
                             : ""}
@@ -555,11 +555,11 @@ function CarDetailPage() {
                         className="border border-border bg-background p-3.5"
                       >
                         <div className="flex flex-wrap items-baseline justify-between gap-2">
-                          <p className="text-xs font-semibold text-foreground">
+                          <p className="text-sm font-semibold text-foreground">
                             {sim.label}
                           </p>
                           {sim.provider ? (
-                            <span className="text-xs font-medium text-muted-foreground">
+                            <span className="text-sm font-medium text-muted-foreground">
                               {sim.provider}
                             </span>
                           ) : null}
@@ -567,7 +567,7 @@ function CarDetailPage() {
 
                         <div className="mt-2 grid grid-cols-3 gap-2 tabular-nums">
                           <div>
-                            <span className="block text-xs text-muted-foreground">
+                            <span className="block text-sm text-muted-foreground">
                               DP
                             </span>
                             <span className="mt-0.5 block text-sm font-bold text-foreground sm:text-base">
@@ -575,7 +575,7 @@ function CarDetailPage() {
                             </span>
                           </div>
                           <div>
-                            <span className="block text-xs text-muted-foreground">
+                            <span className="block text-sm text-muted-foreground">
                               Angsuran / bln
                             </span>
                             <span className="mt-0.5 block text-sm font-bold text-primary sm:text-base">
@@ -583,7 +583,7 @@ function CarDetailPage() {
                             </span>
                           </div>
                           <div>
-                            <span className="block text-xs text-muted-foreground">
+                            <span className="block text-sm text-muted-foreground">
                               Tenor
                             </span>
                             <span className="mt-0.5 block text-sm font-bold text-foreground sm:text-base">
@@ -593,7 +593,7 @@ function CarDetailPage() {
                         </div>
 
                         {sim.note ? (
-                          <p className="mt-2 text-xs text-muted-foreground">
+                          <p className="mt-2 text-sm text-muted-foreground">
                             {sim.note}
                           </p>
                         ) : null}
@@ -604,7 +604,7 @@ function CarDetailPage() {
               </div>
             ) : (
               <div className="space-y-3 border border-border bg-secondary p-4">
-                <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+                <p className="text-sm font-semibold tracking-wider text-primary uppercase">
                   Special Price Cash
                 </p>
                 <p className="font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums sm:text-3xl">
@@ -618,7 +618,7 @@ function CarDetailPage() {
             )}
 
             <div className="space-y-2.5 border-t border-border pt-5">
-              <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Konsultasi &amp; Jadwal Cek Unit
               </p>
 
@@ -650,7 +650,7 @@ function CarDetailPage() {
                         <span className="text-sm font-semibold leading-tight">
                           {primarySales.name}
                         </span>
-                        <span className="mt-0.5 text-[11px] font-normal leading-tight opacity-85 tabular-nums">
+                        <span className="mt-0.5 text-sm font-normal leading-tight opacity-85 tabular-nums">
                           {primarySales.phoneDisplay}
                         </span>
                       </span>
@@ -684,7 +684,7 @@ function CarDetailPage() {
                         <span className="text-sm font-semibold leading-tight">
                           {secondarySales.name}
                         </span>
-                        <span className="mt-0.5 text-[11px] font-normal leading-tight text-muted-foreground tabular-nums">
+                        <span className="mt-0.5 text-sm font-normal leading-tight text-muted-foreground tabular-nums">
                           {secondarySales.phoneDisplay}
                         </span>
                       </span>
@@ -747,7 +747,7 @@ function CarDetailPage() {
               </div>
             </div>
 
-            <div className="space-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
+            <div className="space-y-2 border-t border-border pt-4 text-sm text-muted-foreground">
               <p className="flex items-center gap-2 text-foreground">
                 <Clock
                   className="size-4 shrink-0 text-primary"

@@ -431,7 +431,7 @@ function EditCarPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Link
               to="/dash/cars"
-              className="inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-muted-foreground no-underline transition-colors hover:text-foreground"
+              className="inline-flex min-h-9 items-center gap-1.5 text-sm font-semibold text-muted-foreground no-underline transition-colors hover:text-foreground"
             >
               <ArrowLeft className="size-3.5" aria-hidden="true" />
               <span>Kembali ke Inventaris</span>
@@ -439,7 +439,7 @@ function EditCarPage() {
             <span className="text-border" aria-hidden="true">
               /
             </span>
-            <span className="font-heading text-xs font-bold tracking-[0.16em] text-primary uppercase">
+            <span className="font-heading text-sm font-bold tracking-[0.16em] text-primary uppercase">
               Edit Unit
             </span>
           </div>
@@ -454,8 +454,8 @@ function EditCarPage() {
             ) : null}
           </div>
 
-          <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-            <span className="font-mono text-xs text-foreground">
+          <p className="mt-1.5 text-sm text-muted-foreground sm:text-sm">
+            <span className="font-mono text-sm text-foreground">
               /mobil/{car.slug}
             </span>
             {updatedAtLabel ? (
@@ -549,7 +549,7 @@ function EditCarPage() {
                           key={tab}
                           type="button"
                           onClick={() => handleSelectTab(tab)}
-                          className="inline-flex min-h-8 cursor-pointer items-center gap-1.5 border border-destructive/40 bg-card px-2.5 py-1 text-xs font-semibold text-[#991B1B] transition-colors hover:bg-destructive hover:text-primary-foreground"
+                          className="inline-flex min-h-8 cursor-pointer items-center gap-1.5 border border-destructive/40 bg-card px-2.5 py-1 text-sm font-semibold text-[#991B1B] transition-colors hover:bg-destructive hover:text-primary-foreground"
                         >
                           <span>{COMPLETENESS_TAB_LABELS[tab]}</span>
                           <span className="tabular-nums">
@@ -597,7 +597,7 @@ function EditCarPage() {
                 <Car className="size-4" aria-hidden="true" />
                 <span>Identitas &amp; Spek</span>
                 {errorCountsByTab.identity > 0 ? (
-                  <Badge variant="destructive" className="px-1.5 py-0 text-[10px] tabular-nums">
+                  <Badge variant="destructive" className="px-1.5 py-0 text-sm tabular-nums">
                     {errorCountsByTab.identity}
                   </Badge>
                 ) : null}
@@ -607,7 +607,7 @@ function EditCarPage() {
                 <CreditCard className="size-4" aria-hidden="true" />
                 <span>Harga &amp; Kredit</span>
                 {errorCountsByTab.pricing > 0 ? (
-                  <Badge variant="destructive" className="px-1.5 py-0 text-[10px] tabular-nums">
+                  <Badge variant="destructive" className="px-1.5 py-0 text-sm tabular-nums">
                     {errorCountsByTab.pricing}
                   </Badge>
                 ) : null}
@@ -617,7 +617,7 @@ function EditCarPage() {
                 <FileCheck2 className="size-4" aria-hidden="true" />
                 <span>Legalitas &amp; Inspeksi</span>
                 {errorCountsByTab.legality > 0 ? (
-                  <Badge variant="destructive" className="px-1.5 py-0 text-[10px] tabular-nums">
+                  <Badge variant="destructive" className="px-1.5 py-0 text-sm tabular-nums">
                     {errorCountsByTab.legality}
                   </Badge>
                 ) : null}
@@ -626,7 +626,7 @@ function EditCarPage() {
               <TabsTrigger value="media">
                 <Camera className="size-4" aria-hidden="true" />
                 <span>Galeri Foto</span>
-                <Badge variant="secondary" className="px-1.5 py-0 text-[10px] tabular-nums">
+                <Badge variant="secondary" className="px-1.5 py-0 text-sm tabular-nums">
                   {images.length}
                 </Badge>
               </TabsTrigger>
@@ -635,7 +635,7 @@ function EditCarPage() {
                 <Sparkles className="size-4" aria-hidden="true" />
                 <span>EV, Video &amp; Insight</span>
                 {errorCountsByTab.insights > 0 ? (
-                  <Badge variant="destructive" className="px-1.5 py-0 text-[10px] tabular-nums">
+                  <Badge variant="destructive" className="px-1.5 py-0 text-sm tabular-nums">
                     {errorCountsByTab.insights}
                   </Badge>
                 ) : null}
@@ -707,7 +707,7 @@ function EditCarPage() {
       {/* Sticky Editorial Save Bar */}
       <div className="sticky bottom-0 z-20 -mx-4 border-t border-border bg-card/95 px-4 py-3 backdrop-blur-xs sm:-mx-6 sm:px-6 lg:mx-0 lg:border lg:px-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2.5 text-xs">
+          <div className="flex flex-wrap items-center gap-2.5 text-sm">
             <Link
               to="/dash/cars"
               className={cn(

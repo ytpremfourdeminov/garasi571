@@ -262,7 +262,7 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
+        <div className="flex items-center gap-2 text-sm font-semibold tracking-[0.14em] text-primary uppercase">
           <Icon className="size-3.5 shrink-0" aria-hidden={true} />
           <span>{eyebrow}</span>
         </div>
@@ -270,7 +270,7 @@ function SectionHeader({
           {title}
         </h3>
         {description ? (
-          <p className="text-xs leading-relaxed text-muted-foreground">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             {description}
           </p>
         ) : null}
@@ -286,7 +286,7 @@ function FieldError({ id, message }: { id?: string; message?: string }) {
     <p
       id={id}
       role="alert"
-      className="mt-1.5 text-xs font-medium text-destructive"
+      className="mt-1.5 text-sm font-medium text-destructive"
     >
       {message}
     </p>
@@ -464,7 +464,7 @@ export function CarLegalityInspectionForm({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label
               htmlFor={`${idPrefix}-plateInfo`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Ringkasan Plat &amp; Pajak (Kartu Katalog){" "}
               <span className="text-primary">*</span>
@@ -476,7 +476,7 @@ export function CarLegalityInspectionForm({
                 size="sm"
                 disabled={disabled}
                 onClick={() => onChange({ plateInfo: suggestedPlateInfo })}
-                className="min-h-8 px-2.5 text-[11px]"
+                className="min-h-8 px-2.5 text-sm"
               >
                 <Sparkles className="size-3" aria-hidden={true} />
                 Gunakan: &ldquo;{suggestedPlateInfo}&rdquo;
@@ -498,7 +498,7 @@ export function CarLegalityInspectionForm({
           />
           <p
             id={`${idPrefix}-plateInfo-hint`}
-            className="text-xs text-muted-foreground"
+            className="text-sm text-muted-foreground"
           >
             Teks ringkas yang tampil langsung pada kartu unit dan halaman
             katalog publik.
@@ -514,7 +514,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-plateAreaCode`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Kode Wilayah Plat
             </label>
@@ -549,7 +549,7 @@ export function CarLegalityInspectionForm({
                       onChange({ plateAreaCode: isSelected ? null : code })
                     }
                     className={cn(
-                      "min-h-7 cursor-pointer border px-2 py-0.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                      "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                       isSelected
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -566,7 +566,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-plateOddEven`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Ganjil / Genap
             </label>
@@ -603,7 +603,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-taxStatus`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Status Pajak
             </label>
@@ -643,7 +643,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-taxExpiryDate`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Jatuh Tempo Pajak Tahunan
             </label>
@@ -665,7 +665,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-stnk5yrExpiryDate`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Masa Berlaku Kaleng (5 Tahunan)
             </label>
@@ -687,7 +687,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-estimatedAnnualTax`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Estimasi PKB Tahunan (Rp)
             </label>
@@ -716,7 +716,7 @@ export function CarLegalityInspectionForm({
             />
             <p
               id={`${idPrefix}-estimatedAnnualTax-hint`}
-              className="text-xs text-muted-foreground tabular-nums"
+              className="text-sm text-muted-foreground tabular-nums"
             >
               {typeof value.estimatedAnnualTax === "number" &&
               Number.isFinite(value.estimatedAnnualTax) ? (
@@ -739,7 +739,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-ownershipType`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Atas Nama Kepemilikan
             </label>
@@ -776,7 +776,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-ownershipHand`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Tangan Ke-
             </label>
@@ -819,7 +819,7 @@ export function CarLegalityInspectionForm({
                       onChange({ ownershipHand: isSelected ? null : hand })
                     }
                     className={cn(
-                      "min-h-7 cursor-pointer border px-2 py-0.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                      "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                       isSelected
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -836,7 +836,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-usageHistory`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Riwayat Pemakaian
             </label>
@@ -859,7 +859,7 @@ export function CarLegalityInspectionForm({
                   type="button"
                   disabled={disabled}
                   onClick={() => onChange({ usageHistory: preset })}
-                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2 py-0.5 text-sm font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {preset}
                 </button>
@@ -891,7 +891,7 @@ export function CarLegalityInspectionForm({
                   {value.stnkBlockFree ? "Aman" : "Perlu Cek"}
                 </Badge>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 Bebas blokir pajak progresif, e-TLE tertunggak, maupun blokir
                 jual.
               </p>
@@ -926,7 +926,7 @@ export function CarLegalityInspectionForm({
                   {value.vinEngineMatched ? "Sesuai" : "Belum Cek"}
                 </Badge>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 Nomor rangka &amp; mesin fisik sesuai dengan STNK, BPKB, dan
                 faktur.
               </p>
@@ -1050,7 +1050,7 @@ export function CarLegalityInspectionForm({
                               : "primary"
                             : "secondary"
                         }
-                        className="px-1.5 py-0 text-[10px]"
+                        className="px-1.5 py-0 text-sm"
                       >
                         {item.tier === "wajib"
                           ? "Wajib"
@@ -1059,7 +1059,7 @@ export function CarLegalityInspectionForm({
                             : "Bawaan"}
                       </Badge>
                     </span>
-                    <span className="block text-xs leading-relaxed text-muted-foreground">
+                    <span className="block text-sm leading-relaxed text-muted-foreground">
                       {item.description}
                     </span>
                   </span>
@@ -1108,7 +1108,7 @@ export function CarLegalityInspectionForm({
                   {inspection.floodFree ? "Terjamin" : "Belum Dikonfirmasi"}
                 </Badge>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 Tidak ada bekas lumpur/korosi di bawah karpet, soket
                 kelistrikan, maupun bau lembap bekas terendam air.
               </p>
@@ -1147,7 +1147,7 @@ export function CarLegalityInspectionForm({
                     : "Belum Dikonfirmasi"}
                 </Badge>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 Tulang sasis, apron depan, pilar A/B/C, dan bullhead utuh tanpa
                 bekas las struktur atau perbaikan tabrak berat.
               </p>
@@ -1168,7 +1168,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-exteriorGrade`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Grade Eksterior &amp; Bodi
             </label>
@@ -1192,7 +1192,7 @@ export function CarLegalityInspectionForm({
                   disabled={disabled}
                   onClick={() => updateInspection({ exteriorGrade: grade })}
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.exteriorGrade ?? "").trim() === grade
                       ? "border-foreground bg-foreground text-background"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1208,7 +1208,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-interiorGrade`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Grade Interior &amp; Kabin
             </label>
@@ -1232,7 +1232,7 @@ export function CarLegalityInspectionForm({
                   disabled={disabled}
                   onClick={() => updateInspection({ interiorGrade: grade })}
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.interiorGrade ?? "").trim() === grade
                       ? "border-foreground bg-foreground text-background"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1248,7 +1248,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-engineTransmissionGrade`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Grade Mesin &amp; Transmisi
             </label>
@@ -1276,7 +1276,7 @@ export function CarLegalityInspectionForm({
                     updateInspection({ engineTransmissionGrade: grade })
                   }
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.engineTransmissionGrade ?? "").trim() === grade
                       ? "border-foreground bg-foreground text-background"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1292,7 +1292,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-undercarriageSuspensionGrade`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Grade Kaki-Kaki &amp; Kolong
             </label>
@@ -1320,7 +1320,7 @@ export function CarLegalityInspectionForm({
                     updateInspection({ undercarriageSuspensionGrade: grade })
                   }
                   className={cn(
-                    "min-h-7 cursor-pointer border px-2 py-0.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                    "min-h-7 cursor-pointer border px-2 py-0.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                     (inspection.undercarriageSuspensionGrade ?? "").trim() ===
                       grade
                       ? "border-foreground bg-foreground text-background"
@@ -1340,7 +1340,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-tireCondition`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Kondisi &amp; Ketebalan Ban
             </label>
@@ -1363,7 +1363,7 @@ export function CarLegalityInspectionForm({
                   type="button"
                   disabled={disabled}
                   onClick={() => updateInspection({ tireCondition: preset })}
-                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2 py-0.5 text-sm font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {preset}
                 </button>
@@ -1375,7 +1375,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-inspectionNotes`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Catatan Hasil Inspeksi
             </label>
@@ -1401,7 +1401,7 @@ export function CarLegalityInspectionForm({
           <div className="space-y-1.5">
             <label
               htmlFor={`${idPrefix}-warrantyInfo`}
-              className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-foreground uppercase"
             >
               Informasi Garansi Showroom
             </label>
@@ -1425,7 +1425,7 @@ export function CarLegalityInspectionForm({
                   type="button"
                   disabled={disabled}
                   onClick={() => onChange({ warrantyInfo: preset })}
-                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2.5 py-1 text-left text-[11px] font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="min-h-7 cursor-pointer border border-border bg-secondary px-2.5 py-1 text-left text-sm font-medium text-secondary-foreground transition-colors hover:border-foreground/50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {preset}
                 </button>
@@ -1456,7 +1456,7 @@ export function CarLegalityInspectionForm({
                   {value.mechanicCheckAllowed ? "Diperbolehkan" : "Tidak Aktif"}
                 </Badge>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 Pembeli diperbolehkan membawa mekanik pribadi, jasa inspeksi
                 independen, atau general check-up ke bengkel resmi.
               </p>
@@ -1493,7 +1493,7 @@ export function CarLegalityInspectionForm({
               <h4 className="font-heading text-sm font-bold text-foreground">
                 Peremajaan Part / Servis Terakhir
               </h4>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Catat perawatan atau penggantian suku cadang terbaru sebelum
                 unit masuk showroom.
               </p>
@@ -1546,7 +1546,7 @@ export function CarLegalityInspectionForm({
                   disabled={disabled || alreadyAdded}
                   onClick={() => handleAddMaintenanceItem(preset)}
                   className={cn(
-                    "inline-flex min-h-7 cursor-pointer items-center gap-1 border px-2.5 py-0.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-55",
+                    "inline-flex min-h-7 cursor-pointer items-center gap-1 border px-2.5 py-0.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-55",
                     alreadyAdded
                       ? "border-emerald-700/30 bg-emerald-50 text-emerald-900"
                       : "border-border bg-secondary text-secondary-foreground hover:border-foreground/50"
@@ -1576,7 +1576,7 @@ export function CarLegalityInspectionForm({
                 return (
                   <li key={index} className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="flex size-8 shrink-0 items-center justify-center border border-border bg-secondary text-xs font-semibold text-muted-foreground tabular-nums">
+                      <span className="flex size-8 shrink-0 items-center justify-center border border-border bg-secondary text-sm font-semibold text-muted-foreground tabular-nums">
                         {index + 1}
                       </span>
                       <Input
@@ -1606,7 +1606,7 @@ export function CarLegalityInspectionForm({
               })}
             </ul>
           ) : (
-            <p className="border border-dashed border-border bg-secondary/30 px-4 py-3 text-xs text-muted-foreground">
+            <p className="border border-dashed border-border bg-secondary/30 px-4 py-3 text-sm text-muted-foreground">
               Belum ada catatan peremajaan part. Klik salah satu chip cepat di
               atas atau ketik manual.
             </p>
@@ -1620,7 +1620,7 @@ export function CarLegalityInspectionForm({
               <h4 className="font-heading text-sm font-bold text-foreground">
                 Transparansi Minus Unit
               </h4>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Cantumkan minus minor atau komponen aus secara jujur agar
                 pembeli tidak kaget saat inspeksi langsung.
               </p>
@@ -1638,7 +1638,7 @@ export function CarLegalityInspectionForm({
           </div>
 
           {/* Guidance Prompt Banner */}
-          <div className="flex items-start gap-2.5 border border-l-2 border-amber-700/30 border-l-amber-700 bg-amber-50/70 px-3.5 py-3 text-xs leading-relaxed text-amber-950">
+          <div className="flex items-start gap-2.5 border border-l-2 border-amber-700/30 border-l-amber-700 bg-amber-50/70 px-3.5 py-3 text-sm leading-relaxed text-amber-950">
             <Info
               className="mt-0.5 size-4 shrink-0 text-amber-800"
               aria-hidden={true}
@@ -1659,7 +1659,7 @@ export function CarLegalityInspectionForm({
 
           {imperfections.length === 0 ? (
             <div className="flex flex-col items-start justify-between gap-3 border border-dashed border-border bg-secondary/30 p-4 sm:flex-row sm:items-center">
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 Belum ada catatan minus yang dimasukkan. Jika unit memiliki
                 baret halus, penyok ringan, atau part yang perlu diperhatikan,
                 tambahkan di sini.
@@ -1702,7 +1702,7 @@ export function CarLegalityInspectionForm({
                   >
                     <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-foreground uppercase tabular-nums">
+                        <span className="inline-flex items-center gap-1.5 text-sm font-bold tracking-wider text-foreground uppercase tabular-nums">
                           <AlertTriangle
                             className="size-3.5 text-amber-700"
                             aria-hidden={true}
@@ -1737,7 +1737,7 @@ export function CarLegalityInspectionForm({
                       <div className="space-y-1.5">
                         <label
                           htmlFor={`${idPrefix}-imp-area-${index}`}
-                          className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                          className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                         >
                           Bagian / Area <span className="text-primary">*</span>
                         </label>
@@ -1759,7 +1759,7 @@ export function CarLegalityInspectionForm({
                       <div className="space-y-1.5">
                         <label
                           htmlFor={`${idPrefix}-imp-severity-${index}`}
-                          className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                          className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                         >
                           Tingkat Minus
                         </label>
@@ -1798,7 +1798,7 @@ export function CarLegalityInspectionForm({
                     <div className="space-y-1.5">
                       <label
                         htmlFor={`${idPrefix}-imp-desc-${index}`}
-                        className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                        className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                       >
                         Deskripsi Minus <span className="text-primary">*</span>
                       </label>

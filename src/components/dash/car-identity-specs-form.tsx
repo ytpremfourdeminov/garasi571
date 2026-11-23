@@ -170,7 +170,7 @@ function SectionHeader({
     <div className="flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
         <div className="flex items-center gap-2">
-          <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+          <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
             {index}
           </span>
           <span className="h-3 w-px bg-border" aria-hidden="true" />
@@ -182,7 +182,7 @@ function SectionHeader({
           </h3>
         </div>
         {description ? (
-          <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-sm">
             {description}
           </p>
         ) : null}
@@ -218,7 +218,7 @@ function FieldShell({
       <div className="flex items-center justify-between gap-2">
         <label
           htmlFor={id}
-          className="text-xs font-semibold tracking-wide text-foreground uppercase"
+          className="text-sm font-semibold tracking-wide text-foreground uppercase"
         >
           {label}
           {required ? (
@@ -234,7 +234,7 @@ function FieldShell({
         <p
           id={`${id}-error`}
           role="alert"
-          className="flex items-start gap-1.5 text-xs font-medium text-destructive"
+          className="flex items-start gap-1.5 text-sm font-medium text-destructive"
         >
           <AlertCircle
             className="mt-0.5 size-3.5 shrink-0"
@@ -243,7 +243,7 @@ function FieldShell({
           <span>{error}</span>
         </p>
       ) : hint ? (
-        <p id={`${id}-hint`} className="text-xs text-muted-foreground">
+        <p id={`${id}-hint`} className="text-sm text-muted-foreground">
           {hint}
         </p>
       ) : null}
@@ -344,7 +344,7 @@ function StringListEditor({
               {filledCount}/{recommendedMin}+ poin
             </Badge>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         </div>
 
         <Button
@@ -353,7 +353,7 @@ function StringListEditor({
           size="default"
           disabled={disabled}
           onClick={() => setPasteOpen(true)}
-          className="text-xs"
+          className="text-sm"
         >
           <ClipboardPaste className="size-4" aria-hidden="true" />
           Tempel Banyak Baris
@@ -368,7 +368,7 @@ function StringListEditor({
               <li key={`${idPrefix}-row-${index}`} className="space-y-1">
                 <div className="flex items-stretch gap-1.5">
                   <span
-                    className="flex min-h-11 w-9 shrink-0 items-center justify-center border border-border bg-secondary text-xs font-semibold text-muted-foreground tabular-nums"
+                    className="flex min-h-11 w-9 shrink-0 items-center justify-center border border-border bg-secondary text-sm font-semibold text-muted-foreground tabular-nums"
                     aria-hidden="true"
                   >
                     {String(index + 1).padStart(2, "0")}
@@ -422,7 +422,7 @@ function StringListEditor({
                 {itemError ? (
                   <p
                     role="alert"
-                    className="pl-10 text-xs font-medium text-destructive"
+                    className="pl-10 text-sm font-medium text-destructive"
                   >
                     {itemError}
                   </p>
@@ -432,7 +432,7 @@ function StringListEditor({
           })}
         </ul>
       ) : (
-        <div className="mt-3 border border-dashed border-border bg-card px-4 py-5 text-center text-xs text-muted-foreground">
+        <div className="mt-3 border border-dashed border-border bg-card px-4 py-5 text-center text-sm text-muted-foreground">
           Belum ada poin. Tambahkan satu per satu di bawah atau gunakan tombol{" "}
           <span className="font-semibold text-foreground">
             Tempel Banyak Baris
@@ -471,7 +471,7 @@ function StringListEditor({
       {listError ? (
         <p
           role="alert"
-          className="mt-2 flex items-start gap-1.5 text-xs font-medium text-destructive"
+          className="mt-2 flex items-start gap-1.5 text-sm font-medium text-destructive"
         >
           <AlertCircle
             className="mt-0.5 size-3.5 shrink-0"
@@ -495,7 +495,7 @@ function StringListEditor({
           <div className="mt-4 space-y-2">
             <label
               htmlFor={`${idPrefix}-bulk-textarea`}
-              className="block text-xs font-semibold tracking-wide text-foreground uppercase"
+              className="block text-sm font-semibold tracking-wide text-foreground uppercase"
             >
               Daftar Poin (1 Baris = 1 Item)
             </label>
@@ -507,7 +507,7 @@ function StringListEditor({
               onChange={(event) => setPasteText(event.target.value)}
               placeholder={`Contoh:\n- Ban tebal semua\n- AC dingin double blower\n- Mesin kering siap luar kota`}
             />
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>Baris kosong akan dilewati otomatis.</span>
               <span className="font-semibold text-foreground tabular-nums">
                 {parsedPasteItems.length} poin terdeteksi
@@ -779,7 +779,7 @@ export function CarIdentitySpecsForm({
             hint={`Tautan: /mobil/${value.slug.trim() || "nama-unit-tahun"}`}
             labelAction={
               isNew && !slugManuallyEdited ? (
-                <span className="text-[11px] font-medium text-emerald-800">
+                <span className="text-sm font-medium text-emerald-800">
                   Sinkron otomatis
                 </span>
               ) : null
@@ -797,7 +797,7 @@ export function CarIdentitySpecsForm({
                 }
                 onChange={(event) => handleSlugChange(event.target.value)}
                 placeholder="toyota-innova-reborn-2-4-v-2019"
-                className="flex-1 font-mono text-xs sm:text-sm"
+                className="flex-1 font-mono text-sm"
               />
               <Button
                 type="button"
@@ -960,7 +960,7 @@ export function CarIdentitySpecsForm({
                 placeholder="7"
                 className="pr-14 tabular-nums"
               />
-              <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-xs font-medium text-muted-foreground">
+              <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm font-medium text-muted-foreground">
                 kursi
               </span>
             </div>
@@ -1071,7 +1071,7 @@ export function CarIdentitySpecsForm({
                       onChange({ offerBadge: isSelected ? null : preset })
                     }
                     className={cn(
-                      "inline-flex min-h-11 items-center border px-3 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50",
+                      "inline-flex min-h-11 items-center border px-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50",
                       isSelected
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-secondary text-foreground hover:border-input"
@@ -1136,14 +1136,14 @@ export function CarIdentitySpecsForm({
                   >
                     Tampilkan di Sorotan Beranda
                   </label>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="mt-0.5 text-sm text-muted-foreground">
                     Maksimal 3 unit unggulan di bagian atas beranda.
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5 sm:items-end">
-                <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                <span className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                   Urutan Sorotan (1–3)
                 </span>
                 <div
@@ -1180,7 +1180,7 @@ export function CarIdentitySpecsForm({
             {errors?.featuredOrder || errors?.isFeatured ? (
               <p
                 role="alert"
-                className="mt-2 flex items-start gap-1.5 text-xs font-medium text-destructive"
+                className="mt-2 flex items-start gap-1.5 text-sm font-medium text-destructive"
               >
                 <AlertCircle
                   className="mt-0.5 size-3.5 shrink-0"
@@ -1334,7 +1334,7 @@ export function CarIdentitySpecsForm({
                 placeholder={isEv ? "Tidak berlaku untuk EV" : "1496"}
                 className="pr-12 tabular-nums"
               />
-              <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-xs font-medium text-muted-foreground uppercase">
+              <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm font-medium text-muted-foreground uppercase">
                 cc
               </span>
             </div>
@@ -1437,7 +1437,7 @@ export function CarIdentitySpecsForm({
                 placeholder="65000"
                 className="pr-12 tabular-nums"
               />
-              <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-xs font-medium text-muted-foreground uppercase">
+              <span className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-sm font-medium text-muted-foreground uppercase">
                 km
               </span>
             </div>
@@ -1506,14 +1506,14 @@ export function CarIdentitySpecsForm({
                   >
                     Odometer Terverifikasi Asli
                   </label>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="mt-0.5 text-sm text-muted-foreground">
                     Aktifkan jika keaslian kilometer sudah dicek melalui buku
                     servis, bengkel resmi, atau alat scan OBD.
                   </p>
                   {errors?.mileageVerified ? (
                     <p
                       role="alert"
-                      className="mt-1.5 text-xs font-medium text-destructive"
+                      className="mt-1.5 text-sm font-medium text-destructive"
                     >
                       {errors.mileageVerified}
                     </p>

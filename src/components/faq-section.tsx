@@ -48,7 +48,7 @@ export function FaqSection({ faqs = [] }: FaqSectionProps) {
                   strokeLinecap="square"
                 />
               </svg>
-              <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+              <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
                 04 / FAQ
               </span>
             </div>

@@ -130,7 +130,7 @@ export function CarLegalitySection({ car }: CarLegalitySectionProps) {
         >
           Legalitas, Pajak &amp; Kelengkapan Dokumen
         </h2>
-        <span className="inline-flex items-center gap-1.5 border border-border bg-secondary px-2.5 py-1 text-xs font-semibold text-foreground">
+        <span className="inline-flex items-center gap-1.5 border border-border bg-secondary px-2.5 py-1 text-sm font-semibold text-foreground">
           <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
           <span>Dokumen Terverifikasi Showroom</span>
         </span>
@@ -142,7 +142,7 @@ export function CarLegalitySection({ car }: CarLegalitySectionProps) {
             key={item.label}
             className="border-r border-b border-border px-4 py-3.5"
           >
-            <dt className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+            <dt className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
               {item.label}
             </dt>
             <dd className="mt-1 text-sm font-semibold text-foreground tabular-nums">
@@ -153,7 +153,7 @@ export function CarLegalitySection({ car }: CarLegalitySectionProps) {
       </dl>
 
       <div className="border border-border bg-card p-4 sm:p-5">
-        <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground uppercase">
           <FileCheck2 className="size-4 text-primary" aria-hidden="true" />
           <span>Checklist 7 Dokumen &amp; Kelengkapan</span>
         </div>
@@ -165,7 +165,7 @@ export function CarLegalitySection({ car }: CarLegalitySectionProps) {
               <li
                 key={doc.key}
                 className={cn(
-                  "inline-flex items-center gap-1.5 border px-3 py-1.5 text-xs font-semibold",
+                  "inline-flex items-center gap-1.5 border px-3 py-1.5 text-sm font-semibold",
                   isAvailable
                     ? "border-primary/40 bg-primary/10 text-foreground"
                     : "border-border bg-secondary/50 text-muted-foreground",

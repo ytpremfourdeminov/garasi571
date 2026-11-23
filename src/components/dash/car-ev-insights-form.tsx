@@ -221,7 +221,7 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-primary uppercase">
+        <div className="flex items-center gap-2 text-sm font-bold tracking-[0.14em] text-primary uppercase">
           <Icon className="size-3.5 shrink-0" aria-hidden={true} />
           <span>{index}</span>
         </div>
@@ -232,7 +232,7 @@ function SectionHeader({
           {title}
         </h3>
         {description ? (
-          <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          <p className="text-sm leading-relaxed text-muted-foreground sm:text-sm">
             {description}
           </p>
         ) : null}
@@ -248,7 +248,7 @@ function FieldError({ id, message }: { id?: string; message?: string }) {
     <p
       id={id}
       role="alert"
-      className="mt-1.5 flex items-start gap-1.5 text-xs font-medium text-destructive"
+      className="mt-1.5 flex items-start gap-1.5 text-sm font-medium text-destructive"
     >
       <AlertCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
       <span>{message}</span>
@@ -447,7 +447,7 @@ export function CarEvInsightsForm({
                 {FUEL_LABELS[value.fuelType]}
               </Badge>
               {isHybrid ? (
-                <label className="inline-flex min-h-9 cursor-pointer items-center gap-2 border border-border bg-secondary/50 px-3 text-xs font-semibold text-foreground">
+                <label className="inline-flex min-h-9 cursor-pointer items-center gap-2 border border-border bg-secondary/50 px-3 text-sm font-semibold text-foreground">
                   <Switch
                     checked={isEvSectionOpen}
                     disabled={disabled}
@@ -463,7 +463,7 @@ export function CarEvInsightsForm({
 
         {!isElectrified ? (
           <div className="mt-5 space-y-3">
-            <div className="flex items-start gap-3 border border-border bg-secondary/40 p-4 text-xs leading-relaxed text-muted-foreground">
+            <div className="flex items-start gap-3 border border-border bg-secondary/40 p-4 text-sm leading-relaxed text-muted-foreground">
               <Info
                 className="mt-0.5 size-4 shrink-0 text-foreground"
                 aria-hidden="true"
@@ -487,7 +487,7 @@ export function CarEvInsightsForm({
             {hasSavedEvSpecs ? (
               <div
                 role="status"
-                className="flex flex-col gap-3 border border-amber-700/35 bg-amber-50 p-4 text-xs text-amber-950 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 border border-amber-700/35 bg-amber-50 p-4 text-sm text-amber-950 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-start gap-2.5">
                   <AlertTriangle
@@ -520,7 +520,7 @@ export function CarEvInsightsForm({
             ) : null}
           </div>
         ) : !isEvSectionOpen ? (
-          <div className="mt-5 flex flex-col gap-3 border border-dashed border-border bg-secondary/30 p-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-5 flex flex-col gap-3 border border-dashed border-border bg-secondary/30 p-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
             <p>
               Spesifikasi baterai Hybrid nonaktif. Aktifkan sakelar di kanan
               atas untuk mengisi SOH atau garansi baterai.
@@ -539,7 +539,7 @@ export function CarEvInsightsForm({
         ) : (
           <div className="mt-5 space-y-5">
             {isHybrid ? (
-              <div className="flex items-start gap-2.5 border border-border bg-secondary/35 px-3.5 py-2.5 text-xs text-muted-foreground">
+              <div className="flex items-start gap-2.5 border border-border bg-secondary/35 px-3.5 py-2.5 text-sm text-muted-foreground">
                 <Info
                   className="mt-0.5 size-4 shrink-0 text-primary"
                   aria-hidden="true"
@@ -558,7 +558,7 @@ export function CarEvInsightsForm({
                 <div className="flex items-center justify-between gap-2">
                   <label
                     htmlFor={`${idPrefix}-soh`}
-                    className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     SOH Baterai (%)
                   </label>
@@ -586,7 +586,7 @@ export function CarEvInsightsForm({
                   placeholder="Contoh: 96"
                   className="tabular-nums"
                 />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   State of Health hasil scan OBD / bengkel resmi (0–100%).
                 </p>
                 <FieldError message={batterySohError} />
@@ -595,7 +595,7 @@ export function CarEvInsightsForm({
               <div className="space-y-1.5">
                 <label
                   htmlFor={`${idPrefix}-kwh`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Kapasitas Baterai (kWh)
                 </label>
@@ -618,7 +618,7 @@ export function CarEvInsightsForm({
                   placeholder="Contoh: 50.4"
                   className="tabular-nums"
                 />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Kapasitas total pack baterai dalam kWh.
                 </p>
                 <FieldError message={batteryCapacityError} />
@@ -627,7 +627,7 @@ export function CarEvInsightsForm({
               <div className="space-y-1.5">
                 <label
                   htmlFor={`${idPrefix}-range-claimed`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Jarak Tempuh Klaim (km)
                 </label>
@@ -646,7 +646,7 @@ export function CarEvInsightsForm({
                   placeholder="Contoh: 410"
                   className="tabular-nums"
                 />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Angka klaim pabrikan (WLTP / NEDC / CLTC).
                 </p>
                 <FieldError message={claimedRangeError} />
@@ -655,7 +655,7 @@ export function CarEvInsightsForm({
               <div className="space-y-1.5">
                 <label
                   htmlFor={`${idPrefix}-range-real`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Jarak Tempuh Riil (km)
                 </label>
@@ -674,7 +674,7 @@ export function CarEvInsightsForm({
                   placeholder="Contoh: 340"
                   className="tabular-nums"
                 />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Estimasi jarak pemakaian nyata AC menyala.
                 </p>
                 <FieldError message={realRangeError} />
@@ -686,7 +686,7 @@ export function CarEvInsightsForm({
               <div className="space-y-1.5">
                 <label
                   htmlFor={`${idPrefix}-charging-port`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Tipe Port Charging
                 </label>
@@ -715,7 +715,7 @@ export function CarEvInsightsForm({
                           updateEvSpecs({ chargingPortType: preset })
                         }
                         className={cn(
-                          "min-h-8 cursor-pointer border px-2.5 py-1 text-[11px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                          "min-h-8 cursor-pointer border px-2.5 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                           active
                             ? "border-foreground bg-foreground text-background"
                             : "border-border bg-secondary/60 text-foreground hover:bg-secondary"
@@ -732,7 +732,7 @@ export function CarEvInsightsForm({
               <div className="space-y-1.5">
                 <label
                   htmlFor={`${idPrefix}-fast-charge`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Info Fast Charging &amp; Durasi
                 </label>
@@ -761,7 +761,7 @@ export function CarEvInsightsForm({
                           updateEvSpecs({ fastChargingInfo: preset })
                         }
                         className={cn(
-                          "min-h-8 cursor-pointer border px-2.5 py-1 text-[11px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                          "min-h-8 cursor-pointer border px-2.5 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                           active
                             ? "border-foreground bg-foreground text-background"
                             : "border-border bg-secondary/60 text-foreground hover:bg-secondary"
@@ -782,11 +782,11 @@ export function CarEvInsightsForm({
                 <div className="space-y-0.5">
                   <label
                     htmlFor={`${idPrefix}-portable-charger`}
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Portable Charger Termasuk
                   </label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Kabel pengisian AC colokan rumahan bawaan pabrik tersedia.
                   </p>
                 </div>
@@ -804,11 +804,11 @@ export function CarEvInsightsForm({
                 <div className="space-y-0.5">
                   <label
                     htmlFor={`${idPrefix}-wall-charger`}
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Wall Charger / Home Unit Termasuk
                   </label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Unit wallbox AC 7 kW ikut disertakan atau siap serah terima.
                   </p>
                 </div>
@@ -828,7 +828,7 @@ export function CarEvInsightsForm({
               <div className="space-y-1.5 md:col-span-8">
                 <label
                   htmlFor={`${idPrefix}-battery-warranty`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Catatan Garansi Baterai
                 </label>
@@ -853,7 +853,7 @@ export function CarEvInsightsForm({
                       onClick={() =>
                         updateEvSpecs({ batteryWarrantyInfo: preset })
                       }
-                      className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                      className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {preset}
                     </button>
@@ -866,7 +866,7 @@ export function CarEvInsightsForm({
                 <div className="space-y-0.5">
                   <label
                     htmlFor={`${idPrefix}-warranty-transferable`}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-foreground"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-foreground"
                   >
                     <ShieldCheck
                       className="size-3.5 shrink-0 text-primary"
@@ -874,7 +874,7 @@ export function CarEvInsightsForm({
                     />
                     <span>Garansi Bisa Pindah Tangan</span>
                   </label>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Garansi baterai tetap berlaku untuk pemilik berikutnya.
                   </p>
                 </div>
@@ -918,7 +918,7 @@ export function CarEvInsightsForm({
         <div className="mt-5 space-y-2">
           <label
             htmlFor={`${idPrefix}-video-url`}
-            className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
           >
             URL Video Walkaround (Opsional)
           </label>
@@ -980,7 +980,7 @@ export function CarEvInsightsForm({
 
           <p
             id={`${idPrefix}-video-url-hint`}
-            className="text-xs text-muted-foreground"
+            className="text-sm text-muted-foreground"
           >
             Mendukung tautan YouTube, Instagram Reels, atau TikTok.
           </p>
@@ -1017,7 +1017,7 @@ export function CarEvInsightsForm({
             <div className="space-y-1.5">
               <label
                 htmlFor={`${idPrefix}-fuel-consumption`}
-                className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="flex items-center gap-1.5 text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 <Fuel
                   className="size-3.5 text-muted-foreground"
@@ -1056,7 +1056,7 @@ export function CarEvInsightsForm({
                         realWorldFuelConsumption: preset,
                       })
                     }
-                    className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {preset}
                   </button>
@@ -1068,7 +1068,7 @@ export function CarEvInsightsForm({
             <div className="space-y-1.5">
               <label
                 htmlFor={`${idPrefix}-maintenance-cost`}
-                className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="flex items-center gap-1.5 text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 <Wrench
                   className="size-3.5 text-muted-foreground"
@@ -1099,7 +1099,7 @@ export function CarEvInsightsForm({
                         estimatedMaintenanceCost: preset,
                       })
                     }
-                    className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-8 cursor-pointer border border-border bg-secondary/60 px-2.5 py-1 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {preset}
                   </button>
@@ -1132,7 +1132,7 @@ export function CarEvInsightsForm({
                   onClick={() =>
                     updateCreatorInsights({ commonIssuesChecked: null })
                   }
-                  className="text-xs text-muted-foreground hover:text-destructive"
+                  className="text-sm text-muted-foreground hover:text-destructive"
                 >
                   Kosongkan
                 </Button>
@@ -1147,7 +1147,7 @@ export function CarEvInsightsForm({
                 {issueItems.map((item, idx) => (
                   <li
                     key={`${item}-${idx}`}
-                    className="inline-flex min-h-9 items-center gap-2 border border-emerald-800/30 bg-emerald-50 py-1 pr-1.5 pl-3 text-xs font-medium text-emerald-950"
+                    className="inline-flex min-h-9 items-center gap-2 border border-emerald-800/30 bg-emerald-50 py-1 pr-1.5 pl-3 text-sm font-medium text-emerald-950"
                   >
                     <CheckCircle2
                       className="size-3.5 shrink-0 text-emerald-700"
@@ -1167,7 +1167,7 @@ export function CarEvInsightsForm({
                 ))}
               </ul>
             ) : (
-              <div className="mt-3 border border-dashed border-border bg-card px-4 py-4 text-center text-xs text-muted-foreground">
+              <div className="mt-3 border border-dashed border-border bg-card px-4 py-4 text-center text-sm text-muted-foreground">
                 Belum ada titik pengecekan khusus. Ketik poin di bawah atau
                 pilih contoh cepat.
               </div>
@@ -1201,7 +1201,7 @@ export function CarEvInsightsForm({
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-medium text-muted-foreground">
+              <span className="text-sm font-medium text-muted-foreground">
                 Tambah cepat:
               </span>
               {COMMON_ISSUE_PRESETS.map((preset) => {
@@ -1215,7 +1215,7 @@ export function CarEvInsightsForm({
                     disabled={disabled || alreadyAdded}
                     onClick={() => handleAddIssue(preset)}
                     className={cn(
-                      "min-h-8 cursor-pointer border px-2.5 py-1 text-[11px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45",
+                      "min-h-8 cursor-pointer border px-2.5 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45",
                       alreadyAdded
                         ? "border-emerald-800/30 bg-emerald-50 text-emerald-900"
                         : "border-border bg-card text-foreground hover:bg-secondary"
@@ -1236,11 +1236,11 @@ export function CarEvInsightsForm({
             <div className="flex items-center justify-between gap-2">
               <label
                 htmlFor={`${idPrefix}-expert-notes`}
-                className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Catatan Ahli Garasi 571
               </label>
-              <span className="text-[11px] text-muted-foreground tabular-nums">
+              <span className="text-sm text-muted-foreground tabular-nums">
                 {(insights.expertNotes ?? "").length} karakter
               </span>
             </div>
@@ -1257,7 +1257,7 @@ export function CarEvInsightsForm({
               }
               placeholder="Contoh: Unit sangat cocok untuk keluarga muda yang mencari kabin lega dan biaya perawatan hemat. Seluruh riwayat servis tercatat rapi, ban masih tebal, siap langsung dipakai perjalanan luar kota tanpa PR besar."
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Tulis rangkuman karakter mobil, profil pembeli yang paling cocok,
               serta poin kelebihan utama dibandingkan unit sekelasnya.
             </p>

@@ -92,7 +92,7 @@ export function CarAnswerSummary({
     >
       <h2
         id="ringkasan-cepat-heading"
-        className="text-xs font-semibold tracking-wider text-primary uppercase"
+        className="text-sm font-semibold tracking-wider text-primary uppercase"
       >
         Ringkasan Unit
       </h2>
@@ -104,7 +104,7 @@ export function CarAnswerSummary({
       <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 sm:grid-cols-4">
         {keyFacts.map((fact) => (
           <div key={fact.label} className="min-w-0">
-            <dt className="text-xs text-muted-foreground">{fact.label}</dt>
+            <dt className="text-sm text-muted-foreground">{fact.label}</dt>
             <dd className="mt-0.5 text-sm font-semibold text-foreground tabular-nums">
               {fact.value}
             </dd>

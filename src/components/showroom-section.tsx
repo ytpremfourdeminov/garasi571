@@ -85,7 +85,7 @@ export function ShowroomSection() {
               strokeLinecap="square"
             />
           </svg>
-          <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+          <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
             03 / Showroom
           </span>
         </div>
@@ -106,7 +106,7 @@ export function ShowroomSection() {
                   <p className="font-heading text-base font-bold tracking-tight text-[#FAF9F7] uppercase">
                     {showroom.name}
                   </p>
-                  <p className="text-xs tracking-wider text-[#C7C2BC] uppercase">
+                  <p className="text-sm tracking-wider text-[#C7C2BC] uppercase">
                     {showroom.city}
                   </p>
                 </div>
@@ -132,7 +132,7 @@ export function ShowroomSection() {
                       aria-hidden="true"
                     />
                     <div>
-                      <dt className="text-xs text-[#C7C2BC]">Lokasi</dt>
+                      <dt className="text-sm text-[#C7C2BC]">Lokasi</dt>
                       <dd className="font-medium text-[#FAF9F7]">
                         {showroom.address || showroom.city}
                       </dd>
@@ -145,7 +145,7 @@ export function ShowroomSection() {
                       aria-hidden="true"
                     />
                     <div>
-                      <dt className="text-xs text-[#C7C2BC]">
+                      <dt className="text-sm text-[#C7C2BC]">
                         Jam Operasional
                       </dt>
                       <dd className="font-medium text-[#FAF9F7] tabular-nums">
@@ -160,7 +160,7 @@ export function ShowroomSection() {
                       aria-hidden="true"
                     />
                     <div>
-                      <dt className="text-xs text-[#C7C2BC]">Instagram</dt>
+                      <dt className="text-sm text-[#C7C2BC]">Instagram</dt>
                       <dd>
                         <a
                           href={showroom.instagramUrl}
@@ -263,11 +263,11 @@ export function ShowroomSection() {
                                 strokeLinecap="square"
                               />
                             </svg>
-                            <span className="font-heading text-[10px] font-bold tracking-[0.14em] text-foreground uppercase">
+                            <span className="font-heading text-sm font-bold tracking-[0.14em] text-foreground uppercase">
                               {showroom.name}
                             </span>
                           </div>
-                          <span className="text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+                          <span className="text-sm font-medium tracking-[0.12em] text-muted-foreground uppercase">
                             {showroom.city}
                           </span>
                         </div>
@@ -276,17 +276,17 @@ export function ShowroomSection() {
                           <p className="font-heading text-lg font-bold tracking-tight text-foreground">
                             {person.name}
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             {person.role}
                           </p>
                         </div>
 
                         <div className="flex flex-col gap-2.5 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between">
                           <div className="min-w-0">
-                            <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
+                            <p className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                               WhatsApp
                             </p>
-                            <p className="font-heading text-xs font-semibold text-foreground tabular-nums sm:text-sm">
+                            <p className="font-heading text-sm font-semibold text-foreground tabular-nums sm:text-sm">
                               {person.phoneDisplay}
                             </p>
                           </div>
@@ -366,7 +366,7 @@ export function ShowroomSection() {
             <p
               role="status"
               aria-live="polite"
-              className="mt-4 min-h-5 text-xs font-medium text-primary"
+              className="mt-4 min-h-5 text-sm font-medium text-primary"
             >
               {copyStatus}
             </p>

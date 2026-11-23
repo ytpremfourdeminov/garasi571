@@ -210,7 +210,7 @@ function DashTeamPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Total Akun
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-foreground tabular-nums">
@@ -218,7 +218,7 @@ function DashTeamPage() {
           </p>
         </div>
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Staf Aktif
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-emerald-800 tabular-nums">
@@ -226,7 +226,7 @@ function DashTeamPage() {
           </p>
         </div>
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Admin Aktif
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-primary tabular-nums">
@@ -234,7 +234,7 @@ function DashTeamPage() {
           </p>
         </div>
         <div className="border border-border bg-card px-4 py-3">
-          <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
             Menunggu / Nonaktif
           </p>
           <p className="mt-1 font-heading text-2xl font-bold text-muted-foreground tabular-nums">
@@ -258,9 +258,9 @@ function DashTeamPage() {
             >
               Cara Menambahkan Anggota Tim Baru
             </h2>
-            <ol className="grid gap-2 pt-1 text-xs text-foreground sm:grid-cols-3">
+            <ol className="grid gap-2 pt-1 text-sm text-foreground sm:grid-cols-3">
               <li className="border border-border bg-secondary/40 px-3 py-2.5">
-                <span className="font-mono text-[11px] font-bold text-primary">
+                <span className="font-mono text-sm font-bold text-primary">
                   01. BUAT AKUN
                 </span>
                 <p className="mt-1 leading-relaxed text-muted-foreground">
@@ -272,7 +272,7 @@ function DashTeamPage() {
                 </p>
               </li>
               <li className="border border-border bg-secondary/40 px-3 py-2.5">
-                <span className="font-mono text-[11px] font-bold text-primary">
+                <span className="font-mono text-sm font-bold text-primary">
                   02. MUNCUL DI TABEL
                 </span>
                 <p className="mt-1 leading-relaxed text-muted-foreground">
@@ -284,7 +284,7 @@ function DashTeamPage() {
                 </p>
               </li>
               <li className="border border-border bg-secondary/40 px-3 py-2.5">
-                <span className="font-mono text-[11px] font-bold text-primary">
+                <span className="font-mono text-sm font-bold text-primary">
                   03. AKTIVASI
                 </span>
                 <p className="mt-1 leading-relaxed text-muted-foreground">
@@ -306,7 +306,7 @@ function DashTeamPage() {
 
       <div
         role="note"
-        className="flex items-start gap-2.5 border border-l-2 border-amber-700/35 border-l-amber-700 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-950"
+        className="flex items-start gap-2.5 border border-l-2 border-amber-700/35 border-l-amber-700 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-950"
       >
         <Shield
           className="mt-0.5 size-4 shrink-0 text-amber-800"
@@ -358,7 +358,7 @@ function DashTeamPage() {
               Daftar Akun Staf ({profiles.length})
             </h2>
           </div>
-          <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+          <p className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
             <Info className="size-3.5" aria-hidden="true" />
             <span>Perubahan tersimpan otomatis.</span>
           </p>
@@ -408,12 +408,12 @@ function DashTeamPage() {
                             {profile.fullName || "Tanpa Nama"}
                           </span>
                           {isSelf ? (
-                            <Badge variant="outline" className="text-[10px]">
+                            <Badge variant="outline" className="text-sm">
                               Anda
                             </Badge>
                           ) : null}
                         </div>
-                        <p className="mt-0.5 text-xs text-muted-foreground">
+                        <p className="mt-0.5 text-sm text-muted-foreground">
                           {profile.email}
                         </p>
                       </div>
@@ -436,7 +436,7 @@ function DashTeamPage() {
                         >
                           <SelectTrigger
                             aria-label={`Peran untuk ${profile.fullName || profile.email}`}
-                            className="min-h-10 w-32 bg-card px-3 text-xs font-medium text-foreground data-[size=default]:h-10"
+                            className="min-h-10 w-32 bg-card px-3 text-sm font-medium text-foreground data-[size=default]:h-10"
                           >
                             <SelectValue />
                           </SelectTrigger>
@@ -469,12 +469,12 @@ function DashTeamPage() {
                       </div>
                     </TableCell>
 
-                    <TableCell className="whitespace-nowrap text-xs text-muted-foreground tabular-nums">
+                    <TableCell className="whitespace-nowrap text-sm text-muted-foreground tabular-nums">
                       {formatJoinDate(profile.createdAt)}
                     </TableCell>
 
                     <TableCell className="text-right">
-                      <div className="inline-flex min-w-36 items-center justify-end gap-1.5 text-xs">
+                      <div className="inline-flex min-w-36 items-center justify-end gap-1.5 text-sm">
                         {rowState.status === "saving" ? (
                           <span className="inline-flex items-center gap-1.5 font-medium text-muted-foreground">
                             <Loader2
@@ -500,7 +500,7 @@ function DashTeamPage() {
                             <span>Gagal</span>
                           </span>
                         ) : isLastActiveAdmin ? (
-                          <Badge variant="amber" className="text-[10px]">
+                          <Badge variant="amber" className="text-sm">
                             <Shield className="size-3" aria-hidden="true" />
                             <span>Admin Terakhir</span>
                           </Badge>

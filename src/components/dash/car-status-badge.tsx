@@ -51,7 +51,7 @@ export function CarStatusBadge({ status, className }: CarStatusBadgeProps) {
     <Badge
       variant="outline"
       className={cn(
-        "gap-1.5 rounded-none px-2 py-0.5 text-[11px] font-semibold tracking-wider uppercase",
+        "gap-1.5 rounded-none px-2 py-0.5 text-sm font-semibold tracking-wider uppercase",
         style.badge,
         className
       )}

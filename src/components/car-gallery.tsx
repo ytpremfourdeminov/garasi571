@@ -116,7 +116,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
           />
 
-          <span className="pointer-events-none absolute top-3 right-3 inline-flex min-h-9 items-center gap-1.5 bg-[#161514]/85 px-3 py-1.5 text-xs font-medium text-[#FAF9F7] transition-colors group-hover:bg-[#161514]">
+          <span className="pointer-events-none absolute top-3 right-3 inline-flex min-h-9 items-center gap-1.5 bg-[#161514]/85 px-3 py-1.5 text-sm font-medium text-[#FAF9F7] transition-colors group-hover:bg-[#161514]">
             <Maximize2 className="size-3.5" aria-hidden="true" />
             <span>Perbesar</span>
           </span>
@@ -146,7 +146,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
 
         <div
           aria-live="polite"
-          className="pointer-events-none absolute right-3 bottom-3 z-10 bg-[#161514] px-3 py-1.5 text-xs font-medium text-[#FAF9F7] tabular-nums"
+          className="pointer-events-none absolute right-3 bottom-3 z-10 bg-[#161514] px-3 py-1.5 text-sm font-medium text-[#FAF9F7] tabular-nums"
         >
           {safeIndex + 1} / {totalImages}
         </div>
@@ -202,7 +202,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
               <DialogTitle className="text-base text-[#FAF9F7] sm:text-lg">
                 {carName}
               </DialogTitle>
-              <DialogDescription className="text-xs text-[#C7C2BC] tabular-nums">
+              <DialogDescription className="text-sm text-[#C7C2BC] tabular-nums">
                 Foto {safeIndex + 1} dari {totalImages}
               </DialogDescription>
             </DialogHeader>
@@ -247,7 +247,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
             ) : null}
           </div>
 
-          <div className="mt-3 flex flex-col gap-2 text-xs text-[#C7C2BC] sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-3 flex flex-col gap-2 text-sm text-[#C7C2BC] sm:flex-row sm:items-center sm:justify-between">
             <p className="leading-relaxed text-[#FAF9F7]">{activeImage.alt}</p>
             <p className="shrink-0 font-medium text-[#C7C2BC] tabular-nums">
               {safeIndex + 1} / {totalImages}
