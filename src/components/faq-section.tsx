@@ -65,7 +65,10 @@ export function FaqSection() {
                     <span>{item.question}</span>
                   </AccordionTrigger>
 
-                  <AccordionContent className="border-t border-border/60 bg-background/60 px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+                  <AccordionContent
+                    keepMounted
+                    className="border-t border-border/60 bg-background/60 px-5 py-4 text-sm leading-relaxed text-muted-foreground"
+                  >
                     <p className="max-w-3xl">{item.answer}</p>
                   </AccordionContent>
                 </AccordionItem>

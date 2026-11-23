@@ -357,7 +357,9 @@ export function HeroSection({ onApplyQuickFinder }: HeroSectionProps) {
                         width={img.width}
                         height={img.height}
                         alt={img.alt}
-                        fetchPriority={index === 0 ? "high" : "auto"}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        decoding={index === 0 ? "sync" : "async"}
+                        fetchPriority={index === 0 ? "high" : "low"}
                         aria-hidden={!isCurrent}
                         className={cn(
                           "absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-500 ease-out",

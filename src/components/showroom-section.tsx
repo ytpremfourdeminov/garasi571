@@ -303,7 +303,7 @@ export function ShowroomSection() {
                               )
                             }
                             aria-label={`Salin nomor ${person.name}`}
-                            className="flex-1 sm:flex-none"
+                            className="min-h-11 flex-1 sm:min-h-9 sm:flex-none"
                           >
                             {isCopied ? (
                               <>
@@ -328,7 +328,7 @@ export function ShowroomSection() {
                             aria-label={`Chat ${person.name} via WhatsApp`}
                             className={cn(
                               buttonVariants({ variant: "default", size: "sm" }),
-                              "flex-1 no-underline sm:flex-none"
+                              "min-h-11 flex-1 no-underline sm:min-h-9 sm:flex-none"
                             )}
                           >
                             <MessageCircle
