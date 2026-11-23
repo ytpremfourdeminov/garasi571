@@ -10,7 +10,6 @@ import {
 } from "@tanstack/react-router"
 import {
   Car,
-  ChevronRight,
   ExternalLink,
   HelpCircle,
   LayoutDashboard,
@@ -24,6 +23,14 @@ import {
 } from "lucide-react"
 import { cn } from "cn"
 import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
@@ -622,51 +629,46 @@ function DashLayout() {
               className="h-4 w-px shrink-0 bg-border"
             />
 
-            <nav aria-label="Breadcrumb" className="min-w-0">
-              <ol className="flex items-center gap-1.5 text-sm">
+            <Breadcrumb className="min-w-0">
+              <BreadcrumbList className="flex-nowrap">
                 {breadcrumbs.map((crumb, index) => {
                   const isLast = index === breadcrumbs.length - 1
                   return (
-                    <li
-                      key={`${crumb.label}-${index}`}
-                      className="flex min-w-0 items-center gap-1.5"
-                    >
-                      {index > 0 ? (
-                        <ChevronRight
-                          className="size-3.5 shrink-0 text-muted-foreground"
-                          aria-hidden="true"
-                        />
-                      ) : null}
-                      {crumb.to && !isLast ? (
-                        <TruncatedTooltip
-                          content={crumb.label}
-                          render={
-                            <Link
-                              to={crumb.to}
-                              className="truncate text-muted-foreground no-underline transition-colors hover:text-foreground"
-                            />
-                          }
-                        >
-                          {crumb.label}
-                        </TruncatedTooltip>
-                      ) : (
-                        <TruncatedTooltip
-                          content={crumb.label}
-                          render={
-                            <span
-                              aria-current={isLast ? "page" : undefined}
-                              className="truncate font-semibold text-foreground"
-                            />
-                          }
-                        >
-                          {crumb.label}
-                        </TruncatedTooltip>
-                      )}
-                    </li>
+                    <React.Fragment key={`${crumb.label}-${index}`}>
+                      {index > 0 ? <BreadcrumbSeparator /> : null}
+                      <BreadcrumbItem className="min-w-0">
+                        {crumb.to && !isLast ? (
+                          <TruncatedTooltip
+                            content={crumb.label}
+                            render={
+                              <BreadcrumbLink
+                                render={
+                                  <Link
+                                    to={crumb.to}
+                                    className="truncate no-underline"
+                                  />
+                                }
+                              />
+                            }
+                          >
+                            {crumb.label}
+                          </TruncatedTooltip>
+                        ) : (
+                          <TruncatedTooltip
+                            content={crumb.label}
+                            render={
+                              <BreadcrumbPage className="truncate font-semibold" />
+                            }
+                          >
+                            {crumb.label}
+                          </TruncatedTooltip>
+                        )}
+                      </BreadcrumbItem>
+                    </React.Fragment>
                   )
                 })}
-              </ol>
-            </nav>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
         </header>
 
