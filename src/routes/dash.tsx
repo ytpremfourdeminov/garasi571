@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/sheet"
 import { TruncatedTooltip } from "@/components/ui/tooltip"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Spinner } from "@/components/ui/spinner"
 import type { StaffProfile } from "@/lib/domain/types"
 import { getPublicSiteOrigin, isDashHostname } from "@/lib/host"
 import {
@@ -516,6 +517,27 @@ function DashLayout() {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
+  const isNavigating = useRouterState({
+    select: (state) => state.isLoading || state.status === "pending",
+  })
+  const [showIsland, setShowIsland] = React.useState(false)
+  const shownAtRef = React.useRef<number>(0)
+
+  React.useEffect(() => {
+    if (isNavigating) {
+      shownAtRef.current = Date.now()
+      setShowIsland(true)
+      return
+    }
+
+    const elapsed = Date.now() - shownAtRef.current
+    const remaining = Math.max(0, 750 - elapsed)
+    const timer = window.setTimeout(() => {
+      setShowIsland(false)
+    }, remaining)
+
+    return () => window.clearTimeout(timer)
+  }, [isNavigating])
 
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
@@ -554,6 +576,34 @@ function DashLayout() {
 
   return (
     <div className="flex min-h-svh w-full bg-background text-foreground">
+      <div
+        role="status"
+        aria-live="polite"
+        aria-hidden={!showIsland}
+        className="pointer-events-none fixed top-3.5 left-1/2 z-50 -translate-x-1/2"
+      >
+        <div
+          className={cn(
+            "inline-flex items-center gap-2.5 overflow-hidden rounded-full border border-[#2F2D2B] bg-[#161514] py-2 text-sm font-medium text-[#FAF9F7] shadow-lg motion-reduce:transition-none",
+            showIsland
+              ? "max-w-48 translate-y-0 scale-100 px-4 opacity-100 motion-safe:[transition:translate_250ms_cubic-bezier(0.22,1,0.36,1)_0ms,scale_250ms_cubic-bezier(0.22,1,0.36,1)_0ms,opacity_150ms_ease-out_0ms,max-width_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms,padding_320ms_cubic-bezier(0.32,1.35,0.45,1)_180ms]"
+              : "max-w-10 -translate-y-[calc(100%+1.5rem)] scale-75 px-2 opacity-0 motion-safe:[transition:max-width_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,padding_260ms_cubic-bezier(0.4,0,0.2,1)_0ms,translate_260ms_cubic-bezier(0.4,0,1,1)_200ms,scale_260ms_cubic-bezier(0.4,0,1,1)_200ms,opacity_150ms_ease-in_300ms]"
+          )}
+        >
+          <Spinner className="size-4 shrink-0 text-primary" />
+          <span
+            className={cn(
+              "whitespace-nowrap transition-opacity motion-reduce:transition-none",
+              showIsland
+                ? "opacity-100 duration-200 delay-[220ms]"
+                : "opacity-0 duration-120 delay-0"
+            )}
+          >
+            Memuat halaman...
+          </span>
+        </div>
+      </div>
+
       <aside
         className={cn(
           "hidden lg:sticky lg:top-0 lg:flex lg:h-svh lg:shrink-0 lg:flex-col lg:border-r lg:border-border lg:bg-card lg:transition-[width] lg:duration-200 lg:ease-linear",
