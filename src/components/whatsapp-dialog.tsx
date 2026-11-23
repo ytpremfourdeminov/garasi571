@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Check, Copy, ExternalLink, MapPin, MessageCircle } from "lucide-react"
-import { SHOWROOM, buildWhatsAppUrl } from "@/data/showroom"
+import { buildWhatsAppUrl } from "@/lib/domain/formatters"
+import { useShowroom } from "@/components/showroom-context"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -11,11 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "cn"
 
-const DEFAULT_TITLE = "Hubungi Tim Sales Garasi 571"
 const DEFAULT_DESCRIPTION =
   "Pilih tim sales untuk langsung terhubung via WhatsApp."
-const DEFAULT_MESSAGE =
-  "Halo Garasi 571, saya tertarik melihat stok mobil bekas dan ingin konsultasi unit atau jadwal kunjungan showroom."
 
 export interface OpenWhatsAppDialogOptions {
   title?: string
@@ -35,12 +33,16 @@ export function WhatsAppDialogProvider({
 }: {
   children: React.ReactNode
 }) {
+  const showroom = useShowroom()
+  const defaultTitle = `Hubungi Tim Sales ${showroom.name}`
+  const defaultMessage = `Halo ${showroom.name}, saya tertarik melihat stok mobil bekas dan ingin konsultasi unit atau jadwal kunjungan showroom.`
+
   const [open, setOpen] = React.useState(false)
   const [dialogOptions, setDialogOptions] =
     React.useState<OpenWhatsAppDialogOptions>({
-      title: DEFAULT_TITLE,
+      title: defaultTitle,
       description: DEFAULT_DESCRIPTION,
-      message: DEFAULT_MESSAGE,
+      message: defaultMessage,
     })
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const [copyStatus, setCopyStatus] = React.useState("")
@@ -57,15 +59,15 @@ export function WhatsAppDialogProvider({
   const openWhatsAppDialog = React.useCallback(
     (opts?: OpenWhatsAppDialogOptions) => {
       setDialogOptions({
-        title: opts?.title ?? DEFAULT_TITLE,
+        title: opts?.title ?? defaultTitle,
         description: opts?.description ?? DEFAULT_DESCRIPTION,
-        message: opts?.message || DEFAULT_MESSAGE,
+        message: opts?.message || defaultMessage,
       })
       setCopiedId(null)
       setCopyStatus("")
       setOpen(true)
     },
-    []
+    [defaultMessage, defaultTitle]
   )
 
   const handleCopyNumber = React.useCallback(
@@ -126,89 +128,97 @@ export function WhatsAppDialogProvider({
             </div>
 
             <div className="space-y-3">
-              {SHOWROOM.sales.map((person) => {
-                const isCopied = copiedId === person.id
-                const whatsappHref = buildWhatsAppUrl(
-                  person.phoneE164,
-                  dialogOptions.message
-                )
+              {showroom.sales.length > 0 ? (
+                showroom.sales.map((person) => {
+                  const isCopied = copiedId === person.id
+                  const whatsappHref = buildWhatsAppUrl(
+                    person.phoneE164,
+                    dialogOptions.message
+                  )
 
-                return (
-                  <div
-                    key={person.id}
-                    className="flex flex-col gap-3 border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-heading text-base font-semibold text-foreground">
-                        {person.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {person.role}
-                      </p>
-                      <p className="mt-1 text-sm font-medium text-foreground tabular-nums">
-                        {person.phoneDisplay}
-                      </p>
+                  return (
+                    <div
+                      key={person.id}
+                      className="flex flex-col gap-3 border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-heading text-base font-semibold text-foreground">
+                          {person.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {person.role}
+                        </p>
+                        <p className="mt-1 text-sm font-medium text-foreground tabular-nums">
+                          {person.phoneDisplay}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() =>
+                            handleCopyNumber(
+                              person.id,
+                              person.name,
+                              person.phoneDisplay
+                            )
+                          }
+                        >
+                          {isCopied ? (
+                            <>
+                              <Check
+                                className="size-4 text-primary"
+                                aria-hidden="true"
+                              />
+                              <span>Nomor disalin</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="size-4" aria-hidden="true" />
+                              <span>Salin Nomor</span>
+                            </>
+                          )}
+                        </Button>
+
+                        <a
+                          href={whatsappHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            buttonVariants({ variant: "default" }),
+                            "no-underline"
+                          )}
+                        >
+                          <MessageCircle
+                            className="size-4"
+                            aria-hidden="true"
+                          />
+                          <span>Chat WhatsApp</span>
+                          <ExternalLink
+                            className="size-3.5"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </div>
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() =>
-                          handleCopyNumber(
-                            person.id,
-                            person.name,
-                            person.phoneDisplay
-                          )
-                        }
-                      >
-                        {isCopied ? (
-                          <>
-                            <Check
-                              className="size-4 text-primary"
-                              aria-hidden="true"
-                            />
-                            <span>Nomor disalin</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="size-4" aria-hidden="true" />
-                            <span>Salin Nomor</span>
-                          </>
-                        )}
-                      </Button>
-
-                      <a
-                        href={whatsappHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={cn(
-                          buttonVariants({ variant: "default" }),
-                          "no-underline"
-                        )}
-                      >
-                        <MessageCircle
-                          className="size-4"
-                          aria-hidden="true"
-                        />
-                        <span>Chat WhatsApp</span>
-                        <ExternalLink
-                          className="size-3.5"
-                          aria-hidden="true"
-                        />
-                      </a>
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })
+              ) : (
+                <div className="border border-border bg-card p-4 text-sm text-muted-foreground">
+                  Kontak WhatsApp tim sales sedang diperbarui. Silakan kunjungi
+                  showroom kami atau hubungi lewat Instagram{" "}
+                  {showroom.instagramHandle}.
+                </div>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="size-3.5" aria-hidden="true" />
-                <span>{SHOWROOM.city}</span>
+                <span>{showroom.city}</span>
               </span>
-              <span>{SHOWROOM.hours}</span>
+              <span>{showroom.hours}</span>
             </div>
 
             <div role="status" aria-live="polite" className="sr-only">

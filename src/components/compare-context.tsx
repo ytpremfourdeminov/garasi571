@@ -1,5 +1,5 @@
 import * as React from "react"
-import { CARS, type CarUnit } from "@/data/cars"
+import type { CarUnit } from "@/lib/domain/types"
 
 const MAX_COMPARE_CARS = 3
 
@@ -16,31 +16,79 @@ interface CompareContextValue {
   announcement: string
 }
 
+export interface CompareProviderProps {
+  children: React.ReactNode
+  cars?: readonly CarUnit[]
+}
+
 const CompareContext = React.createContext<CompareContextValue | null>(null)
 
-export function CompareProvider({ children }: { children: React.ReactNode }) {
+export function CompareProvider({ children, cars = [] }: CompareProviderProps) {
   const [selectedSlugs, setSelectedSlugs] = React.useState<string[]>([])
   const [isDialogOpen, setDialogOpen] = React.useState(false)
   const [announcement, setAnnouncement] = React.useState("")
 
+  const carMap = React.useMemo(
+    () => new Map(cars.map((car) => [car.slug, car])),
+    [cars]
+  )
+
   const selectedCars = React.useMemo(() => {
-    const carMap = new Map(CARS.map((car) => [car.slug, car]))
     return selectedSlugs
       .map((slug) => carMap.get(slug))
       .filter((car): car is CarUnit => Boolean(car))
-  }, [selectedSlugs])
+  }, [carMap, selectedSlugs])
 
   const isSelected = React.useCallback(
     (slug: string) => selectedSlugs.includes(slug),
     [selectedSlugs]
   )
 
-  const toggleCompare = React.useCallback((slug: string) => {
-    const car = CARS.find((item) => item.slug === slug)
-    const label = car ? car.shortName : "Unit"
+  const toggleCompare = React.useCallback(
+    (slug: string) => {
+      const car = carMap.get(slug)
+      const label = car ? car.shortName : "Unit"
 
-    setSelectedSlugs((prev) => {
-      if (prev.includes(slug)) {
+      setSelectedSlugs((prev) => {
+        if (prev.includes(slug)) {
+          const next = prev.filter((item) => item !== slug)
+          setAnnouncement(
+            next.length === 0
+              ? `${label} dihapus. Daftar perbandingan kosong.`
+              : `${label} dihapus dari perbandingan (${next.length}/3).`
+          )
+          if (next.length === 0) {
+            setDialogOpen(false)
+          }
+          return next
+        }
+
+        if (prev.length >= MAX_COMPARE_CARS) {
+          setAnnouncement(
+            "Maksimal 3 unit dapat dibandingkan sekaligus. Hapus salah satu unit terlebih dahulu."
+          )
+          return prev
+        }
+
+        const next = [...prev, slug]
+        setAnnouncement(
+          `${label} ditambahkan ke perbandingan (${next.length}/3).`
+        )
+        return next
+      })
+    },
+    [carMap]
+  )
+
+  const removeCompare = React.useCallback(
+    (slug: string) => {
+      const car = carMap.get(slug)
+      const label = car ? car.shortName : "Unit"
+
+      setSelectedSlugs((prev) => {
+        if (!prev.includes(slug)) {
+          return prev
+        }
         const next = prev.filter((item) => item !== slug)
         setAnnouncement(
           next.length === 0
@@ -51,43 +99,10 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
           setDialogOpen(false)
         }
         return next
-      }
-
-      if (prev.length >= MAX_COMPARE_CARS) {
-        setAnnouncement(
-          "Maksimal 3 unit dapat dibandingkan sekaligus. Hapus salah satu unit terlebih dahulu."
-        )
-        return prev
-      }
-
-      const next = [...prev, slug]
-      setAnnouncement(
-        `${label} ditambahkan ke perbandingan (${next.length}/3).`
-      )
-      return next
-    })
-  }, [])
-
-  const removeCompare = React.useCallback((slug: string) => {
-    const car = CARS.find((item) => item.slug === slug)
-    const label = car ? car.shortName : "Unit"
-
-    setSelectedSlugs((prev) => {
-      if (!prev.includes(slug)) {
-        return prev
-      }
-      const next = prev.filter((item) => item !== slug)
-      setAnnouncement(
-        next.length === 0
-          ? `${label} dihapus. Daftar perbandingan kosong.`
-          : `${label} dihapus dari perbandingan (${next.length}/3).`
-      )
-      if (next.length === 0) {
-        setDialogOpen(false)
-      }
-      return next
-    })
-  }, [])
+      })
+    },
+    [carMap]
+  )
 
   const clearCompare = React.useCallback(() => {
     setSelectedSlugs([])

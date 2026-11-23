@@ -1,22 +1,46 @@
 import { Link } from "@tanstack/react-router"
 import { Camera, Check, Plus } from "lucide-react"
-import { formatRupiah, formatShortJuta, type CarUnit } from "@/data/cars"
+import { formatRupiah, formatShortJuta } from "@/lib/domain/formatters"
+import type { CarImage, CarUnit } from "@/lib/domain/types"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { useCompare } from "@/components/compare-context"
 import { cn } from "cn"
 
+type CarCardImage = Pick<CarImage, "src" | "width" | "height" | "alt">
+
+type CarCardUnit = Pick<
+  CarUnit,
+  | "slug"
+  | "name"
+  | "year"
+  | "transmission"
+  | "plateInfo"
+  | "categoryLabel"
+  | "cashPrice"
+  | "creditPrice"
+  | "creditPriceNote"
+  | "highlights"
+  | "creditSimulations"
+> & {
+  images: readonly CarCardImage[]
+  offerBadge?: CarUnit["offerBadge"]
+  status?: CarUnit["status"]
+}
+
 export interface CarCardProps {
-  car: CarUnit
+  car: CarCardUnit
 }
 
 export function CarCard({ car }: CarCardProps) {
   const { isSelected, toggleCompare } = useCompare()
   const selected = isSelected(car.slug)
-  const coverImage = car.images[0]
+  const coverImage = car.images.at(0)
   const startingDp =
     car.creditSimulations.length > 0
       ? Math.min(...car.creditSimulations.map((sim) => sim.dp))
       : null
+  const offerBadge = car.offerBadge?.trim() ?? ""
+  const isBooked = car.status === "booked"
 
   return (
     <article className="group flex min-w-0 flex-col justify-between rounded-none border border-border bg-card transition-colors duration-150 hover:border-foreground/40">
@@ -26,18 +50,40 @@ export function CarCard({ car }: CarCardProps) {
           params={{ slug: car.slug }}
           className="relative block aspect-[4/3] overflow-hidden bg-secondary no-underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
         >
-          <img
-            src={coverImage.src}
-            width={coverImage.width}
-            height={coverImage.height}
-            alt={coverImage.alt}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-          />
+          {coverImage ? (
+            <img
+              src={coverImage.src}
+              width={coverImage.width}
+              height={coverImage.height}
+              alt={coverImage.alt}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-secondary px-4 text-center text-xs text-muted-foreground">
+              <Camera className="size-6 opacity-50" aria-hidden="true" />
+              <span>Foto unit belum tersedia</span>
+            </div>
+          )}
 
           <span className="absolute top-2.5 left-2.5 bg-[#161514] px-2.5 py-1 text-xs font-medium text-[#FAF9F7]">
             {car.categoryLabel}
           </span>
+
+          {isBooked || offerBadge ? (
+            <div className="absolute top-2.5 right-2.5 flex max-w-[60%] flex-wrap justify-end gap-1.5">
+              {isBooked ? (
+                <span className="border border-amber-400/40 bg-[#161514]/90 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-amber-200 uppercase">
+                  Dibooking
+                </span>
+              ) : null}
+              {offerBadge ? (
+                <span className="bg-primary px-2.5 py-1 text-[11px] font-semibold text-primary-foreground">
+                  {offerBadge}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
 
           <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1.5 bg-[#161514] px-2.5 py-1 text-xs font-medium text-[#FAF9F7] tabular-nums">
             <Camera className="size-3.5" aria-hidden="true" />

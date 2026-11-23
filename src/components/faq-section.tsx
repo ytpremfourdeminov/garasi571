@@ -1,4 +1,4 @@
-import { SHOWROOM_FAQS } from "@/data/faq"
+import type { ShowroomFaqItem } from "@/lib/domain/types"
 import {
   Accordion,
   AccordionContent,
@@ -6,7 +6,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
-export function FaqSection() {
+export interface FaqSectionProps {
+  faqs?: readonly ShowroomFaqItem[]
+}
+
+export function FaqSection({ faqs = [] }: FaqSectionProps) {
   return (
     <section
       id="faq"
@@ -58,22 +62,28 @@ export function FaqSection() {
           </div>
 
           <div className="min-w-0 lg:col-span-8">
-            <Accordion className="border border-border bg-card">
-              {SHOWROOM_FAQS.map((item) => (
-                <AccordionItem key={item.id} value={item.id}>
-                  <AccordionTrigger className="min-h-11 items-center gap-4 px-5 py-3.5 font-heading text-base font-semibold text-foreground hover:bg-secondary/60 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring **:data-[slot=accordion-trigger-icon]:text-primary">
-                    <span>{item.question}</span>
-                  </AccordionTrigger>
+            {faqs.length > 0 ? (
+              <Accordion className="border border-border bg-card">
+                {faqs.map((item) => (
+                  <AccordionItem key={item.id} value={item.id}>
+                    <AccordionTrigger className="min-h-11 items-center gap-4 px-5 py-3.5 font-heading text-base font-semibold text-foreground hover:bg-secondary/60 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring **:data-[slot=accordion-trigger-icon]:text-primary">
+                      <span>{item.question}</span>
+                    </AccordionTrigger>
 
-                  <AccordionContent
-                    keepMounted
-                    className="border-t border-border/60 bg-background/60 px-5 py-4 text-sm leading-relaxed text-muted-foreground"
-                  >
-                    <p className="max-w-3xl">{item.answer}</p>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+                    <AccordionContent
+                      keepMounted
+                      className="border-t border-border/60 bg-background/60 px-5 py-4 text-sm leading-relaxed text-muted-foreground"
+                    >
+                      <p className="max-w-3xl">{item.answer}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              <div className="border border-border bg-card p-5 text-sm text-muted-foreground">
+                Belum ada pertanyaan umum yang ditampilkan saat ini.
+              </div>
+            )}
           </div>
         </div>
       </div>

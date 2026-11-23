@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react"
 import { cn } from "cn"
-import type { CarImage } from "@/data/cars"
+import type { CarImage } from "@/lib/domain/types"
 import {
   Dialog,
   DialogClose,
@@ -11,8 +11,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+type CarGalleryImage = Pick<CarImage, "src" | "width" | "height" | "alt"> &
+  Partial<Omit<CarImage, "src" | "width" | "height" | "alt">>
+
 interface CarGalleryProps {
-  images: CarImage[]
+  images: readonly CarGalleryImage[]
   carName: string
 }
 
@@ -24,8 +27,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
   const totalImages = images.length
   const safeIndex =
     totalImages > 0 ? Math.min(activeIndex, totalImages - 1) : 0
-  const activeImage: CarImage | undefined =
-    totalImages > 0 ? images[safeIndex] : undefined
+  const activeImage = totalImages > 0 ? images.at(safeIndex) : undefined
 
   React.useEffect(() => {
     setActiveIndex(0)
