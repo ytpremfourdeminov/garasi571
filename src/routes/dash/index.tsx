@@ -497,12 +497,12 @@ function DashOverviewPage() {
                           >
                             {car.name}
                           </TruncatedTooltip>
+                          <p className="mt-0.5 font-heading text-base font-bold text-foreground tabular-nums sm:text-lg">
+                            {formatRupiah(car.cashPrice)}
+                          </p>
                           <p className="mt-0.5 text-sm text-muted-foreground">
-                            <span className="tabular-nums">{car.year}</span>{" "}
-                            &middot; {getCategoryLabel(car.category)} &middot;{" "}
-                            <span className="font-medium text-foreground tabular-nums">
-                              {formatRupiah(car.cashPrice)}
-                            </span>
+                            Tahun <span className="tabular-nums">{car.year}</span>{" "}
+                            &middot; {getCategoryLabel(car.category)}
                           </p>
                         </div>
                       </div>
