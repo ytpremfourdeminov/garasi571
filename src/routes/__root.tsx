@@ -11,6 +11,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import { AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react"
 import { cn } from "cn"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 import appCss from "../styles.css?url"
@@ -71,7 +72,9 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <TooltipProvider delay={150}>
-      <Outlet />
+      <Toaster>
+        <Outlet />
+      </Toaster>
     </TooltipProvider>
   )
 }
