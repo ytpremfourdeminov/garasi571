@@ -5,7 +5,6 @@ import {
   ArrowRight,
   Car,
   CheckCircle2,
-  ClipboardList,
   Plus,
   Shield,
   Star,
@@ -49,14 +48,10 @@ export const Route = createFileRoute("/dash/")({
 function DashOverviewPending() {
   return (
     <div aria-busy="true" aria-label="Memuat ringkasan" className="space-y-8">
-      <section className="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="border-b border-border pb-6">
         <div className="space-y-2">
           <Skeleton className="h-8 w-72 max-w-full" />
           <Skeleton className="h-5 w-96 max-w-full" />
-        </div>
-        <div className="flex flex-wrap gap-2.5">
-          <Skeleton className="h-10 w-36" />
-          <Skeleton className="h-10 w-40" />
         </div>
       </section>
 
@@ -204,7 +199,7 @@ function DashOverviewPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <section className="flex flex-col gap-5 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="border-b border-border pb-6">
         <div className="min-w-0">
           <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Ringkasan Stok &amp; Kelengkapan Unit
@@ -221,29 +216,6 @@ function DashOverviewPage() {
             </span>
             .
           </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Link
-            to="/dash/cars"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "default" }),
-              "no-underline"
-            )}
-          >
-            <ClipboardList className="size-4" aria-hidden="true" />
-            <span>Kelola Inventaris</span>
-          </Link>
-          <Link
-            to="/dash/cars/new"
-            className={cn(
-              buttonVariants({ variant: "default", size: "default" }),
-              "no-underline"
-            )}
-          >
-            <Plus className="size-4" aria-hidden="true" />
-            <span>Tambah Unit Baru</span>
-          </Link>
         </div>
       </section>
 
