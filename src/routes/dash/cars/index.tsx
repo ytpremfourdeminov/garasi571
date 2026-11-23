@@ -923,12 +923,14 @@ function DashCarsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[30%]">Unit</TableHead>
-                  <TableHead>Harga (Cash / Kredit)</TableHead>
-                  <TableHead className="w-[12%]">Kelengkapan</TableHead>
-                  <TableHead className="w-[15%]">Status</TableHead>
-                  <TableHead className="w-[14%]">Unggulan Beranda</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
+                  <TableHead className="w-[250px] px-2.5">Unit</TableHead>
+                  <TableHead className="w-[152px] px-2.5">Harga</TableHead>
+                  <TableHead className="w-[84px] px-2.5">Skor</TableHead>
+                  <TableHead className="w-[144px] px-2.5">Status</TableHead>
+                  <TableHead className="w-[136px] px-2.5">Beranda</TableHead>
+                  <TableHead className="w-[172px] px-2.5 text-right">
+                    Aksi
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -940,13 +942,18 @@ function DashCarsPage() {
                   const isRowBusy = Boolean(pendingAction)
                   const occupiedSlots = getOccupiedSlotsForCar(car.id)
                   const previewUrl = `${publicSiteOrigin}/mobil/${car.slug}`
+                  const plateLabel = car.plateInfo?.trim()
+                    ? /^plat\b/i.test(car.plateInfo.trim())
+                      ? car.plateInfo.trim()
+                      : `Plat ${car.plateInfo.trim()}`
+                    : null
 
                   return (
                     <TableRow key={car.id}>
                       {/* Unit */}
-                      <TableCell>
-                        <div className="flex min-w-0 items-center gap-3">
-                          <div className="relative h-14 w-20 shrink-0 overflow-hidden border border-border bg-secondary">
+                      <TableCell className="w-[250px] max-w-[250px] px-2.5">
+                        <div className="flex min-w-0 items-center gap-2.5">
+                          <div className="relative h-12 w-16 shrink-0 overflow-hidden border border-border bg-secondary">
                             {cover ? (
                               <img
                                 src={cover.src}
@@ -960,27 +967,27 @@ function DashCarsPage() {
                               </div>
                             )}
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <TruncatedTooltip
                               content={car.name}
                               render={
-                                <p className="truncate font-heading text-sm font-bold text-foreground" />
+                                <p className="line-clamp-2 font-heading text-sm leading-snug font-bold text-foreground" />
                               }
                             >
                               {car.name}
                             </TruncatedTooltip>
-                            <p className="mt-0.5 text-sm text-muted-foreground">
+                            <p className="mt-0.5 truncate text-sm text-muted-foreground">
                               <span className="tabular-nums">{car.year}</span>{" "}
                               &middot; {getCategoryLabel(car.category)}
                             </p>
-                            {car.plateInfo ? (
+                            {plateLabel ? (
                               <TruncatedTooltip
-                                content={car.plateInfo}
+                                content={plateLabel}
                                 render={
                                   <p className="mt-0.5 truncate text-sm text-muted-foreground" />
                                 }
                               >
-                                {car.plateInfo}
+                                {plateLabel}
                               </TruncatedTooltip>
                             ) : null}
                           </div>
@@ -988,7 +995,7 @@ function DashCarsPage() {
                       </TableCell>
 
                       {/* Pricing */}
-                      <TableCell className="whitespace-nowrap tabular-nums">
+                      <TableCell className="px-2.5 whitespace-nowrap tabular-nums">
                         <p className="font-semibold text-foreground">
                           {formatRupiah(car.cashPrice)}
                         </p>
@@ -1002,8 +1009,8 @@ function DashCarsPage() {
                       </TableCell>
 
                       {/* Completeness */}
-                      <TableCell>
-                        <div className="w-24 space-y-1.5">
+                      <TableCell className="px-2.5">
+                        <div className="w-16 space-y-1.5">
                           <Badge
                             variant="outline"
                             className={cn(
@@ -1029,8 +1036,8 @@ function DashCarsPage() {
                       </TableCell>
 
                       {/* Inline Status */}
-                      <TableCell>
-                        <div className="flex items-center gap-2">
+                      <TableCell className="px-2.5">
+                        <div className="flex items-center gap-1.5">
                           <Select
                             items={CAR_STATUS_LABELS}
                             value={car.status}
@@ -1042,7 +1049,7 @@ function DashCarsPage() {
                           >
                             <SelectTrigger
                               aria-label={`Ubah status ${car.name}`}
-                              className="min-h-11 w-36 bg-card px-2.5 text-sm font-semibold text-foreground data-[size=default]:h-11"
+                              className="min-h-10 w-full bg-card px-2 text-sm font-semibold text-foreground data-[size=default]:h-10"
                             >
                               <span className="inline-flex min-w-0 items-center gap-2">
                                 <span
@@ -1074,7 +1081,7 @@ function DashCarsPage() {
                       </TableCell>
 
                       {/* Hero Featured */}
-                      <TableCell>
+                      <TableCell className="px-2.5">
                         <div className="flex flex-col gap-1.5">
                           <div className="flex items-center gap-1.5">
                             <Switch
@@ -1106,7 +1113,7 @@ function DashCarsPage() {
                               >
                                 <SelectTrigger
                                   aria-label={`Urutan unggulan Hero ${car.name}`}
-                                  className="min-h-11 w-24 bg-card px-2 text-sm font-semibold tabular-nums data-[size=default]:h-11"
+                                  className="min-h-10 w-[78px] bg-card px-2 text-sm font-semibold tabular-nums data-[size=default]:h-10"
                                 >
                                   <SelectValue />
                                 </SelectTrigger>
@@ -1143,8 +1150,8 @@ function DashCarsPage() {
                       </TableCell>
 
                       {/* Actions */}
-                      <TableCell className="text-right">
-                        <div className="inline-flex items-center justify-end gap-1.5">
+                      <TableCell className="px-2.5 text-right">
+                        <div className="inline-flex items-center justify-end gap-1">
                           <Tooltip>
                             <TooltipTrigger
                               render={
@@ -1156,7 +1163,7 @@ function DashCarsPage() {
                                   className={cn(
                                     buttonVariants({
                                       variant: "outline",
-                                      size: "icon",
+                                      size: "icon-sm",
                                     }),
                                     "no-underline"
                                   )}
@@ -1183,15 +1190,14 @@ function DashCarsPage() {
                                   className={cn(
                                     buttonVariants({
                                       variant: "outline",
-                                      size: "default",
+                                      size: "icon-sm",
                                     }),
-                                    "px-3 text-sm no-underline"
+                                    "no-underline"
                                   )}
                                 />
                               }
                             >
-                              <Pencil className="size-3.5" aria-hidden="true" />
-                              <span>Edit</span>
+                              <Pencil className="size-4" aria-hidden="true" />
                             </TooltipTrigger>
                             <TooltipContent>Edit unit</TooltipContent>
                           </Tooltip>
@@ -1203,7 +1209,7 @@ function DashCarsPage() {
                               <Button
                                 type="button"
                                 variant="outline"
-                                size="icon"
+                                size="icon-sm"
                                 disabled={isRowBusy || car.status === "archived"}
                                 onClick={() => void handleArchiveCar(car)}
                                 aria-label={`Arsipkan ${car.name}`}
@@ -1235,7 +1241,7 @@ function DashCarsPage() {
                                   <Button
                                     type="button"
                                     variant="outline"
-                                    size="icon"
+                                    size="icon-sm"
                                     disabled={isRowBusy}
                                     onClick={() => openDeleteDialog(car)}
                                     aria-label={`Hapus permanen ${car.name}`}

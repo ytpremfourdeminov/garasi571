@@ -911,7 +911,7 @@ function DashShowroomPage() {
                     <p className="truncate font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
                       {form.name || "Garasi 571"}
                     </p>
-                    <p className="mt-0.5 text-xs text-[#C7C2BC]">
+                    <p className="mt-0.5 text-sm text-[#C7C2BC]">
                       {form.logoUrl.trim()
                         ? "Pratinjau pada latar gelap"
                         : "Belum ada logo terpasang"}
@@ -968,7 +968,7 @@ function DashShowroomPage() {
                         )}
                       </Button>
                     </div>
-                    <p className="text-center text-xs text-muted-foreground">
+                    <p className="text-center text-sm text-muted-foreground">
                       Format WebP, JPG, atau PNG · Maksimal 5 MB
                     </p>
                   </div>
