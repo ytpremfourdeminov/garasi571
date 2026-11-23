@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Link, createFileRoute, type LinkProps } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import {
   AlertTriangle,
   ArrowRight,
@@ -189,7 +189,7 @@ function DashOverviewPage() {
             <span>Kelola Inventaris</span>
           </Link>
           <Link
-            to={"/dash/cars/new" as LinkProps["to"]}
+            to="/dash/cars/new"
             className={cn(
               buttonVariants({ variant: "default", size: "default" }),
               "no-underline"
@@ -262,7 +262,7 @@ function DashOverviewPage() {
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Link
-            to={"/dash/cars/new" as LinkProps["to"]}
+            to="/dash/cars/new"
             className="group flex min-h-14 items-center justify-between gap-3 border border-[#161514] bg-[#161514] px-4 py-3.5 text-[#FAF9F7] no-underline transition-colors hover:bg-[#242220] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             <div className="flex min-w-0 items-center gap-3">
@@ -391,7 +391,7 @@ function DashOverviewPage() {
                 kelengkapan riset dan menayangkan katalog.
               </p>
               <Link
-                to={"/dash/cars/new" as LinkProps["to"]}
+                to="/dash/cars/new"
                 className={cn(
                   buttonVariants({ variant: "default", size: "default" }),
                   "mt-5 no-underline"
@@ -466,8 +466,8 @@ function DashOverviewPage() {
                       </div>
 
                       <Link
-                        to={"/dash/cars/$carId" as LinkProps["to"]}
-                        params={{ carId: car.id } as never}
+                        to="/dash/cars/$carId"
+                        params={{ carId: car.id }}
                         className={cn(
                           buttonVariants({ variant: "outline", size: "default" }),
                           "w-full shrink-0 no-underline sm:w-auto"
