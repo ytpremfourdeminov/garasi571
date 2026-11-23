@@ -16,9 +16,11 @@ import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as DashIndexRouteImport } from './routes/dash/index'
 import { Route as DashLoginRouteImport } from './routes/dash_.login'
 import { Route as MediaSplatRouteImport } from './routes/media.$'
 import { Route as PublicMobilSlugRouteImport } from './routes/_public/mobil.$slug'
+import { Route as DashCarsIndexRouteImport } from './routes/dash/cars/index'
 import { Route as ApiDashMediaUploadRouteImport } from './routes/api/dash.media.upload'
 
 const PublicRoute = PublicRouteImport.update({
@@ -55,6 +57,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PublicRoute,
 } as any)
+const DashIndexRoute = DashIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashRoute,
+} as any)
 const DashLoginRoute = DashLoginRouteImport.update({
   id: '/dash_/login',
   path: '/dash/login',
@@ -70,6 +77,11 @@ const PublicMobilSlugRoute = PublicMobilSlugRouteImport.update({
   path: '/mobil/$slug',
   getParentRoute: () => PublicRoute,
 } as any)
+const DashCarsIndexRoute = DashCarsIndexRouteImport.update({
+  id: '/cars/',
+  path: '/cars/',
+  getParentRoute: () => DashRoute,
+} as any)
 const ApiDashMediaUploadRoute = ApiDashMediaUploadRouteImport.update({
   id: '/api/dash/media/upload',
   path: '/api/dash/media/upload',
@@ -78,18 +90,19 @@ const ApiDashMediaUploadRoute = ApiDashMediaUploadRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
-  '/dash': typeof DashRoute
+  '/dash': typeof DashRouteWithChildren
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dash/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
+  '/dash/': typeof DashIndexRoute
   '/mobil/$slug': typeof PublicMobilSlugRoute
+  '/dash/cars/': typeof DashCarsIndexRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
 export interface FileRoutesByTo {
-  '/dash': typeof DashRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -97,13 +110,15 @@ export interface FileRoutesByTo {
   '/dash/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
   '/': typeof PublicIndexRoute
+  '/dash': typeof DashIndexRoute
   '/mobil/$slug': typeof PublicMobilSlugRoute
+  '/dash/cars': typeof DashCarsIndexRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicRouteWithChildren
-  '/dash': typeof DashRoute
+  '/dash': typeof DashRouteWithChildren
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -111,7 +126,9 @@ export interface FileRoutesById {
   '/dash_/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
   '/_public/': typeof PublicIndexRoute
+  '/dash/': typeof DashIndexRoute
   '/_public/mobil/$slug': typeof PublicMobilSlugRoute
+  '/dash/cars/': typeof DashCarsIndexRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
 export interface FileRouteTypes {
@@ -125,11 +142,12 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dash/login'
     | '/media/$'
+    | '/dash/'
     | '/mobil/$slug'
+    | '/dash/cars/'
     | '/api/dash/media/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/dash'
     | '/llms-full.txt'
     | '/llms.txt'
     | '/robots.txt'
@@ -137,7 +155,9 @@ export interface FileRouteTypes {
     | '/dash/login'
     | '/media/$'
     | '/'
+    | '/dash'
     | '/mobil/$slug'
+    | '/dash/cars'
     | '/api/dash/media/upload'
   id:
     | '__root__'
@@ -150,13 +170,15 @@ export interface FileRouteTypes {
     | '/dash_/login'
     | '/media/$'
     | '/_public/'
+    | '/dash/'
     | '/_public/mobil/$slug'
+    | '/dash/cars/'
     | '/api/dash/media/upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
-  DashRoute: typeof DashRoute
+  DashRoute: typeof DashRouteWithChildren
   LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
@@ -217,6 +239,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/dash/': {
+      id: '/dash/'
+      path: '/'
+      fullPath: '/dash/'
+      preLoaderRoute: typeof DashIndexRouteImport
+      parentRoute: typeof DashRoute
+    }
     '/dash_/login': {
       id: '/dash_/login'
       path: '/dash/login'
@@ -237,6 +266,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/mobil/$slug'
       preLoaderRoute: typeof PublicMobilSlugRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/dash/cars/': {
+      id: '/dash/cars/'
+      path: '/cars'
+      fullPath: '/dash/cars/'
+      preLoaderRoute: typeof DashCarsIndexRouteImport
+      parentRoute: typeof DashRoute
     }
     '/api/dash/media/upload': {
       id: '/api/dash/media/upload'
@@ -261,9 +297,21 @@ const PublicRouteChildren: PublicRouteChildren = {
 const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
+interface DashRouteChildren {
+  DashIndexRoute: typeof DashIndexRoute
+  DashCarsIndexRoute: typeof DashCarsIndexRoute
+}
+
+const DashRouteChildren: DashRouteChildren = {
+  DashIndexRoute: DashIndexRoute,
+  DashCarsIndexRoute: DashCarsIndexRoute,
+}
+
+const DashRouteWithChildren = DashRoute._addFileChildren(DashRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
-  DashRoute: DashRoute,
+  DashRoute: DashRouteWithChildren,
   LlmsFullDottxtRoute: LlmsFullDottxtRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
