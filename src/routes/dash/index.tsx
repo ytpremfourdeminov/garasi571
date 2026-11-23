@@ -517,17 +517,14 @@ function DashOverviewPage() {
                         </div>
 
                         <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <TruncatedTooltip
-                              content={car.name}
-                              render={
-                                <p className="truncate font-heading text-sm font-bold text-foreground sm:text-base" />
-                              }
-                            >
-                              {car.name}
-                            </TruncatedTooltip>
-                            <CarStatusBadge status={car.status} />
-                          </div>
+                          <TruncatedTooltip
+                            content={car.name}
+                            render={
+                              <p className="truncate font-heading text-sm font-bold text-foreground sm:text-base" />
+                            }
+                          >
+                            {car.name}
+                          </TruncatedTooltip>
                           <p className="mt-0.5 text-sm text-muted-foreground">
                             <span className="tabular-nums">{car.year}</span>{" "}
                             &middot; {getCategoryLabel(car.category)} &middot;{" "}
@@ -538,17 +535,23 @@ function DashOverviewPage() {
                         </div>
                       </div>
 
-                      <Link
-                        to="/dash/cars/$carId"
-                        params={{ carId: car.id }}
-                        className={cn(
-                          buttonVariants({ variant: "outline", size: "default" }),
-                          "w-full shrink-0 no-underline sm:w-auto"
-                        )}
-                      >
-                        <span>Lengkapi Data</span>
-                        <ArrowRight className="size-4" aria-hidden="true" />
-                      </Link>
+                      <div className="flex w-full shrink-0 flex-col sm:w-auto">
+                        <CarStatusBadge
+                          status={car.status}
+                          className="w-full justify-center border-b-0 py-1"
+                        />
+                        <Link
+                          to="/dash/cars/$carId"
+                          params={{ carId: car.id }}
+                          className={cn(
+                            buttonVariants({ variant: "outline", size: "default" }),
+                            "w-full shrink-0 no-underline sm:w-auto"
+                          )}
+                        >
+                          <span>Lengkapi Data</span>
+                          <ArrowRight className="size-4" aria-hidden="true" />
+                        </Link>
+                      </div>
                     </div>
 
                     {/* Progress bar + score */}
