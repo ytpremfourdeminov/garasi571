@@ -45,7 +45,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { TruncatedTooltip } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TruncatedTooltip,
+} from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -1120,73 +1125,110 @@ function DashCarsPage() {
                       {/* Actions */}
                       <TableCell className="text-right">
                         <div className="inline-flex items-center justify-end gap-1.5">
-                          <a
-                            href={previewUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Pratinjau ${car.name} di website publik`}
-                            title="Pratinjau di website publik"
-                            className={cn(
-                              buttonVariants({ variant: "outline", size: "icon" }),
-                              "no-underline"
-                            )}
-                          >
-                            <ExternalLink
-                              className="size-4"
-                              aria-hidden="true"
-                            />
-                          </a>
-
-                          <Link
-                            to="/dash/cars/$carId"
-                            params={{ carId: car.id }}
-                            aria-label={`Edit ${car.name}`}
-                            title="Edit unit"
-                            className={cn(
-                              buttonVariants({ variant: "outline", size: "default" }),
-                              "px-3 text-sm no-underline"
-                            )}
-                          >
-                            <Pencil className="size-3.5" aria-hidden="true" />
-                            <span>Edit</span>
-                          </Link>
-
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            disabled={isRowBusy || car.status === "archived"}
-                            onClick={() => void handleArchiveCar(car)}
-                            aria-label={`Arsipkan ${car.name}`}
-                            title={
-                              car.status === "archived"
-                                ? "Unit sudah diarsipkan"
-                                : "Arsipkan unit"
-                            }
-                          >
-                            {pendingAction === "archive" ? (
-                              <Loader2
-                                className="size-4 animate-spin"
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={
+                                <a
+                                  href={previewUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  aria-label={`Pratinjau ${car.name} di website publik`}
+                                  className={cn(
+                                    buttonVariants({
+                                      variant: "outline",
+                                      size: "icon",
+                                    }),
+                                    "no-underline"
+                                  )}
+                                />
+                              }
+                            >
+                              <ExternalLink
+                                className="size-4"
                                 aria-hidden="true"
                               />
-                            ) : (
-                              <Archive className="size-4" aria-hidden="true" />
-                            )}
-                          </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Pratinjau di website publik
+                            </TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={
+                                <Link
+                                  to="/dash/cars/$carId"
+                                  params={{ carId: car.id }}
+                                  aria-label={`Edit ${car.name}`}
+                                  className={cn(
+                                    buttonVariants({
+                                      variant: "outline",
+                                      size: "default",
+                                    }),
+                                    "px-3 text-sm no-underline"
+                                  )}
+                                />
+                              }
+                            >
+                              <Pencil className="size-3.5" aria-hidden="true" />
+                              <span>Edit</span>
+                            </TooltipTrigger>
+                            <TooltipContent>Edit unit</TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger
+                              render={<span className="inline-flex" />}
+                            >
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                disabled={isRowBusy || car.status === "archived"}
+                                onClick={() => void handleArchiveCar(car)}
+                                aria-label={`Arsipkan ${car.name}`}
+                              >
+                                {pendingAction === "archive" ? (
+                                  <Loader2
+                                    className="size-4 animate-spin"
+                                    aria-hidden="true"
+                                  />
+                                ) : (
+                                  <Archive
+                                    className="size-4"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {car.status === "archived"
+                                ? "Unit sudah diarsipkan"
+                                : "Arsipkan unit"}
+                            </TooltipContent>
+                          </Tooltip>
 
                           {isAdmin ? (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              disabled={isRowBusy}
-                              onClick={() => openDeleteDialog(car)}
-                              aria-label={`Hapus permanen ${car.name}`}
-                              title="Hapus permanen (Admin)"
-                              className="border-destructive/40 text-[#991B1B] hover:border-destructive hover:bg-destructive hover:text-primary-foreground"
-                            >
-                              <Trash2 className="size-4" aria-hidden="true" />
-                            </Button>
+                            <Tooltip>
+                              <TooltipTrigger
+                                render={
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    disabled={isRowBusy}
+                                    onClick={() => openDeleteDialog(car)}
+                                    aria-label={`Hapus permanen ${car.name}`}
+                                    className="border-destructive/40 text-[#991B1B] hover:border-destructive hover:bg-destructive hover:text-primary-foreground"
+                                  />
+                                }
+                              >
+                                <Trash2 className="size-4" aria-hidden="true" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                Hapus permanen (Admin)
+                              </TooltipContent>
+                            </Tooltip>
                           ) : null}
                         </div>
                       </TableCell>
