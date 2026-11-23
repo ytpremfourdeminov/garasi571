@@ -510,22 +510,13 @@ export function CarLegalityInspectionForm({
             id={`${idPrefix}-plateInfo`}
             value={value.plateInfo}
             onChange={(e) => onChange({ plateInfo: e.target.value })}
-            placeholder="Contoh: AD - Pajak panjang Nov 2026"
+            placeholder="AD - Pajak panjang Nov 2026 (tampil di kartu)"
             disabled={disabled}
             aria-invalid={Boolean(plateInfoError)}
             aria-describedby={
-              plateInfoError
-                ? `${idPrefix}-plateInfo-error`
-                : `${idPrefix}-plateInfo-hint`
+              plateInfoError ? `${idPrefix}-plateInfo-error` : undefined
             }
           />
-          <p
-            id={`${idPrefix}-plateInfo-hint`}
-            className="text-sm text-muted-foreground"
-          >
-            Teks ringkas yang tampil langsung pada kartu unit dan halaman
-            katalog publik.
-          </p>
           <FieldError
             id={`${idPrefix}-plateInfo-error`}
             message={plateInfoError}
@@ -732,27 +723,19 @@ export function CarLegalityInspectionForm({
                   onChange({ estimatedAnnualTax: parsed })
                 }
               }}
-              placeholder="Contoh: 3250000"
+              placeholder="3250000 (angka penuh tanpa titik)"
               disabled={disabled}
               aria-invalid={Boolean(estimatedAnnualTaxError)}
-              aria-describedby={`${idPrefix}-estimatedAnnualTax-hint`}
             />
-            <p
-              id={`${idPrefix}-estimatedAnnualTax-hint`}
-              className="text-sm text-muted-foreground tabular-nums"
-            >
-              {typeof value.estimatedAnnualTax === "number" &&
-              Number.isFinite(value.estimatedAnnualTax) ? (
-                <span>
-                  Tampil di publik:{" "}
-                  <strong className="font-semibold text-foreground">
-                    {formatRupiah(value.estimatedAnnualTax)} / tahun
-                  </strong>
-                </span>
-              ) : (
-                "Isi angka penuh tanpa titik, mis. 3250000."
-              )}
-            </p>
+            {typeof value.estimatedAnnualTax === "number" &&
+            Number.isFinite(value.estimatedAnnualTax) ? (
+              <p className="text-sm text-muted-foreground tabular-nums">
+                Tampil di publik:{" "}
+                <strong className="font-semibold text-foreground">
+                  {formatRupiah(value.estimatedAnnualTax)} / tahun
+                </strong>
+              </p>
+            ) : null}
             <FieldError message={estimatedAnnualTaxError} />
           </div>
         </div>

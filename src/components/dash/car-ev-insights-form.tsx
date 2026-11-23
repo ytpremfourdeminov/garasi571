@@ -606,12 +606,9 @@ export function CarEvInsightsForm({
                       false
                     )
                   }
-                  placeholder="Contoh: 96"
+                  placeholder="96 (hasil scan OBD / bengkel resmi, 0–100%)"
                   className="tabular-nums"
                 />
-                <p className="text-sm text-muted-foreground">
-                  State of Health hasil scan OBD / bengkel resmi (0–100%).
-                </p>
                 <FieldError message={batterySohError} />
               </div>
 
@@ -638,12 +635,9 @@ export function CarEvInsightsForm({
                       false
                     )
                   }
-                  placeholder="Contoh: 50.4"
+                  placeholder="50.4 (kapasitas total pack baterai)"
                   className="tabular-nums"
                 />
-                <p className="text-sm text-muted-foreground">
-                  Kapasitas total pack baterai dalam kWh.
-                </p>
                 <FieldError message={batteryCapacityError} />
               </div>
 
@@ -666,12 +660,9 @@ export function CarEvInsightsForm({
                   onChange={(e) =>
                     handleEvNumberChange("claimedRangeKm", e.target.value, true)
                   }
-                  placeholder="Contoh: 410"
+                  placeholder="410 (klaim pabrikan WLTP / NEDC)"
                   className="tabular-nums"
                 />
-                <p className="text-sm text-muted-foreground">
-                  Angka klaim pabrikan (WLTP / NEDC / CLTC).
-                </p>
                 <FieldError message={claimedRangeError} />
               </div>
 
@@ -694,12 +685,9 @@ export function CarEvInsightsForm({
                   onChange={(e) =>
                     handleEvNumberChange("realRangeKm", e.target.value, true)
                   }
-                  placeholder="Contoh: 340"
+                  placeholder="340 (estimasi pemakaian nyata AC menyala)"
                   className="tabular-nums"
                 />
-                <p className="text-sm text-muted-foreground">
-                  Estimasi jarak pemakaian nyata AC menyala.
-                </p>
                 <FieldError message={realRangeError} />
               </div>
             </div>
@@ -953,16 +941,14 @@ export function CarEvInsightsForm({
               disabled={disabled}
               aria-invalid={Boolean(videoUrlError)}
               aria-describedby={
-                videoUrlError
-                  ? `${idPrefix}-video-url-error`
-                  : `${idPrefix}-video-url-hint`
+                videoUrlError ? `${idPrefix}-video-url-error` : undefined
               }
               onChange={(e) =>
                 onChange({
                   videoWalkaroundUrl: e.target.value ? e.target.value : null,
                 })
               }
-              placeholder="https://www.instagram.com/reel/... atau https://youtu.be/..."
+              placeholder="Tautan YouTube, Instagram Reels, atau TikTok"
               className="flex-1"
             />
             <div className="flex shrink-0 items-center gap-2">
@@ -1006,12 +992,6 @@ export function CarEvInsightsForm({
             </div>
           </div>
 
-          <p
-            id={`${idPrefix}-video-url-hint`}
-            className="text-sm text-muted-foreground"
-          >
-            Mendukung tautan YouTube, Instagram Reels, atau TikTok.
-          </p>
           <FieldError
             id={`${idPrefix}-video-url-error`}
             message={videoUrlError}
@@ -1283,12 +1263,8 @@ export function CarEvInsightsForm({
                   expertNotes: e.target.value || null,
                 })
               }
-              placeholder="Contoh: Unit sangat cocok untuk keluarga muda yang mencari kabin lega dan biaya perawatan hemat. Seluruh riwayat servis tercatat rapi, ban masih tebal, siap langsung dipakai perjalanan luar kota tanpa PR besar."
+              placeholder="Rangkuman karakter mobil, profil pembeli yang cocok, dan kelebihan utama..."
             />
-            <p className="text-sm text-muted-foreground">
-              Tulis rangkuman karakter mobil, profil pembeli yang paling cocok,
-              serta poin kelebihan utama dibandingkan unit sekelasnya.
-            </p>
             <FieldError message={expertNotesError} />
           </div>
         </div>

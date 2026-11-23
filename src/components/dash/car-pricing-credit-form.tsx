@@ -45,7 +45,6 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  TruncatedTooltip,
 } from "@/components/ui/tooltip"
 
 export interface CarPricingCreditFormProps {
@@ -65,6 +64,8 @@ const CREDIT_NOTE_PRESETS = [
   "Khusus paket kredit rekanan showroom",
 ] as const
 
+const EMPTY_PROVIDER_VALUE = "__none__"
+
 const PROVIDER_SUGGESTIONS = [
   "BCA Finance",
   "Hana Finance",
@@ -72,6 +73,20 @@ const PROVIDER_SUGGESTIONS = [
   "Clipan Finance",
   "Adira Finance",
 ] as const
+
+function buildProviderItems(current?: string | null): Record<string, string> {
+  const map: Record<string, string> = {
+    [EMPTY_PROVIDER_VALUE]: "Pilih leasing / bank",
+  }
+  for (const provider of PROVIDER_SUGGESTIONS) {
+    map[provider] = provider
+  }
+  const trimmed = current?.trim()
+  if (trimmed && !(trimmed in map)) {
+    map[trimmed] = trimmed
+  }
+  return map
+}
 
 const PAYMENT_MODE_OPTIONS: ReadonlyArray<{
   value: PaymentMode
@@ -232,25 +247,6 @@ function buildTenorItems(currentTenor: number): {
     labels[String(yr)] = `${yr} Tahun (${yr * 12} bulan)`
   }
   return { options, labels }
-}
-
-function buildSimulationPreview(sim: CreditSimulationInput): string {
-  const parts: string[] = []
-  if (sim.provider?.trim()) {
-    parts.push(sim.provider.trim())
-  }
-  if (sim.dp > 0) {
-    parts.push(`DP ${formatShortJuta(sim.dp)}`)
-  } else {
-    parts.push("DP Rp0")
-  }
-  if (sim.installmentLabel.trim()) {
-    parts.push(`${sim.installmentLabel.trim()}/bln`)
-  } else if (sim.installment && sim.installment > 0) {
-    parts.push(`${formatRupiah(sim.installment)}/bln`)
-  }
-  parts.push(`${sim.tenorYears} thn`)
-  return parts.join(" · ")
 }
 
 function normalizeSortOrder(
@@ -683,14 +679,10 @@ export function CarPricingCreditForm({
                   onChange={(event) =>
                     onChange({ creditPriceNote: event.target.value })
                   }
-                  placeholder="Contoh: Special Price Rp90.000.000"
+                  placeholder="Catatan harga tunai, mis. Special Price Rp90.000.000"
                   disabled={disabled}
                   aria-invalid={Boolean(errors?.creditPriceNote) || undefined}
                 />
-                <p className="text-sm text-muted-foreground">
-                  Ditampilkan sebagai catatan harga di kartu &amp; halaman unit
-                  khusus tunai.
-                </p>
                 {errors?.creditPriceNote && (
                   <p
                     role="alert"
@@ -754,10 +746,7 @@ export function CarPricingCreditForm({
                     : undefined
                 }
               />
-              <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Isi cepat:
-                </span>
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
                 {CREDIT_NOTE_PRESETS.map((preset) => {
                   const isActive =
                     (value.creditPriceNote ?? "").trim() === preset
@@ -766,12 +755,15 @@ export function CarPricingCreditForm({
                       key={preset}
                       type="button"
                       disabled={disabled}
-                      onClick={() => onChange({ creditPriceNote: preset })}
+                      aria-pressed={isActive}
+                      onClick={() =>
+                        onChange({ creditPriceNote: isActive ? "" : preset })
+                      }
                       className={cn(
-                        "inline-flex min-h-11 items-center border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
+                        "inline-flex min-h-11 items-center border px-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
                         isActive
                           ? "border-foreground bg-foreground text-background"
-                          : "border-border bg-secondary/60 text-foreground hover:bg-secondary",
+                          : "border-border bg-secondary text-foreground hover:border-input",
                       )}
                     >
                       {preset}
@@ -858,9 +850,9 @@ export function CarPricingCreditForm({
           )}
 
           {/* Trade-in Switch */}
-          <div className="flex flex-col gap-3 border border-border bg-secondary/40 p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center border border-border bg-card text-foreground">
+          <div className="flex items-center justify-between gap-4 border border-border bg-secondary/40 p-4">
+            <div className="flex items-center gap-3">
+              <span className="flex size-9 shrink-0 items-center justify-center border border-border bg-card text-foreground">
                 <ArrowLeftRight className="size-4" aria-hidden="true" />
               </span>
               <div className="space-y-0.5">
@@ -870,29 +862,23 @@ export function CarPricingCreditForm({
                 >
                   Melayani Tukar Tambah
                 </label>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  Tampilkan badge &ldquo;Bisa Tukar Tambah&rdquo; agar calon
-                  pembeli tahu unit ini menerima trade-in mobil lama.
+                <p className="text-sm text-muted-foreground">
+                  Tampilkan badge &ldquo;Bisa Tukar Tambah&rdquo; di halaman
+                  unit.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3 sm:justify-end">
-              <Badge
-                variant={value.tradeInAvailable ? "success" : "secondary"}
-              >
-                {value.tradeInAvailable ? "Tersedia" : "Tidak Aktif"}
-              </Badge>
-              <Switch
-                id={`${baseId}-trade-in`}
-                checked={Boolean(value.tradeInAvailable)}
-                onCheckedChange={(checked) =>
+            <Switch
+              id={`${baseId}-trade-in`}
+              checked={Boolean(value.tradeInAvailable)}
+              onCheckedChange={(checked) =>
                   onChange({ tradeInAvailable: checked })
                 }
                 disabled={disabled}
                 aria-label="Melayani Tukar Tambah"
+                className="shrink-0"
               />
-            </div>
           </div>
           {errors?.tradeInAvailable && (
             <p role="alert" className="text-sm font-medium text-destructive">
@@ -954,36 +940,21 @@ export function CarPricingCreditForm({
             {simulations.length === 0 ? (
               <div
                 role="status"
-                className="flex flex-col gap-4 border border-amber-700/35 bg-amber-50 p-4 text-amber-950 sm:flex-row sm:items-center sm:justify-between"
+                className="flex items-start gap-3 border border-amber-700/35 bg-amber-50 p-4 text-amber-950"
               >
-                <div className="flex items-start gap-3">
-                  <Calculator
-                    className="mt-0.5 size-5 shrink-0 text-amber-800"
-                    aria-hidden="true"
-                  />
-                  <div className="space-y-1 text-sm leading-relaxed">
-                    <p className="font-heading text-sm font-bold text-amber-950">
-                      Belum ada paket simulasi kredit
-                    </p>
-                    <p>
-                      Unit ini menggunakan skema{" "}
-                      <strong>Cash &amp; Kredit</strong>. Tambahkan minimal 1
-                      simulasi DP, angsuran, dan tenor agar pembeli dapat
-                      langsung menghitung cicilan dan skor kelengkapan listing
-                      maksimal.
-                    </p>
-                  </div>
+                <Calculator
+                  className="mt-0.5 size-5 shrink-0 text-amber-800"
+                  aria-hidden="true"
+                />
+                <div className="space-y-0.5 text-sm leading-relaxed">
+                  <p className="font-heading text-sm font-bold text-amber-950">
+                    Belum ada paket simulasi kredit
+                  </p>
+                  <p>
+                    Tambahkan minimal 1 simulasi DP, angsuran, dan tenor untuk
+                    skema <strong>Cash &amp; Kredit</strong>.
+                  </p>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleAddSimulation}
-                  disabled={disabled}
-                  className="shrink-0 border-amber-800/40 bg-card text-amber-950 hover:bg-amber-100"
-                >
-                  <Plus className="size-4" aria-hidden="true" />
-                  Tambah Simulasi Pertama
-                </Button>
               </div>
             ) : (
               <div className="space-y-4">
@@ -1001,6 +972,7 @@ export function CarPricingCreditForm({
 
                   const { options: tenorOptions, labels: tenorLabels } =
                     buildTenorItems(sim.tenorYears)
+                  const providerLabels = buildProviderItems(sim.provider)
 
                   const suggestedInstallmentLabel =
                     sim.installment !== null && sim.installment > 0
@@ -1033,22 +1005,22 @@ export function CarPricingCreditForm({
                       )}
                     >
                       {/* Row Header with Reorder + Remove Controls */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-secondary/40 px-4 py-2.5">
-                        <div className="flex min-w-0 flex-wrap items-center gap-2.5">
-                          <Badge variant="default" className="tabular-nums">
+                      <div className="flex items-center justify-between gap-3 border-b border-border bg-secondary/40 px-4 py-2.5">
+                        <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                          <Badge
+                            variant="default"
+                            className="shrink-0 tabular-nums"
+                          >
                             Paket #{index + 1}
                           </Badge>
-                          <TruncatedTooltip
-                            content={buildSimulationPreview(sim)}
-                            render={
-                              <p className="truncate text-sm font-medium text-muted-foreground tabular-nums" />
-                            }
-                          >
-                            {buildSimulationPreview(sim)}
-                          </TruncatedTooltip>
+                          {sim.provider?.trim() ? (
+                            <span className="truncate text-sm font-medium text-foreground">
+                              {sim.provider.trim()}
+                            </span>
+                          ) : null}
                         </div>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex shrink-0 items-center gap-1.5">
                           <Tooltip>
                             <TooltipTrigger
                               render={<span className="inline-flex" />}
@@ -1119,8 +1091,7 @@ export function CarPricingCreditForm({
                             htmlFor={`${baseId}-sim-${rowKey}-label`}
                             className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
-                            Nama Paket Simulasi{" "}
-                            <span className="text-primary">*</span>
+                            Nama Paket <span className="text-primary">*</span>
                           </label>
                           <Input
                             id={`${baseId}-sim-${rowKey}-label`}
@@ -1131,7 +1102,7 @@ export function CarPricingCreditForm({
                                 label: event.target.value,
                               })
                             }
-                            placeholder={`Contoh: Simulasi Kredit ${index + 1}`}
+                            placeholder={`Simulasi Kredit ${index + 1}`}
                             disabled={disabled}
                             aria-invalid={Boolean(labelError) || undefined}
                           />
@@ -1151,22 +1122,39 @@ export function CarPricingCreditForm({
                             htmlFor={`${baseId}-sim-${rowKey}-provider`}
                             className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
-                            Leasing / Bank (Opsional)
+                            Leasing / Bank
                           </label>
-                          <Input
-                            id={`${baseId}-sim-${rowKey}-provider`}
-                            type="text"
-                            list={`${baseId}-provider-datalist`}
-                            value={sim.provider ?? ""}
-                            onChange={(event) =>
-                              handleUpdateSimulation(index, {
-                                provider: event.target.value,
-                              })
+                          <Select
+                            items={providerLabels}
+                            value={
+                              sim.provider?.trim() || EMPTY_PROVIDER_VALUE
                             }
-                            placeholder="Contoh: BCA Finance, Hana Finance"
+                            onValueChange={(val) => {
+                              if (!val || val === EMPTY_PROVIDER_VALUE) {
+                                handleUpdateSimulation(index, { provider: "" })
+                                return
+                              }
+                              handleUpdateSimulation(index, { provider: val })
+                            }}
                             disabled={disabled}
-                            aria-invalid={Boolean(providerError) || undefined}
-                          />
+                          >
+                            <SelectTrigger
+                              id={`${baseId}-sim-${rowKey}-provider`}
+                              aria-invalid={Boolean(providerError) || undefined}
+                              className="min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                            >
+                              <SelectValue placeholder="Pilih leasing / bank" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(providerLabels).map(
+                                ([key, label]) => (
+                                  <SelectItem key={key} value={key}>
+                                    {label}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
                           {providerError && (
                             <p
                               role="alert"
@@ -1182,15 +1170,13 @@ export function CarPricingCreditForm({
                           <div className="flex items-baseline justify-between gap-2">
                             <label
                               htmlFor={`${baseId}-sim-${rowKey}-dp`}
-                              className="text-sm font-semibold tracking-wider text-foreground uppercase"
+                              className="whitespace-nowrap text-sm font-semibold tracking-wider text-foreground uppercase"
                             >
-                              Uang Muka / DP{" "}
+                              Uang Muka (DP){" "}
                               <span className="text-primary">*</span>
                             </label>
-                            <span className="text-sm font-semibold text-muted-foreground tabular-nums">
-                              {sim.dp > 0
-                                ? `${formatShortJuta(sim.dp)} (${formatRupiah(sim.dp)})`
-                                : "Rp0"}
+                            <span className="truncate text-sm font-semibold text-muted-foreground tabular-nums">
+                              {sim.dp > 0 ? formatShortJuta(sim.dp) : "Rp0"}
                             </span>
                           </div>
                           <RupiahInput
@@ -1269,20 +1255,12 @@ export function CarPricingCreditForm({
 
                         {/* Installment (exact integer, optional) */}
                         <div className="space-y-1.5">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <label
-                              htmlFor={`${baseId}-sim-${rowKey}-installment`}
-                              className="text-sm font-semibold tracking-wider text-foreground uppercase"
-                            >
-                              Angsuran Eksak / Bln (Opsional)
-                            </label>
-                            {sim.installment !== null &&
-                              sim.installment > 0 && (
-                                <span className="text-sm font-semibold text-foreground tabular-nums">
-                                  {formatRupiah(sim.installment)}
-                                </span>
-                              )}
-                          </div>
+                          <label
+                            htmlFor={`${baseId}-sim-${rowKey}-installment`}
+                            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
+                          >
+                            Angsuran / Bulan
+                          </label>
                           <RupiahInput
                             id={`${baseId}-sim-${rowKey}-installment`}
                             value={sim.installment}
@@ -1290,14 +1268,10 @@ export function CarPricingCreditForm({
                               handleSimulationInstallmentChange(index, next)
                             }
                             nullable={true}
-                            placeholder="Contoh: 4080000"
+                            placeholder="4080000 (kosongkan jika kisaran)"
                             disabled={disabled}
                             invalid={Boolean(installmentError)}
                           />
-                          <p className="text-sm text-muted-foreground">
-                            Kosongkan jika hanya menampilkan kisaran (mis.
-                            &ldquo;Rp5 jutaan&rdquo;) di label angsuran.
-                          </p>
                           {installmentError && (
                             <p
                               role="alert"
@@ -1313,9 +1287,9 @@ export function CarPricingCreditForm({
                           <div className="flex items-baseline justify-between gap-2">
                             <label
                               htmlFor={`${baseId}-sim-${rowKey}-installment-label`}
-                              className="text-sm font-semibold tracking-wider text-foreground uppercase"
+                              className="whitespace-nowrap text-sm font-semibold tracking-wider text-foreground uppercase"
                             >
-                              Label Angsuran Tampil{" "}
+                              Label Angsuran{" "}
                               <span className="text-primary">*</span>
                             </label>
                             {isInstallmentLabelCustomized && (
@@ -1342,17 +1316,13 @@ export function CarPricingCreditForm({
                                 installmentLabel: event.target.value,
                               })
                             }
-                            placeholder="Contoh: Rp4.080.000 atau Rp5 jutaan"
+                            placeholder="Otomatis dari angka atau tulis, mis. Rp5 jutaan"
                             disabled={disabled}
                             aria-invalid={
                               Boolean(installmentLabelError) || undefined
                             }
                             className="tabular-nums"
                           />
-                          <p className="text-sm text-muted-foreground">
-                            Terisi otomatis saat angka angsuran diketik, atau
-                            tulis label kustom seperti &ldquo;Rp5 jutaan&rdquo;.
-                          </p>
                           {installmentLabelError && (
                             <p
                               role="alert"
@@ -1369,7 +1339,7 @@ export function CarPricingCreditForm({
                             htmlFor={`${baseId}-sim-${rowKey}-note`}
                             className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
-                            Catatan Simulasi (Opsional)
+                            Catatan
                           </label>
                           <Input
                             id={`${baseId}-sim-${rowKey}-note`}
@@ -1380,7 +1350,7 @@ export function CarPricingCreditForm({
                                 note: event.target.value,
                               })
                             }
-                            placeholder="Contoh: Asuransi TLO, sudah termasuk admin & angsuran pertama"
+                            placeholder="Asuransi TLO, sudah termasuk admin & angsuran pertama"
                             disabled={disabled}
                             aria-invalid={Boolean(noteError) || undefined}
                           />
@@ -1412,11 +1382,6 @@ export function CarPricingCreditForm({
               </div>
             )}
 
-            <datalist id={`${baseId}-provider-datalist`}>
-              {PROVIDER_SUGGESTIONS.map((provider) => (
-                <option key={provider} value={provider} />
-              ))}
-            </datalist>
           </div>
         </section>
       )}
