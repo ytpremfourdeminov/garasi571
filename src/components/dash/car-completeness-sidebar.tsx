@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import {
   computeCarCompleteness,
   type CompletenessInput,
@@ -125,7 +126,7 @@ export function CarCompletenessSidebar({
       <div className="border-b border-border bg-secondary/45 p-4 sm:p-5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="font-heading text-[11px] font-bold tracking-[0.16em] text-primary uppercase">
+            <p className="font-heading text-sm font-bold tracking-[0.16em] text-primary uppercase">
               Kelengkapan Data
             </p>
             <div className="mt-1.5 flex items-baseline gap-2">
@@ -137,7 +138,7 @@ export function CarCompletenessSidebar({
               >
                 {completeness.score}%
               </span>
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-sm font-medium text-muted-foreground">
                 / 100%
               </span>
             </div>
@@ -162,7 +163,7 @@ export function CarCompletenessSidebar({
           />
         </div>
 
-        <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
           {scoreMeta.helper}
         </p>
 
@@ -172,15 +173,18 @@ export function CarCompletenessSidebar({
             variant="outline"
             size="sm"
             onClick={() => onSelectTab(nextActionTab)}
-            className="mt-3 w-full justify-between text-xs"
+            className="mt-3 w-full justify-between text-sm"
           >
-            <span className="truncate">
+            <TruncatedTooltip
+              content={`Lengkapi: ${COMPLETENESS_TAB_LABELS[nextActionTab]}`}
+              render={<span className="truncate" />}
+            >
               Lengkapi: {COMPLETENESS_TAB_LABELS[nextActionTab]}
-            </span>
+            </TruncatedTooltip>
             <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
           </Button>
         ) : (
-          <div className="mt-3 flex items-center gap-2 border border-emerald-800/30 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-950">
+          <div className="mt-3 flex items-center gap-2 border border-emerald-800/30 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-950">
             <CheckCircle2 className="size-4 shrink-0 text-emerald-700" aria-hidden="true" />
             <span>Semua data wajib lengkap.</span>
           </div>
@@ -189,7 +193,7 @@ export function CarCompletenessSidebar({
 
       {/* Breakdown Across All 6 Research Dimensions */}
       <div className="border-b border-border p-4 sm:p-5">
-        <h2 className="font-heading text-xs font-bold tracking-[0.14em] text-muted-foreground uppercase">
+        <h2 className="font-heading text-sm font-bold tracking-[0.14em] text-muted-foreground uppercase">
           Rincian Kelengkapan
         </h2>
 
@@ -224,21 +228,26 @@ export function CarCompletenessSidebar({
                           aria-hidden="true"
                         />
                       )}
-                      <span className="truncate text-xs font-semibold text-foreground">
+                      <TruncatedTooltip
+                        content={dim.label}
+                        render={
+                          <span className="truncate text-sm font-semibold text-foreground" />
+                        }
+                      >
                         {dim.label}
-                      </span>
+                      </TruncatedTooltip>
                     </span>
 
                     <div className="flex shrink-0 items-center gap-1.5 tabular-nums">
                       {isLockedMedia ? (
-                        <span className="border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                        <span className="border border-border bg-secondary px-1.5 py-0.5 text-sm font-medium text-muted-foreground">
                           Pasca Simpan
                         </span>
                       ) : null}
-                      <span className="text-[11px] font-semibold text-foreground">
+                      <span className="text-sm font-semibold text-foreground">
                         {dim.completedCount}/{dim.totalCount}
                       </span>
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         ({dim.weight}%)
                       </span>
                     </div>
@@ -267,7 +276,7 @@ export function CarCompletenessSidebar({
       {/* Missing Items Checklist */}
       <div className="p-4 sm:p-5">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="flex items-center gap-1.5 font-heading text-xs font-bold tracking-[0.14em] text-muted-foreground uppercase">
+          <h2 className="flex items-center gap-1.5 font-heading text-sm font-bold tracking-[0.14em] text-muted-foreground uppercase">
             {completeness.missingItems.length > 0 ? (
               <AlertTriangle
                 className="size-3.5 text-primary"
@@ -288,7 +297,7 @@ export function CarCompletenessSidebar({
         </div>
 
         {completeness.missingItems.length === 0 ? (
-          <div className="mt-3 space-y-2 border border-border bg-secondary/35 p-3 text-xs text-muted-foreground">
+          <div className="mt-3 space-y-2 border border-border bg-secondary/35 p-3 text-sm text-muted-foreground">
             <p className="font-medium text-foreground">
               Semua poin wajib sudah terisi.
             </p>
@@ -313,7 +322,7 @@ export function CarCompletenessSidebar({
                   <button
                     type="button"
                     onClick={() => onSelectTab(item.targetTab)}
-                    className="group flex w-full cursor-pointer items-start justify-between gap-2 border border-transparent bg-secondary/35 px-2.5 py-2 text-left text-xs transition-colors hover:border-border hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    className="group flex w-full cursor-pointer items-start justify-between gap-2 border border-transparent bg-secondary/35 px-2.5 py-2 text-left text-sm transition-colors hover:border-border hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     <span className="flex min-w-0 items-start gap-2">
                       <span
@@ -324,7 +333,7 @@ export function CarCompletenessSidebar({
                         {item.label}
                       </span>
                     </span>
-                    <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase group-hover:text-primary">
+                    <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-sm font-semibold tracking-wider text-muted-foreground uppercase group-hover:text-primary">
                       <span>{COMPLETENESS_TAB_LABELS[item.targetTab].split(" ")[0]}</span>
                       <ArrowRight className="size-3" aria-hidden="true" />
                     </span>
@@ -339,7 +348,7 @@ export function CarCompletenessSidebar({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowAllMissing((prev) => !prev)}
-                className="mt-2 w-full text-xs text-muted-foreground"
+                className="mt-2 w-full text-sm text-muted-foreground"
               >
                 {showAllMissing ? (
                   <>

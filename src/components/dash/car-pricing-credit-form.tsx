@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 
 export interface CarPricingCreditFormProps {
   value: CarUpsertInput
@@ -172,7 +173,7 @@ function RupiahInput({
       <span
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute inset-y-px left-px flex w-11 items-center justify-center border-r border-border bg-secondary text-xs font-semibold tracking-wide text-muted-foreground select-none",
+          "pointer-events-none absolute inset-y-px left-px flex w-11 items-center justify-center border-r border-border bg-secondary text-sm font-semibold tracking-wide text-muted-foreground select-none",
           disabled && "opacity-60",
         )}
       >
@@ -418,7 +419,7 @@ export function CarPricingCreditForm({
       >
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-secondary/50 px-5 py-4">
           <div className="space-y-1">
-            <p className="font-heading text-[11px] font-bold tracking-widest text-primary uppercase tabular-nums">
+            <p className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
               01 / Skema &amp; Harga
             </p>
             <h3
@@ -439,7 +440,7 @@ export function CarPricingCreditForm({
             <div className="flex items-center justify-between gap-2">
               <span
                 id={`${baseId}-payment-mode-label`}
-                className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Skema Pembayaran <span className="text-primary">*</span>
               </span>
@@ -493,7 +494,7 @@ export function CarPricingCreditForm({
                       </span>
                       <span
                         className={cn(
-                          "block text-xs leading-relaxed",
+                          "block text-sm leading-relaxed",
                           selected
                             ? "text-background/80"
                             : "text-muted-foreground",
@@ -510,7 +511,7 @@ export function CarPricingCreditForm({
             {errors?.paymentMode && (
               <p
                 role="alert"
-                className="text-xs font-medium text-destructive"
+                className="text-sm font-medium text-destructive"
               >
                 {errors.paymentMode}
               </p>
@@ -524,12 +525,12 @@ export function CarPricingCreditForm({
               <div className="flex items-baseline justify-between gap-2">
                 <label
                   htmlFor={`${baseId}-cash-price`}
-                  className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Harga Cash Utama <span className="text-primary">*</span>
                 </label>
                 {hasCashPrice && (
-                  <span className="text-xs font-semibold text-foreground tabular-nums">
+                  <span className="text-sm font-semibold text-foreground tabular-nums">
                     {formatShortJuta(value.cashPrice)}
                   </span>
                 )}
@@ -552,7 +553,7 @@ export function CarPricingCreditForm({
 
               <div
                 id={`${baseId}-cash-price-preview`}
-                className="flex flex-wrap items-center justify-between gap-2 border border-border/80 bg-secondary/50 px-3 py-2 text-xs"
+                className="flex flex-wrap items-center justify-between gap-2 border border-border/80 bg-secondary/50 px-3 py-2 text-sm"
               >
                 <span className="text-muted-foreground">Preview tampil:</span>
                 <span
@@ -569,7 +570,7 @@ export function CarPricingCreditForm({
                 <p
                   id={`${baseId}-cash-price-error`}
                   role="alert"
-                  className="text-xs font-medium text-destructive"
+                  className="text-sm font-medium text-destructive"
                 >
                   {errors.cashPrice}
                 </p>
@@ -582,12 +583,12 @@ export function CarPricingCreditForm({
                 <div className="flex items-baseline justify-between gap-2">
                   <label
                     htmlFor={`${baseId}-credit-price`}
-                    className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     Harga Khusus Kredit
                   </label>
                   {hasCreditPrice && (
-                    <span className="text-xs font-semibold text-foreground tabular-nums">
+                    <span className="text-sm font-semibold text-foreground tabular-nums">
                       {formatShortJuta(value.creditPrice as number)}
                     </span>
                   )}
@@ -610,7 +611,7 @@ export function CarPricingCreditForm({
 
                 <div
                   id={`${baseId}-credit-price-preview`}
-                  className="flex flex-wrap items-center justify-between gap-2 border border-border/80 bg-secondary/50 px-3 py-2 text-xs"
+                  className="flex flex-wrap items-center justify-between gap-2 border border-border/80 bg-secondary/50 px-3 py-2 text-sm"
                 >
                   <span className="text-muted-foreground">Preview kredit:</span>
                   <span className="flex items-center gap-2">
@@ -638,7 +639,7 @@ export function CarPricingCreditForm({
                   <p
                     id={`${baseId}-credit-price-error`}
                     role="alert"
-                    className="text-xs font-medium text-destructive"
+                    className="text-sm font-medium text-destructive"
                   >
                     {errors.creditPrice}
                   </p>
@@ -648,7 +649,7 @@ export function CarPricingCreditForm({
               <div className="space-y-2">
                 <label
                   htmlFor={`${baseId}-cash-note`}
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Catatan Harga Tunai (Opsional)
                 </label>
@@ -663,14 +664,14 @@ export function CarPricingCreditForm({
                   disabled={disabled}
                   aria-invalid={Boolean(errors?.creditPriceNote) || undefined}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Ditampilkan sebagai catatan harga di kartu &amp; halaman unit
                   khusus tunai.
                 </p>
                 {errors?.creditPriceNote && (
                   <p
                     role="alert"
-                    className="text-xs font-medium text-destructive"
+                    className="text-sm font-medium text-destructive"
                   >
                     {errors.creditPriceNote}
                   </p>
@@ -689,7 +690,7 @@ export function CarPricingCreditForm({
                 className="mt-0.5 size-4 shrink-0 text-amber-800"
                 aria-hidden="true"
               />
-              <div className="space-y-0.5 text-xs leading-relaxed">
+              <div className="space-y-0.5 text-sm leading-relaxed">
                 <p className="font-semibold">
                   Harga kredit sama atau lebih tinggi dari harga cash
                 </p>
@@ -710,7 +711,7 @@ export function CarPricingCreditForm({
             <div className="space-y-2">
               <label
                 htmlFor={`${baseId}-credit-price-note`}
-                className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Catatan Harga Kredit
               </label>
@@ -731,7 +732,7 @@ export function CarPricingCreditForm({
                 }
               />
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                <span className="text-[11px] font-medium text-muted-foreground">
+                <span className="text-sm font-medium text-muted-foreground">
                   Isi cepat:
                 </span>
                 {CREDIT_NOTE_PRESETS.map((preset) => {
@@ -744,7 +745,7 @@ export function CarPricingCreditForm({
                       disabled={disabled}
                       onClick={() => onChange({ creditPriceNote: preset })}
                       className={cn(
-                        "inline-flex min-h-11 items-center border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
+                        "inline-flex min-h-11 items-center border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50",
                         isActive
                           ? "border-foreground bg-foreground text-background"
                           : "border-border bg-secondary/60 text-foreground hover:bg-secondary",
@@ -759,7 +760,7 @@ export function CarPricingCreditForm({
                 <p
                   id={`${baseId}-credit-price-note-error`}
                   role="alert"
-                  className="text-xs font-medium text-destructive"
+                  className="text-sm font-medium text-destructive"
                 >
                   {errors.creditPriceNote}
                 </p>
@@ -787,7 +788,7 @@ export function CarPricingCreditForm({
                   )}
                   aria-hidden="true"
                 />
-                <div className="space-y-0.5 text-xs leading-relaxed">
+                <div className="space-y-0.5 text-sm leading-relaxed">
                   <p className="font-semibold">
                     Mode Cash Only aktif. Simulasi kredit disembunyikan.
                   </p>
@@ -846,7 +847,7 @@ export function CarPricingCreditForm({
                 >
                   Melayani Tukar Tambah
                 </label>
-                <p className="text-xs leading-relaxed text-muted-foreground">
+                <p className="text-sm leading-relaxed text-muted-foreground">
                   Tampilkan badge &ldquo;Bisa Tukar Tambah&rdquo; agar calon
                   pembeli tahu unit ini menerima trade-in mobil lama.
                 </p>
@@ -871,7 +872,7 @@ export function CarPricingCreditForm({
             </div>
           </div>
           {errors?.tradeInAvailable && (
-            <p role="alert" className="text-xs font-medium text-destructive">
+            <p role="alert" className="text-sm font-medium text-destructive">
               {errors.tradeInAvailable}
             </p>
           )}
@@ -886,7 +887,7 @@ export function CarPricingCreditForm({
         >
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-secondary/50 px-5 py-4">
             <div className="space-y-1">
-              <p className="font-heading text-[11px] font-bold tracking-widest text-primary uppercase tabular-nums">
+              <p className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
                 02 / Simulasi Kredit Leasing
               </p>
               <div className="flex flex-wrap items-center gap-2.5">
@@ -920,7 +921,7 @@ export function CarPricingCreditForm({
             {errors?.creditSimulations && (
               <p
                 role="alert"
-                className="border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-xs font-medium text-destructive"
+                className="border border-destructive/30 bg-destructive/10 px-3.5 py-2.5 text-sm font-medium text-destructive"
               >
                 {errors.creditSimulations}
               </p>
@@ -937,7 +938,7 @@ export function CarPricingCreditForm({
                     className="mt-0.5 size-5 shrink-0 text-amber-800"
                     aria-hidden="true"
                   />
-                  <div className="space-y-1 text-xs leading-relaxed">
+                  <div className="space-y-1 text-sm leading-relaxed">
                     <p className="font-heading text-sm font-bold text-amber-950">
                       Belum ada paket simulasi kredit
                     </p>
@@ -1014,9 +1015,14 @@ export function CarPricingCreditForm({
                           <Badge variant="default" className="tabular-nums">
                             Paket #{index + 1}
                           </Badge>
-                          <p className="truncate text-xs font-medium text-muted-foreground tabular-nums">
+                          <TruncatedTooltip
+                            content={buildSimulationPreview(sim)}
+                            render={
+                              <p className="truncate text-sm font-medium text-muted-foreground tabular-nums" />
+                            }
+                          >
                             {buildSimulationPreview(sim)}
-                          </p>
+                          </TruncatedTooltip>
                         </div>
 
                         <div className="flex items-center gap-1.5">
@@ -1065,7 +1071,7 @@ export function CarPricingCreditForm({
                         <div className="space-y-1.5">
                           <label
                             htmlFor={`${baseId}-sim-${rowKey}-label`}
-                            className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
                             Nama Paket Simulasi{" "}
                             <span className="text-primary">*</span>
@@ -1086,7 +1092,7 @@ export function CarPricingCreditForm({
                           {labelError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {labelError}
                             </p>
@@ -1097,7 +1103,7 @@ export function CarPricingCreditForm({
                         <div className="space-y-1.5">
                           <label
                             htmlFor={`${baseId}-sim-${rowKey}-provider`}
-                            className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
                             Leasing / Bank (Opsional)
                           </label>
@@ -1118,7 +1124,7 @@ export function CarPricingCreditForm({
                           {providerError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {providerError}
                             </p>
@@ -1130,12 +1136,12 @@ export function CarPricingCreditForm({
                           <div className="flex items-baseline justify-between gap-2">
                             <label
                               htmlFor={`${baseId}-sim-${rowKey}-dp`}
-                              className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                              className="text-sm font-semibold tracking-wider text-foreground uppercase"
                             >
                               Uang Muka / DP{" "}
                               <span className="text-primary">*</span>
                             </label>
-                            <span className="text-xs font-semibold text-muted-foreground tabular-nums">
+                            <span className="text-sm font-semibold text-muted-foreground tabular-nums">
                               {sim.dp > 0
                                 ? `${formatShortJuta(sim.dp)} (${formatRupiah(sim.dp)})`
                                 : "Rp0"}
@@ -1156,7 +1162,7 @@ export function CarPricingCreditForm({
                           {dpError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {dpError}
                             </p>
@@ -1167,7 +1173,7 @@ export function CarPricingCreditForm({
                         <div className="space-y-1.5">
                           <label
                             htmlFor={`${baseId}-sim-${rowKey}-tenor`}
-                            className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
                             Tenor Kredit{" "}
                             <span className="text-primary">*</span>
@@ -1208,7 +1214,7 @@ export function CarPricingCreditForm({
                           {tenorError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {tenorError}
                             </p>
@@ -1220,13 +1226,13 @@ export function CarPricingCreditForm({
                           <div className="flex items-baseline justify-between gap-2">
                             <label
                               htmlFor={`${baseId}-sim-${rowKey}-installment`}
-                              className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                              className="text-sm font-semibold tracking-wider text-foreground uppercase"
                             >
                               Angsuran Eksak / Bln (Opsional)
                             </label>
                             {sim.installment !== null &&
                               sim.installment > 0 && (
-                                <span className="text-xs font-semibold text-foreground tabular-nums">
+                                <span className="text-sm font-semibold text-foreground tabular-nums">
                                   {formatRupiah(sim.installment)}
                                 </span>
                               )}
@@ -1242,14 +1248,14 @@ export function CarPricingCreditForm({
                             disabled={disabled}
                             invalid={Boolean(installmentError)}
                           />
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             Kosongkan jika hanya menampilkan kisaran (mis.
                             &ldquo;Rp5 jutaan&rdquo;) di label angsuran.
                           </p>
                           {installmentError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {installmentError}
                             </p>
@@ -1261,7 +1267,7 @@ export function CarPricingCreditForm({
                           <div className="flex items-baseline justify-between gap-2">
                             <label
                               htmlFor={`${baseId}-sim-${rowKey}-installment-label`}
-                              className="text-xs font-semibold tracking-wider text-foreground uppercase"
+                              className="text-sm font-semibold tracking-wider text-foreground uppercase"
                             >
                               Label Angsuran Tampil{" "}
                               <span className="text-primary">*</span>
@@ -1275,7 +1281,7 @@ export function CarPricingCreditForm({
                                     installmentLabel: suggestedInstallmentLabel,
                                   })
                                 }
-                                className="text-[11px] font-semibold text-primary underline underline-offset-2 hover:text-primary/80 disabled:opacity-50"
+                                className="text-sm font-semibold text-primary underline underline-offset-2 hover:text-primary/80 disabled:opacity-50"
                               >
                                 Pakai {suggestedInstallmentLabel}
                               </button>
@@ -1297,14 +1303,14 @@ export function CarPricingCreditForm({
                             }
                             className="tabular-nums"
                           />
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             Terisi otomatis saat angka angsuran diketik, atau
                             tulis label kustom seperti &ldquo;Rp5 jutaan&rdquo;.
                           </p>
                           {installmentLabelError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {installmentLabelError}
                             </p>
@@ -1315,7 +1321,7 @@ export function CarPricingCreditForm({
                         <div className="space-y-1.5 md:col-span-2">
                           <label
                             htmlFor={`${baseId}-sim-${rowKey}-note`}
-                            className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                            className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                           >
                             Catatan Simulasi (Opsional)
                           </label>
@@ -1335,7 +1341,7 @@ export function CarPricingCreditForm({
                           {noteError && (
                             <p
                               role="alert"
-                              className="text-xs font-medium text-destructive"
+                              className="text-sm font-medium text-destructive"
                             >
                               {noteError}
                             </p>

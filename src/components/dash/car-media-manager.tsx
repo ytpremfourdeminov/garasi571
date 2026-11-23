@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import type { CarImage, ImageAngleTag } from "@/lib/domain/types"
 import { compressImageToWebP } from "@/lib/image-compress"
 import {
@@ -863,7 +864,7 @@ export function CarMediaManager({
             <h3 className="text-base font-semibold text-foreground">
               6 Sudut Wajib
             </h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               Pilih sudut di bawah sebelum mengunggah foto.
             </p>
           </div>
@@ -902,7 +903,7 @@ export function CarMediaManager({
                 )}
               >
                 <div className="flex items-center justify-between gap-1.5">
-                  <span className="text-xs font-semibold">
+                  <span className="text-sm font-semibold">
                     {item.checklistLabel}
                   </span>
                   {isComplete ? (
@@ -917,7 +918,7 @@ export function CarMediaManager({
                     />
                   )}
                 </div>
-                <span className="mt-1 text-[11px] leading-tight tabular-nums opacity-85">
+                <span className="mt-1 text-sm leading-tight tabular-nums opacity-85">
                   {isComplete ? `${count} foto terpasang` : "Belum ada"}
                 </span>
               </button>
@@ -940,7 +941,7 @@ export function CarMediaManager({
               )}
             >
               <div className="flex items-center justify-between gap-1.5">
-                <span className="text-xs font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground">
                   {OPTIONAL_MINUS_OPTION.checklistLabel}
                 </span>
                 {angleCounts.minus > 0 ? (
@@ -955,7 +956,7 @@ export function CarMediaManager({
                   />
                 )}
               </div>
-              <span className="mt-1 text-[11px] leading-tight tabular-nums">
+              <span className="mt-1 text-sm leading-tight tabular-nums">
                 {angleCounts.minus > 0
                   ? `${angleCounts.minus} foto minus`
                   : "Opsional"}
@@ -972,7 +973,7 @@ export function CarMediaManager({
             <h3 className="text-base font-semibold text-foreground">
               Unggah Foto Unit
             </h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               Mendukung JPG, PNG, atau WebP, maksimal 5 MB per foto.
             </p>
           </div>
@@ -980,7 +981,7 @@ export function CarMediaManager({
           <div className="w-full sm:w-64">
             <label
               htmlFor={`upload-angle-${carId}`}
-              className="block text-xs font-semibold text-foreground"
+              className="block text-sm font-semibold text-foreground"
             >
               Tag sudut untuk unggahan baru
             </label>
@@ -1046,7 +1047,7 @@ export function CarMediaManager({
               ? "Lepaskan foto di sini untuk mulai kompresi & unggah"
               : "Tarik dan lepas foto di sini, atau pilih dari perangkat"}
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             Mendukung banyak file sekaligus · JPG, PNG, WebP · Maks 5 MB per
             foto setelah kompresi
           </p>
@@ -1067,7 +1068,7 @@ export function CarMediaManager({
         {uploadQueue.length > 0 ? (
           <div className="mt-4 space-y-2 border-t border-border pt-4">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                 Antrean Unggahan ({uploadQueue.length})
               </p>
               {hasFinishedQueueItems && !isUploading ? (
@@ -1089,7 +1090,7 @@ export function CarMediaManager({
                 <li
                   key={item.id}
                   className={cn(
-                    "border px-3 py-2.5 text-xs",
+                    "border px-3 py-2.5 text-sm",
                     item.status === "error"
                       ? "border-destructive/40 bg-destructive/5"
                       : item.status === "done"
@@ -1098,9 +1099,14 @@ export function CarMediaManager({
                   )}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="truncate font-semibold text-foreground">
+                    <TruncatedTooltip
+                      content={item.fileName}
+                      render={
+                        <span className="truncate font-semibold text-foreground" />
+                      }
+                    >
                       {item.fileName}
-                    </span>
+                    </TruncatedTooltip>
                     <span className="shrink-0 text-muted-foreground tabular-nums">
                       {item.status === "queued" && "Menunggu..."}
                       {item.status === "compressing" && "Memproses..."}
@@ -1226,7 +1232,7 @@ export function CarMediaManager({
             <p className="text-sm font-semibold text-foreground">
               Belum ada foto untuk unit ini
             </p>
-            <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">
+            <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
               Unggah minimal 6 sudut wajib (Hero, Eksterior, Interior, Odometer,
               Mesin, Dokumen) agar listing tampil meyakinkan di katalog publik.
             </p>
@@ -1272,7 +1278,7 @@ export function CarMediaManager({
                     </div>
 
                     {img.width > 0 && img.height > 0 ? (
-                      <span className="absolute right-2 bottom-2 bg-foreground/85 px-2 py-0.5 text-[11px] font-medium text-background tabular-nums">
+                      <span className="absolute right-2 bottom-2 bg-foreground/85 px-2 py-0.5 text-sm font-medium text-background tabular-nums">
                         {img.width}×{img.height}
                       </span>
                     ) : null}
@@ -1283,7 +1289,7 @@ export function CarMediaManager({
                     <div>
                       <label
                         htmlFor={angleFieldId}
-                        className="block text-xs font-semibold text-foreground"
+                        className="block text-sm font-semibold text-foreground"
                       >
                         Sudut Foto
                       </label>
@@ -1315,7 +1321,7 @@ export function CarMediaManager({
                     <div>
                       <label
                         htmlFor={altFieldId}
-                        className="block text-xs font-semibold text-foreground"
+                        className="block text-sm font-semibold text-foreground"
                       >
                         Deskripsi Foto
                       </label>
@@ -1345,7 +1351,7 @@ export function CarMediaManager({
                         </Button>
                       </div>
                       {isAltMissing ? (
-                        <p className="mt-1 text-xs text-[#991B1B]">
+                        <p className="mt-1 text-sm text-[#991B1B]">
                           Deskripsi foto wajib diisi sebelum menyimpan.
                         </p>
                       ) : null}
@@ -1423,7 +1429,7 @@ export function CarMediaManager({
                         aria-label={`Konfirmasi hapus foto #${index + 1}`}
                         className="border border-destructive/40 bg-destructive/5 p-3"
                       >
-                        <p className="text-xs font-medium text-[#991B1B]">
+                        <p className="text-sm font-medium text-[#991B1B]">
                           Hapus foto ini secara permanen?
                         </p>
                         <div className="mt-2.5 flex items-center gap-2">
@@ -1465,7 +1471,7 @@ export function CarMediaManager({
         {/* Bottom Sticky-Friendly Save Hint when gallery has multiple rows */}
         {draftImages.length > 3 && isDirty ? (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-            <p className="text-xs font-medium text-amber-950">
+            <p className="text-sm font-medium text-amber-950">
               Ada perubahan urutan, cover, atau metadata foto yang belum
               disimpan.
             </p>

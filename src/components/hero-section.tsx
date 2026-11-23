@@ -10,6 +10,7 @@ import type {
 } from "@/lib/domain/types"
 import { useShowroom } from "@/components/showroom-context"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import {
   Select,
   SelectContent,
@@ -151,7 +152,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                 <div className="sm:col-span-2">
                   <label
                     htmlFor="hero-kategori"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Kebutuhan
                   </label>
@@ -187,7 +188,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                 <div>
                   <label
                     htmlFor="hero-budget"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Rentang Budget
                   </label>
@@ -223,7 +224,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                 <div>
                   <label
                     htmlFor="hero-transmisi"
-                    className="block text-xs font-semibold text-foreground"
+                    className="block text-sm font-semibold text-foreground"
                   >
                     Transmisi
                   </label>
@@ -269,7 +270,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
               </div>
             </form>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="size-3.5 text-primary" aria-hidden="true" />
                 <span>{showroom.city}</span>
@@ -353,12 +354,17 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                             />
                           </>
                         ) : null}
-                        <span className="text-[11px] font-medium tabular-nums">
+                        <span className="text-sm font-medium tabular-nums">
                           {car.year}
                         </span>
-                        <span className="line-clamp-1 font-heading text-xs font-semibold sm:text-sm">
+                        <TruncatedTooltip
+                          content={car.shortName}
+                          render={
+                            <span className="line-clamp-1 font-heading text-sm font-semibold sm:text-sm" />
+                          }
+                        >
                           {car.shortName}
-                        </span>
+                        </TruncatedTooltip>
                       </button>
                     )
                   })}
@@ -407,7 +413,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                         />
                       )
                     })}
-                    <span className="absolute right-3 bottom-3 z-20 inline-flex items-center gap-1.5 bg-[#161514] px-2.5 py-1 text-xs font-medium text-[#FAF9F7] tabular-nums">
+                    <span className="absolute right-3 bottom-3 z-20 inline-flex items-center gap-1.5 bg-[#161514] px-2.5 py-1 text-sm font-medium text-[#FAF9F7] tabular-nums">
                       <Camera className="size-3.5" aria-hidden="true" />
                       <span>{activeCar.images.length} foto</span>
                     </span>
@@ -415,7 +421,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
 
                   <div className="border-t border-border bg-[#161514] p-5 text-[#FAF9F7]">
                     <div key={activeCar.slug} className="animate-hero-panel">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-[#C7C2BC]">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-[#C7C2BC]">
                         <span>{activeCar.categoryLabel}</span>
                         <span aria-hidden="true">/</span>
                         <span className="tabular-nums">{activeCar.year}</span>
@@ -431,13 +437,13 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                         <div className="space-y-1 tabular-nums">
                           {activeCar.creditPrice !== null ? (
                             <>
-                              <p className="text-xs text-[#C7C2BC]">
+                              <p className="text-sm text-[#C7C2BC]">
                                 Harga Cash:{" "}
                                 <span className="font-semibold text-[#FAF9F7]">
                                   {formatRupiah(activeCar.cashPrice)}
                                 </span>
                               </p>
-                              <p className="text-xs text-[#F87171]">
+                              <p className="text-sm text-[#F87171]">
                                 Harga Kredit:{" "}
                                 <span className="font-heading text-lg font-bold text-[#FAF9F7]">
                                   {formatRupiah(activeCar.creditPrice)}
@@ -446,7 +452,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                             </>
                           ) : (
                             <>
-                              <p className="text-xs font-semibold text-[#F87171]">
+                              <p className="text-sm font-semibold text-[#F87171]">
                                 Khusus Cash
                               </p>
                               <p className="font-heading text-lg font-bold text-[#FAF9F7]">
@@ -474,7 +480,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
               </div>
             ) : (
               <div className="border border-border bg-[#161514] p-6 text-[#FAF9F7] sm:p-8">
-                <p className="text-xs font-semibold tracking-widest text-[#F87171] uppercase">
+                <p className="text-sm font-semibold tracking-widest text-[#F87171] uppercase">
                   {showroom.name}
                 </p>
                 <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight text-[#FAF9F7]">

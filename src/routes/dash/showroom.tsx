@@ -33,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import { buildWhatsAppUrl, slugifyText } from "@/lib/domain/formatters"
 import {
   salesContactUpsertSchema,
@@ -564,7 +565,7 @@ function DashShowroomPage() {
           />
           <div>
             <p className="font-semibold">Mode lihat saja</p>
-            <p className="mt-0.5 text-xs text-amber-900">
+            <p className="mt-0.5 text-sm text-amber-900">
               Hubungi Admin untuk mengubah data showroom atau kontak sales.
             </p>
           </div>
@@ -618,7 +619,7 @@ function DashShowroomPage() {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="showroom-name"
-                    className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     Nama Showroom
                   </label>
@@ -631,14 +632,14 @@ function DashShowroomPage() {
                     placeholder="Garasi 571"
                   />
                   {formErrors.name ? (
-                    <p className="text-xs text-destructive">{formErrors.name}</p>
+                    <p className="text-sm text-destructive">{formErrors.name}</p>
                   ) : null}
                 </div>
 
                 <div className="space-y-1.5">
                   <label
                     htmlFor="showroom-city"
-                    className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     Kota / Wilayah
                   </label>
@@ -651,7 +652,7 @@ function DashShowroomPage() {
                     placeholder="Surakarta, Jawa Tengah"
                   />
                   {formErrors.city ? (
-                    <p className="text-xs text-destructive">{formErrors.city}</p>
+                    <p className="text-sm text-destructive">{formErrors.city}</p>
                   ) : null}
                 </div>
               </div>
@@ -659,7 +660,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="showroom-address"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Alamat Lengkap
                 </label>
@@ -673,7 +674,7 @@ function DashShowroomPage() {
                   placeholder="Jl. ... Surakarta, Jawa Tengah"
                 />
                 {formErrors.address ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {formErrors.address}
                   </p>
                 ) : null}
@@ -682,7 +683,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="showroom-hours"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Jam Operasional
                 </label>
@@ -695,7 +696,7 @@ function DashShowroomPage() {
                   placeholder="Setiap hari, 08:00 - 16:00 WIB"
                 />
                 {formErrors.hours ? (
-                  <p className="text-xs text-destructive">{formErrors.hours}</p>
+                  <p className="text-sm text-destructive">{formErrors.hours}</p>
                 ) : null}
               </div>
 
@@ -703,7 +704,7 @@ function DashShowroomPage() {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="showroom-instagram-handle"
-                    className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     Handle Instagram
                   </label>
@@ -718,7 +719,7 @@ function DashShowroomPage() {
                     placeholder="@garasi.571"
                   />
                   {formErrors.instagramHandle ? (
-                    <p className="text-xs text-destructive">
+                    <p className="text-sm text-destructive">
                       {formErrors.instagramHandle}
                     </p>
                   ) : null}
@@ -728,7 +729,7 @@ function DashShowroomPage() {
                   <div className="flex items-center justify-between gap-2">
                     <label
                       htmlFor="showroom-instagram-url"
-                      className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                      className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                     >
                       URL Profil Instagram
                     </label>
@@ -737,7 +738,7 @@ function DashShowroomPage() {
                         href={safeInstagramUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+                        className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                       >
                         <ExternalLink className="size-3" aria-hidden="true" />
                         <span>Buka</span>
@@ -756,7 +757,7 @@ function DashShowroomPage() {
                     placeholder="https://www.instagram.com/garasi.571/"
                   />
                   {formErrors.instagramUrl ? (
-                    <p className="text-xs text-destructive">
+                    <p className="text-sm text-destructive">
                       {formErrors.instagramUrl}
                     </p>
                   ) : null}
@@ -767,7 +768,7 @@ function DashShowroomPage() {
                 <div className="flex items-center justify-between gap-2">
                   <label
                     htmlFor="showroom-maps-url"
-                    className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                    className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                   >
                     URL Google Maps (Tautan Arah)
                   </label>
@@ -776,7 +777,7 @@ function DashShowroomPage() {
                       href={safeMapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                     >
                       <ExternalLink className="size-3" aria-hidden="true" />
                       <span>Tes Tautan</span>
@@ -793,7 +794,7 @@ function DashShowroomPage() {
                   placeholder="https://maps.app.goo.gl/..."
                 />
                 {formErrors.mapsUrl ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {formErrors.mapsUrl}
                   </p>
                 ) : null}
@@ -802,7 +803,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="showroom-maps-embed-url"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   URL Sematan Google Maps
                 </label>
@@ -818,11 +819,11 @@ function DashShowroomPage() {
                   placeholder="https://maps.google.com/maps?q=...&output=embed"
                 />
                 {formErrors.mapsEmbedUrl ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {formErrors.mapsEmbedUrl}
                   </p>
                 ) : (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Salin tautan sematan (embed) dari Google Maps.
                   </p>
                 )}
@@ -832,11 +833,11 @@ function DashShowroomPage() {
             <div className="space-y-6 lg:col-span-5">
               <div className="border border-border bg-secondary/30 p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-foreground uppercase">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold tracking-wider text-foreground uppercase">
                     <ImageIcon className="size-3.5 text-primary" aria-hidden="true" />
                     <span>Logo Brand Showroom</span>
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     WebP / JPG / PNG · Maks 5 MB
                   </span>
                 </div>
@@ -860,9 +861,14 @@ function DashShowroomPage() {
                     <p className="font-heading text-sm font-bold tracking-tight text-[#FAF9F7]">
                       {form.name || "Garasi 571"}
                     </p>
-                    <p className="mt-1 truncate font-mono text-[11px] text-[#C7C2BC]">
+                    <TruncatedTooltip
+                      content={form.logoUrl || "Belum ada URL logo"}
+                      render={
+                        <p className="mt-1 truncate font-mono text-sm text-[#C7C2BC]" />
+                      }
+                    >
                       {form.logoUrl || "Belum ada URL logo"}
-                    </p>
+                    </TruncatedTooltip>
                   </div>
                 </div>
 
@@ -870,7 +876,7 @@ function DashShowroomPage() {
                   <div className="space-y-1.5">
                     <label
                       htmlFor="showroom-logo-url"
-                      className="block text-[11px] font-semibold tracking-wider text-muted-foreground uppercase"
+                      className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
                     >
                       URL Logo
                     </label>
@@ -885,7 +891,7 @@ function DashShowroomPage() {
                       placeholder="/media/brand/logo-....png"
                     />
                     {formErrors.logoUrl ? (
-                      <p className="text-xs text-destructive">
+                      <p className="text-sm text-destructive">
                         {formErrors.logoUrl}
                       </p>
                     ) : null}
@@ -932,8 +938,8 @@ function DashShowroomPage() {
                       }
                       className={
                         logoUploadFeedback.type === "success"
-                          ? "border border-emerald-700/30 bg-emerald-50 px-3 py-2 text-xs text-emerald-950"
-                          : "border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-[#991B1B]"
+                          ? "border border-emerald-700/30 bg-emerald-50 px-3 py-2 text-sm text-emerald-950"
+                          : "border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-[#991B1B]"
                       }
                     >
                       {logoUploadFeedback.text}
@@ -944,7 +950,7 @@ function DashShowroomPage() {
 
               <div className="border border-border bg-secondary/30 p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-foreground uppercase">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold tracking-wider text-foreground uppercase">
                     <MapPin className="size-3.5 text-primary" aria-hidden="true" />
                     <span>Pratinjau Peta</span>
                   </span>
@@ -963,7 +969,7 @@ function DashShowroomPage() {
                       className="h-56 w-full border-0"
                     />
                   ) : (
-                    <div className="flex h-56 flex-col items-center justify-center gap-2 px-4 text-center text-xs text-muted-foreground">
+                    <div className="flex h-56 flex-col items-center justify-center gap-2 px-4 text-center text-sm text-muted-foreground">
                       <MapPin className="size-5 opacity-60" aria-hidden="true" />
                       <p>
                         Masukkan URL Embed Google Maps yang diawali{" "}
@@ -1099,7 +1105,7 @@ function DashShowroomPage() {
                     className="flex flex-col gap-4 bg-card p-4 transition-colors hover:bg-secondary/25 lg:flex-row lg:items-center lg:justify-between"
                   >
                     <div className="flex min-w-0 items-start gap-3.5">
-                      <span className="inline-flex size-8 shrink-0 items-center justify-center border border-border bg-secondary font-mono text-xs font-semibold text-foreground tabular-nums">
+                      <span className="inline-flex size-8 shrink-0 items-center justify-center border border-border bg-secondary font-mono text-sm font-semibold text-foreground tabular-nums">
                         #{index + 1}
                       </span>
 
@@ -1115,11 +1121,11 @@ function DashShowroomPage() {
                           </Badge>
                         </div>
 
-                        <p className="text-xs font-medium text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground">
                           {contact.role}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-xs">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-sm">
                           <span className="font-medium text-foreground tabular-nums">
                             {contact.phoneDisplay}
                           </span>
@@ -1152,7 +1158,7 @@ function DashShowroomPage() {
                           }}
                           aria-label={`Aktifkan kontak sales ${contact.name}`}
                         />
-                        <span className="text-xs font-medium text-muted-foreground">
+                        <span className="text-sm font-medium text-muted-foreground">
                           {contact.isActive ? "Aktif" : "Nonaktif"}
                         </span>
                       </div>
@@ -1236,7 +1242,7 @@ function DashShowroomPage() {
             {salesDialogError ? (
               <div
                 role="alert"
-                className="flex items-start gap-2 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3 py-2.5 text-xs text-[#991B1B]"
+                className="flex items-start gap-2 border border-l-2 border-destructive/30 border-l-destructive bg-destructive/10 px-3 py-2.5 text-sm text-[#991B1B]"
               >
                 <AlertCircle
                   className="mt-0.5 size-4 shrink-0 text-destructive"
@@ -1250,7 +1256,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="sales-name"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Nama Sales
                 </label>
@@ -1272,7 +1278,7 @@ function DashShowroomPage() {
                   placeholder="Mas Budi"
                 />
                 {salesFormErrors.name ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {salesFormErrors.name}
                   </p>
                 ) : null}
@@ -1281,7 +1287,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="sales-role"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Jabatan / Peran
                 </label>
@@ -1296,7 +1302,7 @@ function DashShowroomPage() {
                   placeholder="Sales Consultant"
                 />
                 {salesFormErrors.role ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {salesFormErrors.role}
                   </p>
                 ) : null}
@@ -1306,7 +1312,7 @@ function DashShowroomPage() {
             <div className="space-y-1.5">
               <label
                 htmlFor="sales-slug"
-                className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                className="block text-sm font-semibold tracking-wider text-foreground uppercase"
               >
                 Slug Unik
               </label>
@@ -1323,11 +1329,11 @@ function DashShowroomPage() {
                 className="font-mono"
               />
               {salesFormErrors.slug ? (
-                <p className="text-xs text-destructive">
+                <p className="text-sm text-destructive">
                   {salesFormErrors.slug}
                 </p>
               ) : (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Huruf kecil, angka, dan tanda hubung (-). Otomatis dibuat dari
                   nama saat menambah kontak baru.
                 </p>
@@ -1338,7 +1344,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="sales-phone-display"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Nomor Tampilan
                 </label>
@@ -1361,7 +1367,7 @@ function DashShowroomPage() {
                   placeholder="+62 812-8641-4185"
                 />
                 {salesFormErrors.phoneDisplay ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {salesFormErrors.phoneDisplay}
                   </p>
                 ) : null}
@@ -1370,7 +1376,7 @@ function DashShowroomPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="sales-phone-e164"
-                  className="block text-xs font-semibold tracking-wider text-foreground uppercase"
+                  className="block text-sm font-semibold tracking-wider text-foreground uppercase"
                 >
                   Nomor WhatsApp
                 </label>
@@ -1391,11 +1397,11 @@ function DashShowroomPage() {
                   className="font-mono"
                 />
                 {salesFormErrors.phoneE164 ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-sm text-destructive">
                     {salesFormErrors.phoneE164}
                   </p>
                 ) : (
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Diawali 62, angka saja tanpa spasi atau tanda +.
                   </p>
                 )}
@@ -1404,10 +1410,10 @@ function DashShowroomPage() {
 
             <div className="flex items-center justify-between border border-border bg-secondary/40 px-3.5 py-2.5">
               <div>
-                <p className="text-xs font-semibold text-foreground">
+                <p className="text-sm font-semibold text-foreground">
                   Tampilkan di Website Publik
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Nonaktifkan jika sales sedang cuti atau tidak menerima lead.
                 </p>
               </div>

@@ -11,6 +11,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import { AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react"
 import { cn } from "cn"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 import appCss from "../styles.css?url"
 
@@ -68,7 +69,11 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
-  return <Outlet />
+  return (
+    <TooltipProvider delay={150}>
+      <Outlet />
+    </TooltipProvider>
+  )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -103,7 +108,7 @@ function RootNotFound() {
   return (
     <main className="flex min-h-svh items-center justify-center bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
       <section className="w-full max-w-xl border border-border bg-card p-6 sm:p-8">
-        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
           404
         </p>
         <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">

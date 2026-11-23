@@ -44,6 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -567,7 +568,7 @@ function DashCarsPage() {
         </h1>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="inline-flex min-h-11 items-center gap-2 border border-border bg-card px-3.5 text-xs font-semibold text-foreground">
+          <div className="inline-flex min-h-11 items-center gap-2 border border-border bg-card px-3.5 text-sm font-semibold text-foreground">
             <Star
               className={cn(
                 "size-4 shrink-0",
@@ -642,7 +643,7 @@ function DashCarsPage() {
           <div className="md:col-span-5">
             <label
               htmlFor="inventory-search"
-              className="block text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
             >
               Cari Unit
             </label>
@@ -675,7 +676,7 @@ function DashCarsPage() {
           <div className="md:col-span-3">
             <label
               htmlFor="inventory-status-filter"
-              className="block text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
             >
               Status
             </label>
@@ -709,7 +710,7 @@ function DashCarsPage() {
           <div className="md:col-span-3">
             <label
               htmlFor="inventory-category-filter"
-              className="block text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+              className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
             >
               Kategori
             </label>
@@ -759,7 +760,7 @@ function DashCarsPage() {
           </div>
         </div>
 
-        <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
+        <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-sm text-muted-foreground">
           <p className="tabular-nums">
             Menampilkan{" "}
             <span className="font-semibold text-foreground">
@@ -889,17 +890,27 @@ function DashCarsPage() {
                             )}
                           </div>
                           <div className="min-w-0">
-                            <p className="truncate font-heading text-sm font-bold text-foreground">
+                            <TruncatedTooltip
+                              content={car.name}
+                              render={
+                                <p className="truncate font-heading text-sm font-bold text-foreground" />
+                              }
+                            >
                               {car.name}
-                            </p>
-                            <p className="mt-0.5 text-xs text-muted-foreground">
+                            </TruncatedTooltip>
+                            <p className="mt-0.5 text-sm text-muted-foreground">
                               <span className="tabular-nums">{car.year}</span>{" "}
                               &middot; {getCategoryLabel(car.category)}
                             </p>
                             {car.plateInfo ? (
-                              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                              <TruncatedTooltip
+                                content={car.plateInfo}
+                                render={
+                                  <p className="mt-0.5 truncate text-sm text-muted-foreground" />
+                                }
+                              >
                                 {car.plateInfo}
-                              </p>
+                              </TruncatedTooltip>
                             ) : null}
                           </div>
                         </div>
@@ -910,7 +921,7 @@ function DashCarsPage() {
                         <p className="font-semibold text-foreground">
                           {formatRupiah(car.cashPrice)}
                         </p>
-                        <p className="mt-0.5 text-xs text-muted-foreground">
+                        <p className="mt-0.5 text-sm text-muted-foreground">
                           {car.paymentMode === "cash-only"
                             ? "Khusus Cash"
                             : car.creditPrice
@@ -960,7 +971,7 @@ function DashCarsPage() {
                           >
                             <SelectTrigger
                               aria-label={`Ubah status ${car.name}`}
-                              className="min-h-11 w-36 bg-card px-2.5 text-xs font-semibold text-foreground data-[size=default]:h-11"
+                              className="min-h-11 w-36 bg-card px-2.5 text-sm font-semibold text-foreground data-[size=default]:h-11"
                             >
                               <span className="inline-flex min-w-0 items-center gap-2">
                                 <span
@@ -1024,7 +1035,7 @@ function DashCarsPage() {
                               >
                                 <SelectTrigger
                                   aria-label={`Urutan unggulan Hero ${car.name}`}
-                                  className="min-h-11 w-24 bg-card px-2 text-xs font-semibold tabular-nums data-[size=default]:h-11"
+                                  className="min-h-11 w-24 bg-card px-2 text-sm font-semibold tabular-nums data-[size=default]:h-11"
                                 >
                                   <SelectValue />
                                 </SelectTrigger>
@@ -1048,7 +1059,7 @@ function DashCarsPage() {
                                 </SelectContent>
                               </Select>
                             ) : (
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-sm text-muted-foreground">
                                 {car.status === "archived"
                                   ? "Arsip"
                                   : featuredCount >= 3
@@ -1087,7 +1098,7 @@ function DashCarsPage() {
                             title="Edit unit"
                             className={cn(
                               buttonVariants({ variant: "outline", size: "default" }),
-                              "px-3 text-xs no-underline"
+                              "px-3 text-sm no-underline"
                             )}
                           >
                             <Pencil className="size-3.5" aria-hidden="true" />
@@ -1189,37 +1200,63 @@ function DashCarsPage() {
                           {score}%
                         </Badge>
                       </div>
-                      <h2 className="mt-1.5 truncate font-heading text-base font-bold text-foreground">
+                      <TruncatedTooltip
+                        content={car.name}
+                        render={
+                          <h2 className="mt-1.5 truncate font-heading text-base font-bold text-foreground" />
+                        }
+                      >
                         {car.name}
-                      </h2>
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                      </TruncatedTooltip>
+                      <TruncatedTooltip
+                        content={`${car.year} · ${getCategoryLabel(car.category)}`}
+                        render={
+                          <p className="mt-0.5 truncate text-sm text-muted-foreground" />
+                        }
+                      >
                         <span className="tabular-nums">{car.year}</span>{" "}
                         &middot; {getCategoryLabel(car.category)}
-                      </p>
+                      </TruncatedTooltip>
                     </div>
                   </div>
 
                   {/* Prices */}
-                  <div className="mt-3.5 grid grid-cols-2 gap-2 border-y border-border py-3 text-xs tabular-nums">
+                  <div className="mt-3.5 grid grid-cols-2 gap-2 border-y border-border py-3 text-sm tabular-nums">
                     <div className="min-w-0">
-                      <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                      <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                         Harga Cash
                       </p>
-                      <p className="mt-0.5 truncate text-sm font-bold text-foreground">
+                      <TruncatedTooltip
+                        content={formatRupiah(car.cashPrice)}
+                        render={
+                          <p className="mt-0.5 truncate text-sm font-bold text-foreground" />
+                        }
+                      >
                         {formatRupiah(car.cashPrice)}
-                      </p>
+                      </TruncatedTooltip>
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                      <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                         Harga Kredit
                       </p>
-                      <p className="mt-0.5 truncate text-sm font-semibold text-foreground">
+                      <TruncatedTooltip
+                        content={
+                          car.paymentMode === "cash-only"
+                            ? "Khusus Cash"
+                            : car.creditPrice
+                              ? formatRupiah(car.creditPrice)
+                              : "Belum diisi"
+                        }
+                        render={
+                          <p className="mt-0.5 truncate text-sm font-semibold text-foreground" />
+                        }
+                      >
                         {car.paymentMode === "cash-only"
                           ? "Khusus Cash"
                           : car.creditPrice
                             ? formatRupiah(car.creditPrice)
                             : "Belum diisi"}
-                      </p>
+                      </TruncatedTooltip>
                     </div>
                   </div>
 
@@ -1228,7 +1265,7 @@ function DashCarsPage() {
                     <div className="min-w-0">
                       <label
                         htmlFor={`mobile-status-${car.id}`}
-                        className="block text-[11px] font-semibold tracking-wider text-muted-foreground uppercase"
+                        className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
                       >
                         Status Stok
                       </label>
@@ -1286,10 +1323,10 @@ function DashCarsPage() {
                           }}
                         />
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-foreground">
+                          <p className="text-sm font-semibold text-foreground">
                             Unggulan Beranda
                           </p>
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             {car.status === "archived"
                               ? "Tidak tersedia untuk arsip"
                               : car.isFeatured
@@ -1313,7 +1350,7 @@ function DashCarsPage() {
                         >
                           <SelectTrigger
                             aria-label={`Urutan unggulan Hero ${car.name}`}
-                            className="min-h-11 w-28 bg-card px-2.5 text-xs font-semibold tabular-nums data-[size=default]:h-11"
+                            className="min-h-11 w-28 bg-card px-2.5 text-sm font-semibold tabular-nums data-[size=default]:h-11"
                           >
                             <SelectValue />
                           </SelectTrigger>
@@ -1433,7 +1470,7 @@ function DashCarsPage() {
                 <p className="font-heading font-bold text-foreground">
                   {deleteTarget.name}
                 </p>
-                <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">
+                <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
                   {deleteTarget.year} &middot;{" "}
                   {getCategoryLabel(deleteTarget.category)} &middot;{" "}
                   {formatRupiah(deleteTarget.cashPrice)}
@@ -1444,7 +1481,7 @@ function DashCarsPage() {
             {deleteError ? (
               <p
                 role="alert"
-                className="mt-3 border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs font-medium text-[#991B1B]"
+                className="mt-3 border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm font-medium text-[#991B1B]"
               >
                 {deleteError}
               </p>
