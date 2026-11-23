@@ -379,12 +379,9 @@ function SidebarContent({
 
       <nav
         aria-label="Navigasi Dashboard"
-        className={cn(
-          "flex-1 overflow-y-auto py-4",
-          collapsed ? "px-2" : "px-3"
-        )}
+        className="flex-1 overflow-y-auto"
       >
-        <ul className="space-y-1">
+        <ul>
           {visibleItems.map((item) => {
             const Icon = item.icon
             const active = isNavItemActive(pathname, item)
@@ -398,8 +395,8 @@ function SidebarContent({
                   aria-label={collapsed ? item.label : undefined}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group flex min-h-11 items-center border-l-2 py-2.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-                    collapsed ? "justify-center px-0" : "justify-between gap-2 px-3",
+                    "group flex min-h-11 items-center border-r-4 py-2.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring",
+                    collapsed ? "justify-center px-0" : "justify-between gap-2 px-4",
                     active
                       ? "border-primary bg-secondary font-semibold text-foreground"
                       : "border-transparent font-medium text-muted-foreground hover:border-border hover:bg-secondary/60 hover:text-foreground"
