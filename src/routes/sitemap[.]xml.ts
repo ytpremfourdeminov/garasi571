@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { CARS } from "@/data/cars"
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/seo"
+import { fetchPublicCars } from "@/server/public-catalog"
 
 function escapeXml(value: string): string {
   return value
@@ -28,12 +28,13 @@ function buildUrlEntry(
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: ({ request }) => {
+      GET: async ({ request }) => {
         const baseUrl = getSiteUrl(request.url)
+        const cars = await fetchPublicCars({ includeSold: false })
 
         const entries = [
           buildUrlEntry(`${baseUrl}/`, "daily", "1.0"),
-          ...CARS.map((car) =>
+          ...cars.map((car) =>
             buildUrlEntry(
               toAbsoluteUrl(`/mobil/${car.slug}`, baseUrl),
               "weekly",
@@ -53,7 +54,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         return new Response(xml, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600",
+            "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
           },
         })
       },
