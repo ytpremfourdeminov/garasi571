@@ -98,7 +98,7 @@ export function CompareTray() {
                         type="button"
                         onClick={() => removeCompare(car.slug)}
                         aria-label={`Hapus ${car.shortName} dari perbandingan`}
-                        className="inline-flex size-11 shrink-0 items-center justify-center border-l border-[#34302C] text-[#C7C2BC] transition-colors hover:bg-[#2B2825] hover:text-[#FAF9F7] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#FAF9F7]"
+                        className="inline-flex size-11 shrink-0 items-center justify-center border-l border-[#34302C] text-[#C7C2BC] transition-colors hover:bg-[#2B2825] hover:text-[#FAF9F7] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#FAF9F7]"
                       >
                         <X className="size-4" aria-hidden="true" />
                       </button>
@@ -161,7 +161,7 @@ export function CompareTray() {
                   className="flex flex-col border border-border bg-card"
                 >
                   {cover ? (
-                    <div className="aspect-[4/3] w-full overflow-hidden border-b border-border bg-secondary">
+                    <div className="aspect-4/3 w-full overflow-hidden border-b border-border bg-secondary">
                       <img
                         src={cover.src}
                         alt={cover.alt}
