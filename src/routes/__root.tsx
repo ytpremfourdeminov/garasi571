@@ -8,8 +8,9 @@ import {
 import type { ErrorComponentProps } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import { AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react"
+import { ArrowLeft, RefreshCw } from "lucide-react"
 import { cn } from "cn"
+import { ErrorStateView } from "@/components/error-state-view"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -108,20 +109,28 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 }
 
 function RootNotFound() {
-  return (
-    <main className="flex min-h-svh items-center justify-center bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-      <section className="w-full max-w-xl border border-border bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
-          404
-        </p>
-        <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Halaman Tidak Ditemukan
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Halaman yang Anda cari tidak tersedia atau tautannya sudah berubah.
-        </p>
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      window.history.back()
+      return
+    }
+    if (typeof window !== "undefined") {
+      window.location.href = "/"
+    }
+  }
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+  return (
+    <ErrorStateView
+      variant="not-found"
+      fullScreen
+      title="Halaman Tidak Ditemukan"
+      description="Halaman yang Anda cari tidak tersedia atau tautannya sudah berubah."
+      actions={
+        <>
+          <Button type="button" variant="ghost" onClick={handleBack}>
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span>Kembali</span>
+          </Button>
           <a
             href="/"
             className={cn(
@@ -129,12 +138,11 @@ function RootNotFound() {
               "no-underline"
             )}
           >
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            <span>Kembali ke Beranda</span>
+            <span>Ke Beranda</span>
           </a>
-        </div>
-      </section>
-    </main>
+        </>
+      }
+    />
   )
 }
 
@@ -147,37 +155,26 @@ function RootErrorBoundary({ reset }: ErrorComponentProps) {
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-      <section className="w-full max-w-xl border border-border bg-card p-6 sm:p-8">
-        <div className="inline-flex size-11 items-center justify-center border border-border bg-secondary text-primary">
-          <AlertTriangle className="size-5" aria-hidden="true" />
-        </div>
-        <h1 className="mt-4 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Terjadi Kendala Saat Memuat Halaman
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Maaf, halaman belum dapat ditampilkan saat ini. Silakan muat ulang
-          halaman atau kembali ke beranda.
-        </p>
-
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Button type="button" variant="default" onClick={handleReload}>
-            <RefreshCw className="size-4" aria-hidden="true" />
-            <span>Muat Ulang Halaman</span>
-          </Button>
-
+    <ErrorStateView
+      variant="error"
+      fullScreen
+      title="Terjadi Kendala Saat Memuat Halaman"
+      description="Maaf, halaman belum dapat ditampilkan saat ini. Silakan muat ulang halaman atau kembali ke beranda."
+      actions={
+        <>
           <a
             href="/"
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "no-underline"
-            )}
+            className={cn(buttonVariants({ variant: "ghost" }), "no-underline")}
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
-            <span>Kembali ke Beranda</span>
+            <span>Ke Beranda</span>
           </a>
-        </div>
-      </section>
-    </main>
+          <Button type="button" variant="default" onClick={handleReload}>
+            <RefreshCw className="size-4" aria-hidden="true" />
+            <span>Muat Ulang</span>
+          </Button>
+        </>
+      }
+    />
   )
 }

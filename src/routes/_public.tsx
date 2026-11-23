@@ -2,7 +2,6 @@ import * as React from "react"
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
 import type { ErrorComponentProps } from "@tanstack/react-router"
 import {
-  AlertTriangle,
   ArrowLeft,
   MessageCircle,
   RefreshCw,
@@ -23,6 +22,7 @@ import { CompareProvider, useCompare } from "@/components/compare-context"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CompareTray } from "@/components/compare-tray"
+import { ErrorStateView } from "@/components/error-state-view"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -121,35 +121,15 @@ function PublicNotFoundContent() {
   const showroom = useShowroom()
 
   return (
-    <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-      <div className="border border-border bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold tracking-wider text-primary uppercase">
-          404
-        </p>
-        <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Halaman Tidak Ditemukan
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Halaman atau unit yang Anda cari tidak tersedia atau tautannya sudah
-          berubah. Anda dapat kembali ke katalog unit atau langsung menanyakan
-          ketersediaan unit ke tim sales kami di {showroom.city}.
-        </p>
-
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Link
-            to="/"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "no-underline"
-            )}
-          >
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            <span>Kembali ke Katalog</span>
-          </Link>
-
+    <ErrorStateView
+      variant="not-found"
+      title="Halaman Tidak Ditemukan"
+      description={`Halaman atau unit yang Anda cari tidak tersedia atau tautannya sudah berubah. Kembali ke katalog atau tanyakan ketersediaan unit ke tim sales kami di ${showroom.city}.`}
+      actions={
+        <>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() =>
               openWhatsAppDialog({
                 title: "Tanya Unit Tersedia",
@@ -161,9 +141,20 @@ function PublicNotFoundContent() {
             <MessageCircle className="size-4" aria-hidden="true" />
             <span>Hubungi WhatsApp</span>
           </Button>
-        </div>
-      </div>
-    </section>
+
+          <Link
+            to="/"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "no-underline"
+            )}
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span>Kembali ke Katalog</span>
+          </Link>
+        </>
+      }
+    />
   )
 }
 
@@ -201,36 +192,22 @@ function PublicErrorBoundary({ reset }: ErrorComponentProps) {
 
   return (
     <div className="flex min-h-svh flex-col bg-background text-foreground">
-      <main id="main-content" className="flex-1">
-        <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="border border-border bg-card p-6 sm:p-8">
-            <div className="inline-flex size-11 items-center justify-center border border-border bg-secondary text-primary">
-              <AlertTriangle className="size-5" aria-hidden="true" />
-            </div>
-            <h1 className="mt-4 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Terjadi Kendala Saat Memuat Halaman
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Maaf, halaman belum dapat ditampilkan saat ini. Silakan muat ulang
-              halaman, kembali ke beranda, atau hubungi tim sales{" "}
-              {showroom.name} melalui WhatsApp.
-            </p>
-
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Button type="button" variant="default" onClick={handleReload}>
-                <RefreshCw className="size-4" aria-hidden="true" />
-                <span>Muat Ulang Halaman</span>
-              </Button>
-
+      <main id="main-content" className="flex flex-1 items-center justify-center">
+        <ErrorStateView
+          variant="error"
+          title="Terjadi Kendala Saat Memuat Halaman"
+          description={`Maaf, halaman belum dapat ditampilkan saat ini. Silakan muat ulang halaman, kembali ke beranda, atau hubungi tim sales ${showroom.name} melalui WhatsApp.`}
+          actions={
+            <>
               <Link
                 to="/"
                 className={cn(
-                  buttonVariants({ variant: "outline" }),
+                  buttonVariants({ variant: "ghost" }),
                   "no-underline"
                 )}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" />
-                <span>Kembali ke Beranda</span>
+                <span>Ke Beranda</span>
               </Link>
 
               {fallbackWaUrl ? (
@@ -239,7 +216,7 @@ function PublicErrorBoundary({ reset }: ErrorComponentProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    buttonVariants({ variant: "secondary" }),
+                    buttonVariants({ variant: "outline" }),
                     "no-underline"
                   )}
                 >
@@ -247,9 +224,14 @@ function PublicErrorBoundary({ reset }: ErrorComponentProps) {
                   <span>Hubungi WhatsApp</span>
                 </a>
               ) : null}
-            </div>
-          </div>
-        </section>
+
+              <Button type="button" variant="default" onClick={handleReload}>
+                <RefreshCw className="size-4" aria-hidden="true" />
+                <span>Muat Ulang</span>
+              </Button>
+            </>
+          }
+        />
       </main>
     </div>
   )
