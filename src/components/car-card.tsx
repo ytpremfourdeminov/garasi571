@@ -48,7 +48,7 @@ export function CarCard({ car }: CarCardProps) {
         <Link
           to="/mobil/$slug"
           params={{ slug: car.slug }}
-          className="relative block aspect-[4/3] overflow-hidden bg-secondary no-underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
+          className="relative block aspect-4/3 overflow-hidden bg-secondary no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
         >
           {coverImage ? (
             <img
