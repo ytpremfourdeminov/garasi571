@@ -194,7 +194,7 @@ export function CarCompletenessSidebar({
 
       {/* Breakdown Across All 6 Research Dimensions */}
       <div className="border-b border-border p-4 sm:p-5">
-        <h2 className="font-heading text-sm font-bold tracking-[0.14em] text-muted-foreground uppercase">
+        <h2 className="font-heading text-sm font-bold tracking-tight text-foreground">
           Rincian Kelengkapan
         </h2>
 
@@ -240,11 +240,6 @@ export function CarCompletenessSidebar({
                     </span>
 
                     <div className="flex shrink-0 items-center gap-1.5 tabular-nums">
-                      {isLockedMedia ? (
-                        <span className="border border-border bg-secondary px-1.5 py-0.5 text-sm font-medium text-muted-foreground">
-                          Pasca Simpan
-                        </span>
-                      ) : null}
                       <span className="text-sm font-semibold text-foreground">
                         {dim.completedCount}/{dim.totalCount}
                       </span>
@@ -267,6 +262,12 @@ export function CarCompletenessSidebar({
                       style={{ width: `${dim.percentage}%` }}
                     />
                   </div>
+
+                  {isLockedMedia ? (
+                    <p className="mt-1.5 text-xs text-muted-foreground">
+                      Tersedia setelah unit disimpan.
+                    </p>
+                  ) : null}
                 </button>
               </li>
             )
@@ -277,24 +278,29 @@ export function CarCompletenessSidebar({
       {/* Missing Items Checklist */}
       <div className="p-4 sm:p-5">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="flex items-center gap-1.5 font-heading text-sm font-bold tracking-[0.14em] text-muted-foreground uppercase">
+          <h2 className="flex items-center gap-2 font-heading text-sm font-bold tracking-tight text-foreground">
             {completeness.missingItems.length > 0 ? (
               <AlertTriangle
-                className="size-3.5 text-primary"
+                className="size-4 shrink-0 text-primary"
                 aria-hidden="true"
               />
             ) : (
               <Sparkles
-                className="size-3.5 text-emerald-700"
+                className="size-4 shrink-0 text-emerald-700"
                 aria-hidden="true"
               />
             )}
             <span>
               {completeness.missingItems.length > 0
-                ? `Belum Lengkap (${completeness.missingItems.length})`
+                ? "Perlu Dilengkapi"
                 : "Checklist Lengkap"}
             </span>
           </h2>
+          {completeness.missingItems.length > 0 ? (
+            <span className="text-xs font-semibold text-muted-foreground tabular-nums">
+              {completeness.missingItems.length} poin
+            </span>
+          ) : null}
         </div>
 
         {completeness.missingItems.length === 0 ? (
@@ -317,26 +323,19 @@ export function CarCompletenessSidebar({
           </div>
         ) : (
           <>
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-3 divide-y divide-border/70 border-y border-border/70">
               {visibleMissingItems.map((item) => (
                 <li key={`${item.dimensionKey}-${item.label}`}>
                   <button
                     type="button"
                     onClick={() => onSelectTab(item.targetTab)}
-                    className="group flex w-full cursor-pointer items-start justify-between gap-2 border border-transparent bg-secondary/35 px-2.5 py-2 text-left text-sm transition-colors hover:border-border hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    className="group flex w-full cursor-pointer items-center justify-between gap-3 px-1 py-2.5 text-left text-sm transition-colors hover:bg-secondary/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
-                    <span className="flex min-w-0 items-start gap-2">
-                      <span
-                        aria-hidden="true"
-                        className="mt-1.5 inline-block size-1.5 shrink-0 bg-primary"
-                      />
-                      <span className="leading-snug text-foreground">
-                        {item.label}
-                      </span>
+                    <span className="min-w-0 leading-snug text-foreground group-hover:text-primary">
+                      {item.label}
                     </span>
-                    <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-sm font-semibold tracking-wider text-muted-foreground uppercase group-hover:text-primary">
-                      <span>{COMPLETENESS_TAB_LABELS[item.targetTab].split(" ")[0]}</span>
-                      <ArrowRight className="size-3" aria-hidden="true" />
+                    <span className="shrink-0 text-xs font-medium text-muted-foreground group-hover:text-foreground">
+                      {COMPLETENESS_TAB_LABELS[item.targetTab].split(" ")[0]}
                     </span>
                   </button>
                 </li>

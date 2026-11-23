@@ -4,7 +4,6 @@ import {
   AlertCircle,
   ArrowDown,
   ArrowUp,
-  CheckCircle2,
   ClipboardPaste,
   Gauge,
   ListChecks,
@@ -285,8 +284,7 @@ function StringListEditor({
   )
 
   const listError = errors?.[fieldKey]
-  const filledCount = items.filter((item) => item.trim().length > 0).length
-  const meetsTarget = filledCount >= recommendedMin
+  void recommendedMin
 
   const handleAddDraft = () => {
     const cleaned = draftItem.trim()
@@ -332,25 +330,9 @@ function StringListEditor({
   }
 
   return (
-    <div className="flex flex-col border border-border bg-background/60 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-border pb-3">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h4 className="font-heading text-sm font-bold text-foreground">
-              {title}
-            </h4>
-            <Badge
-              variant={meetsTarget ? "success" : "secondary"}
-              className="tabular-nums"
-            >
-              {meetsTarget ? (
-                <CheckCircle2 className="size-3" aria-hidden="true" />
-              ) : null}
-              {filledCount}/{recommendedMin}+ poin
-            </Badge>
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        </div>
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-muted-foreground">{description}</p>
 
         <Button
           type="button"
@@ -358,10 +340,10 @@ function StringListEditor({
           size="default"
           disabled={disabled}
           onClick={() => setPasteOpen(true)}
-          className="text-sm"
+          className="shrink-0 text-sm"
         >
           <ClipboardPaste className="size-4" aria-hidden="true" />
-          Tempel Banyak Baris
+          Tempel Daftar
         </Button>
       </div>
 
@@ -454,12 +436,8 @@ function StringListEditor({
           })}
         </ul>
       ) : (
-        <div className="mt-3 border border-dashed border-border bg-card px-4 py-5 text-center text-sm text-muted-foreground">
-          Belum ada poin. Tambahkan satu per satu di bawah atau gunakan tombol{" "}
-          <span className="font-semibold text-foreground">
-            Tempel Banyak Baris
-          </span>
-          .
+        <div className="mt-3 border border-dashed border-border bg-card px-4 py-4 text-center text-sm text-muted-foreground">
+          Belum ada poin.
         </div>
       )}
 
@@ -486,7 +464,7 @@ function StringListEditor({
           onClick={handleAddDraft}
         >
           <Plus className="size-4" aria-hidden="true" />
-          Tambah Poin
+          Tambah
         </Button>
       </div>
 
@@ -506,33 +484,26 @@ function StringListEditor({
       <Dialog open={pasteOpen} onOpenChange={setPasteOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Tempel Banyak Baris — {title}</DialogTitle>
+            <DialogTitle>Tempel {title}</DialogTitle>
             <DialogDescription>
-              Tempel daftar poin dari catatan atau WhatsApp (satu baris per
-              poin). Tanda bullet atau nomor di awal baris akan dibersihkan
+              Satu poin per baris. Bullet, nomor, dan baris kosong dibersihkan
               otomatis.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-4 space-y-2">
-            <label
-              htmlFor={`${idPrefix}-bulk-textarea`}
-              className="block text-sm font-semibold tracking-wide text-foreground uppercase"
-            >
-              Daftar Poin (1 Baris = 1 Item)
-            </label>
+          <div className="mt-3 space-y-2">
             <Textarea
               id={`${idPrefix}-bulk-textarea`}
+              aria-label={`Daftar ${title}`}
               rows={7}
               value={pasteText}
               disabled={disabled}
               onChange={(event) => setPasteText(event.target.value)}
-              placeholder={`Contoh:\n- Ban tebal semua\n- AC dingin double blower\n- Mesin kering siap luar kota`}
+              placeholder={`- Ban tebal semua\n- AC dingin double blower\n- Mesin kering siap luar kota`}
             />
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>Baris kosong akan dilewati otomatis.</span>
+            <div className="flex justify-end text-sm">
               <span className="font-semibold text-foreground tabular-nums">
-                {parsedPasteItems.length} poin terdeteksi
+                {parsedPasteItems.length} poin
               </span>
             </div>
           </div>
@@ -552,7 +523,7 @@ function StringListEditor({
                 disabled={disabled || parsedPasteItems.length === 0}
                 onClick={() => handleApplyPaste("replace")}
               >
-                Ganti Seluruh Daftar
+                Ganti Semua
               </Button>
             ) : null}
             <Button
@@ -629,7 +600,7 @@ export function CarIdentitySpecsForm({
 
   const drivetrainItems = React.useMemo(() => {
     const map: Record<string, string> = {
-      [EMPTY_SELECT_VALUE]: "Pilih penggerak (opsional)",
+      [EMPTY_SELECT_VALUE]: "Pilih penggerak",
       ...DRIVETRAIN_PRESETS,
     }
     const current = value.drivetrain?.trim()
@@ -772,7 +743,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-short-name"
-            label="Nama Singkat (Kartu & Beranda)"
+            label="Nama Singkat"
             required
             error={errors?.shortName}
             className="md:col-span-8"
@@ -811,7 +782,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-year-sort"
-            label="Tahun Urut"
+            label="Tahun Katalog"
             required
             error={errors?.yearSort}
             className="md:col-span-3"
@@ -954,6 +925,39 @@ export function CarIdentitySpecsForm({
           </FieldShell>
 
           <FieldShell
+            id="car-status"
+            label="Status Unit"
+            required
+            error={errors?.status}
+            className="md:col-span-4"
+          >
+            <Select
+              items={STATUS_ITEMS}
+              value={value.status}
+              disabled={disabled}
+              onValueChange={(nextValue) => {
+                if (!nextValue) return
+                onChange({ status: nextValue })
+              }}
+            >
+              <SelectTrigger
+                id="car-status"
+                aria-invalid={Boolean(errors?.status)}
+                className="min-h-11 w-full bg-card px-3.5 text-sm text-foreground data-[size=default]:h-11"
+              >
+                <SelectValue placeholder="Pilih status unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(STATUS_ITEMS) as CarStatus[]).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {STATUS_ITEMS[key]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FieldShell>
+
+          <FieldShell
             id="car-color"
             label="Warna Eksterior"
             required
@@ -998,7 +1002,7 @@ export function CarIdentitySpecsForm({
             id="car-offer-badge"
             label="Label Promo (Opsional)"
             error={errors?.offerBadge}
-            className="md:col-span-6"
+            className="md:col-span-12"
           >
             <Input
               id="car-offer-badge"
@@ -1039,39 +1043,6 @@ export function CarIdentitySpecsForm({
                 )
               })}
             </div>
-          </FieldShell>
-
-          <FieldShell
-            id="car-status"
-            label="Status Unit"
-            required
-            error={errors?.status}
-            className="md:col-span-6"
-          >
-            <Select
-              items={STATUS_ITEMS}
-              value={value.status}
-              disabled={disabled}
-              onValueChange={(nextValue) => {
-                if (!nextValue) return
-                onChange({ status: nextValue })
-              }}
-            >
-              <SelectTrigger
-                id="car-status"
-                aria-invalid={Boolean(errors?.status)}
-                className="min-h-11 w-full bg-card px-3.5 text-sm text-foreground data-[size=default]:h-11"
-              >
-                <SelectValue placeholder="Pilih status unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {(Object.keys(STATUS_ITEMS) as CarStatus[]).map((key) => (
-                  <SelectItem key={key} value={key}>
-                    {STATUS_ITEMS[key]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </FieldShell>
 
           {/* Hero Featured panel */}
@@ -1251,7 +1222,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-engine-cc"
-            label="Kapasitas Mesin (CC)"
+            label="Kapasitas Mesin"
             error={errors?.engineCc}
             className="md:col-span-4"
           >
@@ -1283,7 +1254,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-drivetrain"
-            label="Sistem Penggerak (Drivetrain)"
+            label="Sistem Penggerak"
             error={errors?.drivetrain}
             className="md:col-span-4"
           >
@@ -1414,96 +1385,101 @@ export function CarIdentitySpecsForm({
             </div>
           </FieldShell>
 
-          <div className="border border-border bg-secondary/50 p-4 md:col-span-12">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-start">
-              <div className="flex items-start gap-3 md:col-span-5">
-                <Switch
-                  id="car-mileage-verified"
-                  checked={value.mileageVerified}
-                  disabled={disabled}
-                  onCheckedChange={(checked) =>
-                    onChange({ mileageVerified: checked })
-                  }
-                  aria-label="Odometer Terverifikasi Asli"
-                />
-                <div>
-                  <label
-                    htmlFor="car-mileage-verified"
-                    className="block text-sm font-semibold text-foreground"
+          <div className="space-y-4 border border-border bg-secondary/50 p-4 md:col-span-12">
+            <div className="flex items-start gap-3">
+              <Switch
+                id="car-mileage-verified"
+                checked={value.mileageVerified}
+                disabled={disabled}
+                onCheckedChange={(checked) =>
+                  onChange({ mileageVerified: checked })
+                }
+                aria-label="Odometer Terverifikasi Asli"
+                className="mt-0.5 shrink-0"
+              />
+              <div className="min-w-0">
+                <label
+                  htmlFor="car-mileage-verified"
+                  className="block text-sm font-semibold text-foreground"
+                >
+                  Odometer Terverifikasi Asli
+                </label>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  Keaslian kilometer sudah dicek melalui buku servis, bengkel
+                  resmi, atau scan OBD.
+                </p>
+                {errors?.mileageVerified ? (
+                  <p
+                    role="alert"
+                    className="mt-1.5 text-sm font-medium text-destructive"
                   >
-                    Odometer Terverifikasi Asli
-                  </label>
-                  <p className="mt-0.5 text-sm text-muted-foreground">
-                    Aktifkan jika keaslian kilometer sudah dicek melalui buku
-                    servis, bengkel resmi, atau alat scan OBD.
+                    {errors.mileageVerified}
                   </p>
-                  {errors?.mileageVerified ? (
-                    <p
-                      role="alert"
-                      className="mt-1.5 text-sm font-medium text-destructive"
-                    >
-                      {errors.mileageVerified}
-                    </p>
-                  ) : null}
-                </div>
+                ) : null}
               </div>
-
-              <FieldShell
-                id="car-mileage-verification-source"
-                label="Sumber Verifikasi Odometer"
-                error={errors?.mileageVerificationSource}
-                className="md:col-span-7"
-              >
-                <Input
-                  id="car-mileage-verification-source"
-                  value={value.mileageVerificationSource ?? ""}
-                  disabled={disabled}
-                  aria-invalid={Boolean(errors?.mileageVerificationSource)}
-                  aria-describedby={errors?.mileageVerificationSource ? "car-mileage-verification-source-error" : undefined}
-                  onChange={(event) =>
-                    onChange({
-                      mileageVerificationSource: event.target.value.trim()
-                        ? event.target.value
-                        : null,
-                    })
-                  }
-                  placeholder="Catatan servis resmi, scan OBD, atau faktur berkala"
-                />
-              </FieldShell>
             </div>
+
+            <FieldShell
+              id="car-mileage-verification-source"
+              label="Sumber Verifikasi Odometer"
+              error={errors?.mileageVerificationSource}
+            >
+              <Input
+                id="car-mileage-verification-source"
+                value={value.mileageVerificationSource ?? ""}
+                disabled={disabled}
+                aria-invalid={Boolean(errors?.mileageVerificationSource)}
+                aria-describedby={
+                  errors?.mileageVerificationSource
+                    ? "car-mileage-verification-source-error"
+                    : undefined
+                }
+                onChange={(event) =>
+                  onChange({
+                    mileageVerificationSource: event.target.value.trim()
+                      ? event.target.value
+                      : null,
+                  })
+                }
+                placeholder="Catatan servis resmi, scan OBD, atau faktur berkala"
+              />
+            </FieldShell>
           </div>
         </div>
       </section>
 
-      {/* SECTION D — HIGHLIGHTS & KONDISI/KELENGKAPAN */}
+      {/* SECTION D — HIGHLIGHTS KEUNGGULAN UTAMA */}
       <section
         aria-labelledby="section-highlights-heading"
         className="border border-border bg-card p-5 sm:p-6"
       >
         <SectionHeader
           headingId="section-highlights-heading"
-          index="04 / RINGKASAN KONDISI"
-          title="Highlights & Kondisi / Kelengkapan"
+          index="04 / HIGHLIGHTS"
+          title="Highlights Keunggulan Utama"
           badge={
-            <div className="flex items-center gap-1.5">
-              <Badge variant="outline" className="tabular-nums">
-                <Sparkles className="size-3" aria-hidden="true" />
-                {value.highlights.length} Highlight
-              </Badge>
-              <Badge variant="outline" className="tabular-nums">
-                <ListChecks className="size-3" aria-hidden="true" />
-                {value.conditions.length} Kondisi
-              </Badge>
-            </div>
+            <Badge
+              variant={
+                value.highlights.filter((item) => item.trim().length > 0)
+                  .length >= 3
+                  ? "success"
+                  : "secondary"
+              }
+              className="tabular-nums"
+            >
+              <Sparkles className="size-3" aria-hidden="true" />
+              {value.highlights.filter((item) => item.trim().length > 0).length}
+              /3+ Poin
+            </Badge>
           }
         />
 
-        <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="mt-4">
           <StringListEditor
             idPrefix="car-highlights"
             fieldKey="highlights"
             title="Highlights Keunggulan Utama"
-            description="Poin ringkas paling menarik yang tampil menonjol di kartu dan ringkasan detail."
+            description="Keunggulan utama yang tampil di kartu dan detail unit."
             placeholder="Contoh: Jok kulit original, pajak panjang, servis resmi"
             recommendedMin={3}
             items={value.highlights}
@@ -1513,12 +1489,41 @@ export function CarIdentitySpecsForm({
             errors={errors}
             disabled={disabled}
           />
+        </div>
+      </section>
 
+      {/* SECTION E — KONDISI FISIK & KELENGKAPAN */}
+      <section
+        aria-labelledby="section-conditions-heading"
+        className="border border-border bg-card p-5 sm:p-6"
+      >
+        <SectionHeader
+          headingId="section-conditions-heading"
+          index="05 / KONDISI"
+          title="Kondisi Fisik & Kelengkapan"
+          badge={
+            <Badge
+              variant={
+                value.conditions.filter((item) => item.trim().length > 0)
+                  .length >= 4
+                  ? "success"
+                  : "secondary"
+              }
+              className="tabular-nums"
+            >
+              <ListChecks className="size-3" aria-hidden="true" />
+              {value.conditions.filter((item) => item.trim().length > 0).length}
+              /4+ Poin
+            </Badge>
+          }
+        />
+
+        <div className="mt-4">
           <StringListEditor
             idPrefix="car-conditions"
             fieldKey="conditions"
             title="Kondisi Fisik & Kelengkapan"
-            description="Rincian kondisi mesin, kaki-kaki, interior, ban, audio, serta fitur aktif."
+            description="Kondisi mesin, kaki-kaki, interior, ban, dan fitur."
             placeholder="Contoh: AC dingin, ban tebal, kaki-kaki senyap, mesin kering"
             recommendedMin={4}
             items={value.conditions}
