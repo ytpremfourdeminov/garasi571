@@ -88,7 +88,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
 
   if (!activeImage) {
     return (
-      <div className="flex aspect-[4/3] w-full items-center justify-center border border-border bg-secondary text-sm text-muted-foreground">
+      <div className="flex aspect-4/3 w-full items-center justify-center border border-border bg-secondary text-sm text-muted-foreground">
         Foto unit belum tersedia.
       </div>
     )
@@ -100,12 +100,12 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
       onKeyDown={handleContainerKeyDown}
       aria-label={`Galeri foto ${carName}`}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden border border-border bg-secondary">
+      <div className="relative aspect-4/3 w-full overflow-hidden border border-border bg-secondary">
         <button
           type="button"
           onClick={() => setLightboxOpen(true)}
           aria-label={`Perbesar foto ${safeIndex + 1} dari ${totalImages}`}
-          className="group relative block h-full w-full focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
+          className="group relative block h-full w-full focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
         >
           <img
             src={activeImage.src}
@@ -171,7 +171,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
                 aria-label={`Lihat foto ${idx + 1}`}
                 aria-current={isActive ? "true" : undefined}
                 className={cn(
-                  "relative aspect-[4/3] w-20 shrink-0 overflow-hidden border-2 bg-secondary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-24",
+                  "relative aspect-4/3 w-20 shrink-0 overflow-hidden border-2 bg-secondary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-24",
                   isActive
                     ? "border-primary"
                     : "border-border opacity-80 hover:border-foreground/60 hover:opacity-100",
