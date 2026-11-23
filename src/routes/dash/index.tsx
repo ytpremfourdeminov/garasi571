@@ -596,7 +596,7 @@ function DashOverviewPage() {
         {/* Companion Panel: Hero Featured Slots */}
         <aside
           aria-labelledby="featured-summary-heading"
-          className="flex flex-col border border-border bg-card lg:col-span-4"
+          className="flex flex-col self-start border border-border bg-card lg:col-span-4"
         >
           <div className="flex items-center justify-between gap-2 border-b border-border bg-secondary/40 px-4 py-4 sm:px-5">
             <div className="flex items-center gap-2">
@@ -619,7 +619,7 @@ function DashOverviewPage() {
             </Badge>
           </div>
 
-          <div className="flex-1 p-4 sm:p-5">
+          <div className="p-4 sm:p-5">
             <p className="text-sm leading-relaxed text-muted-foreground">
               Maksimal 3 unit tampil di sorotan utama beranda.
             </p>
