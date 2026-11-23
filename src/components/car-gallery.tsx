@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react"
 import { cn } from "cn"
-import type { CarImage } from "@/data/cars"
+import type { CarImage } from "@/lib/domain/types"
 import {
   Dialog,
   DialogClose,
@@ -11,8 +11,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+type CarGalleryImage = Pick<CarImage, "src" | "width" | "height" | "alt"> &
+  Partial<Omit<CarImage, "src" | "width" | "height" | "alt">>
+
 interface CarGalleryProps {
-  images: CarImage[]
+  images: readonly CarGalleryImage[]
   carName: string
 }
 
@@ -24,8 +27,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
   const totalImages = images.length
   const safeIndex =
     totalImages > 0 ? Math.min(activeIndex, totalImages - 1) : 0
-  const activeImage: CarImage | undefined =
-    totalImages > 0 ? images[safeIndex] : undefined
+  const activeImage = totalImages > 0 ? images.at(safeIndex) : undefined
 
   React.useEffect(() => {
     setActiveIndex(0)
@@ -86,7 +88,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
 
   if (!activeImage) {
     return (
-      <div className="flex aspect-[4/3] w-full items-center justify-center border border-border bg-secondary text-sm text-muted-foreground">
+      <div className="flex aspect-4/3 w-full items-center justify-center border border-border bg-secondary text-sm text-muted-foreground">
         Foto unit belum tersedia.
       </div>
     )
@@ -98,12 +100,12 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
       onKeyDown={handleContainerKeyDown}
       aria-label={`Galeri foto ${carName}`}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden border border-border bg-secondary">
+      <div className="relative aspect-4/3 w-full overflow-hidden border border-border bg-secondary">
         <button
           type="button"
           onClick={() => setLightboxOpen(true)}
           aria-label={`Perbesar foto ${safeIndex + 1} dari ${totalImages}`}
-          className="group relative block h-full w-full focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
+          className="group relative block h-full w-full focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
         >
           <img
             src={activeImage.src}
@@ -114,7 +116,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
           />
 
-          <span className="pointer-events-none absolute top-3 right-3 inline-flex min-h-9 items-center gap-1.5 bg-[#161514]/85 px-3 py-1.5 text-xs font-medium text-[#FAF9F7] transition-colors group-hover:bg-[#161514]">
+          <span className="pointer-events-none absolute top-3 right-3 inline-flex min-h-9 items-center gap-1.5 bg-[#161514]/85 px-3 py-1.5 text-sm font-medium text-[#FAF9F7] transition-colors group-hover:bg-[#161514]">
             <Maximize2 className="size-3.5" aria-hidden="true" />
             <span>Perbesar</span>
           </span>
@@ -144,7 +146,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
 
         <div
           aria-live="polite"
-          className="pointer-events-none absolute right-3 bottom-3 z-10 bg-[#161514] px-3 py-1.5 text-xs font-medium text-[#FAF9F7] tabular-nums"
+          className="pointer-events-none absolute right-3 bottom-3 z-10 bg-[#161514] px-3 py-1.5 text-sm font-medium text-[#FAF9F7] tabular-nums"
         >
           {safeIndex + 1} / {totalImages}
         </div>
@@ -169,7 +171,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
                 aria-label={`Lihat foto ${idx + 1}`}
                 aria-current={isActive ? "true" : undefined}
                 className={cn(
-                  "relative aspect-[4/3] w-20 shrink-0 overflow-hidden border-2 bg-secondary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-24",
+                  "relative aspect-4/3 w-20 shrink-0 overflow-hidden border-2 bg-secondary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:w-24",
                   isActive
                     ? "border-primary"
                     : "border-border opacity-80 hover:border-foreground/60 hover:opacity-100",
@@ -200,7 +202,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
               <DialogTitle className="text-base text-[#FAF9F7] sm:text-lg">
                 {carName}
               </DialogTitle>
-              <DialogDescription className="text-xs text-[#C7C2BC] tabular-nums">
+              <DialogDescription className="text-sm text-[#C7C2BC] tabular-nums">
                 Foto {safeIndex + 1} dari {totalImages}
               </DialogDescription>
             </DialogHeader>
@@ -245,7 +247,7 @@ export function CarGallery({ images, carName }: CarGalleryProps) {
             ) : null}
           </div>
 
-          <div className="mt-3 flex flex-col gap-2 text-xs text-[#C7C2BC] sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-3 flex flex-col gap-2 text-sm text-[#C7C2BC] sm:flex-row sm:items-center sm:justify-between">
             <p className="leading-relaxed text-[#FAF9F7]">{activeImage.alt}</p>
             <p className="shrink-0 font-medium text-[#C7C2BC] tabular-nums">
               {safeIndex + 1} / {totalImages}

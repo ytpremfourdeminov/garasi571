@@ -114,6 +114,14 @@ function DialogDescription({
   )
 }
 
+function useStableDialogData<T>(value: T | null | undefined): T | null {
+  const ref = React.useRef<T | null>(value ?? null)
+  if (value !== null && value !== undefined) {
+    ref.current = value
+  }
+  return value ?? ref.current
+}
+
 export {
   Dialog,
   DialogBackdrop,
@@ -125,4 +133,5 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  useStableDialogData,
 }

@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { CARS, formatRupiah, type CarUnit } from "@/data/cars"
-import { SHOWROOM } from "@/data/showroom"
+import { formatRupiah } from "@/lib/domain/formatters"
+import type { CarUnit, ShowroomConfig } from "@/lib/domain/types"
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/seo"
+import { fetchPublicCars, fetchPublicShowroom } from "@/server/public-catalog"
 
 function formatPriceSummary(car: CarUnit): string {
   if (car.creditPrice !== null) {
@@ -10,35 +11,39 @@ function formatPriceSummary(car: CarUnit): string {
   return `cash ${formatRupiah(car.cashPrice)} (Special Price, khusus cash)`
 }
 
-function buildLlmsTxt(requestUrl?: string): string {
+function buildLlmsTxt(
+  cars: CarUnit[],
+  showroom: ShowroomConfig,
+  requestUrl?: string
+): string {
   const baseUrl = getSiteUrl(requestUrl)
-  const salesLines = SHOWROOM.sales.map(
+  const salesLines = showroom.sales.map(
     (person) =>
       `- WhatsApp ${person.name}: ${person.phoneDisplay} (https://wa.me/${person.phoneE164})`
   )
-  const carLines = CARS.map((car) => {
+  const carLines = cars.map((car) => {
     const unitUrl = toAbsoluteUrl(`/mobil/${car.slug}`, baseUrl)
     const priceSummary = formatPriceSummary(car)
     return `- [${car.name} (${car.year})](${unitUrl}): ${car.categoryLabel}, ${car.transmission}, warna ${car.color}, ${priceSummary}, kilometer ${car.mileageLabel}.`
   })
 
   return [
-    "# Garasi 571 Surakarta",
+    `# ${showroom.name} ${showroom.city.split(",")[0]?.trim() || "Surakarta"}`,
     "",
-    "> Showroom mobil bekas pilihan di Surakarta, Jawa Tengah. Buka setiap hari pukul 08:00 - 16:00 WIB dengan pilihan pembelian cash, kredit resmi, dan tukar tambah untuk unit tertentu.",
+    `> Showroom mobil bekas pilihan di ${showroom.city}. Buka ${showroom.hours} dengan pilihan pembelian cash, kredit resmi, dan tukar tambah untuk unit tertentu.`,
     "",
     "## Informasi Showroom & Kontak",
     "",
-    `- Nama Showroom: ${SHOWROOM.name}`,
-    `- Lokasi: ${SHOWROOM.city}`,
-    `- Jam Operasional: ${SHOWROOM.hours}`,
-    `- Google Maps: ${SHOWROOM.mapsUrl}`,
-    `- Instagram: ${SHOWROOM.instagramHandle} (${SHOWROOM.instagramUrl})`,
+    `- Nama Showroom: ${showroom.name}`,
+    `- Lokasi: ${showroom.city}`,
+    `- Jam Operasional: ${showroom.hours}`,
+    `- Google Maps: ${showroom.mapsUrl}`,
+    `- Instagram: ${showroom.instagramHandle} (${showroom.instagramUrl})`,
     ...salesLines,
     `- Katalog Utama: ${toAbsoluteUrl("/", baseUrl)}`,
     `- Katalog Lengkap (LLM): ${toAbsoluteUrl("/llms-full.txt", baseUrl)}`,
     "",
-    `## Stok Mobil Tersedia (${CARS.length} Unit)`,
+    `## Unit Mobil Tersedia (${cars.length} Unit)`,
     "",
     ...carLines,
     "",
@@ -48,13 +53,17 @@ function buildLlmsTxt(requestUrl?: string): string {
 export const Route = createFileRoute("/llms.txt")({
   server: {
     handlers: {
-      GET: ({ request }) => {
-        const body = buildLlmsTxt(request.url)
+      GET: async ({ request }) => {
+        const [cars, showroom] = await Promise.all([
+          fetchPublicCars({ includeSold: false }),
+          fetchPublicShowroom(),
+        ])
+        const body = buildLlmsTxt(cars, showroom, request.url)
         return new Response(body, {
           status: 200,
           headers: {
             "Content-Type": "text/plain; charset=utf-8",
-            "Cache-Control": "public, max-age=3600",
+            "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
           },
         })
       },

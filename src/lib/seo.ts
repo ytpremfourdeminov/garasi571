@@ -1,14 +1,90 @@
-import { SHOWROOM } from "@/data/showroom"
-import { CARS, formatRupiah, type CarUnit } from "@/data/cars"
-import { type ShowroomFaqItem } from "@/data/faq"
+import { DEFAULT_SHOWROOM_CONFIG } from "@/components/showroom-context"
+import { formatRupiah } from "@/lib/domain/formatters"
+import type {
+  CarImage,
+  CarStatus,
+  CarUnit,
+  FuelType,
+  ShowroomConfig,
+  ShowroomFaqItem,
+} from "@/lib/domain/types"
 
 const DEFAULT_SITE_URL = "https://garasi571.id"
+
+const FUEL_TYPE_SCHEMA_MAP: Record<FuelType, string> = {
+  bensin: "Gasoline",
+  diesel: "Diesel",
+  hybrid: "Hybrid",
+  phev: "Plug-in hybrid",
+  ev: "Electricity",
+}
+
+const AVAILABILITY_SCHEMA_MAP: Record<CarStatus, string> = {
+  ready: "https://schema.org/InStock",
+  booked: "https://schema.org/LimitedAvailability",
+  sold: "https://schema.org/SoldOut",
+  draft: "https://schema.org/InStock",
+  archived: "https://schema.org/SoldOut",
+}
+
+export type SeoCarInput = Pick<
+  CarUnit,
+  | "slug"
+  | "brand"
+  | "name"
+  | "year"
+  | "yearSort"
+  | "color"
+  | "transmission"
+  | "mileageLabel"
+  | "mileageVerified"
+  | "location"
+  | "cashPrice"
+  | "creditPrice"
+  | "paymentMode"
+> & {
+  images: readonly Pick<CarImage, "src">[]
+} & Partial<
+    Pick<
+      CarUnit,
+      | "status"
+      | "fuelType"
+      | "engineCc"
+      | "bodyType"
+      | "seatCapacity"
+      | "drivetrain"
+    >
+  >
 
 function stripTrailingSlash(url: string): string {
   return url.replace(/\/+$/, "")
 }
 
-function parseVerifiedOdometerKm(car: CarUnit): number | null {
+function parseOpeningHours(hours: string): { opens: string; closes: string } {
+  const match = hours.match(/(\d{2}:\d{2})\s*[-–]\s*(\d{2}:\d{2})/)
+  if (match) {
+    return { opens: match[1], closes: match[2] }
+  }
+  return { opens: "08:00", closes: "16:00" }
+}
+
+function parseCityAndRegion(city: string): {
+  addressLocality: string
+  addressRegion: string
+} {
+  const parts = city
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+  return {
+    addressLocality: parts[0] ?? "Surakarta",
+    addressRegion: parts[1] ?? "Jawa Tengah",
+  }
+}
+
+function parseVerifiedOdometerKm(
+  car: Pick<CarUnit, "mileageVerified" | "mileageLabel">
+): number | null {
   if (!car.mileageVerified) {
     return null
   }
@@ -130,23 +206,28 @@ export function buildSocialMeta(opts: {
 }
 
 export function buildAutoDealerJsonLd(
-  siteUrl?: string
+  siteUrl?: string,
+  showroom: ShowroomConfig = DEFAULT_SHOWROOM_CONFIG
 ): Record<string, unknown> {
   const baseUrl = getSiteUrl(siteUrl)
-  const logoUrl = toAbsoluteUrl(SHOWROOM.logoSrc, baseUrl)
+  const logoPath = showroom.logoSrc || showroom.logoUrl
+  const logoUrl = toAbsoluteUrl(logoPath, baseUrl)
+  const { addressLocality, addressRegion } = parseCityAndRegion(showroom.city)
+  const { opens, closes } = parseOpeningHours(showroom.hours)
+  const primaryPhone = showroom.sales[0]?.phoneDisplay
 
-  return {
+  const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "AutoDealer",
     "@id": `${baseUrl}/#autodealer`,
-    name: SHOWROOM.name,
+    name: showroom.name,
     url: baseUrl,
     logo: logoUrl,
     image: logoUrl,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Surakarta",
-      addressRegion: "Jawa Tengah",
+      addressLocality,
+      addressRegion,
       addressCountry: "ID",
     },
     openingHoursSpecification: [
@@ -161,12 +242,11 @@ export function buildAutoDealerJsonLd(
           "Saturday",
           "Sunday",
         ],
-        opens: "08:00",
-        closes: "16:00",
+        opens,
+        closes,
       },
     ],
-    telephone: SHOWROOM.sales[0].phoneDisplay,
-    contactPoint: SHOWROOM.sales.map((person) => ({
+    contactPoint: showroom.sales.map((person) => ({
       "@type": "ContactPoint",
       contactType: "sales",
       name: person.name,
@@ -174,13 +254,19 @@ export function buildAutoDealerJsonLd(
       areaServed: "ID",
       availableLanguage: ["Indonesian"],
     })),
-    hasMap: SHOWROOM.mapsUrl,
-    sameAs: [SHOWROOM.instagramUrl],
+    hasMap: showroom.mapsUrl,
+    sameAs: showroom.instagramUrl ? [showroom.instagramUrl] : [],
   }
+
+  if (primaryPhone) {
+    jsonLd.telephone = primaryPhone
+  }
+
+  return jsonLd
 }
 
 export function buildItemListJsonLd(
-  cars: readonly CarUnit[] = CARS,
+  cars: readonly Pick<CarUnit, "name" | "year" | "slug">[] = [],
   siteUrl?: string
 ): Record<string, unknown> {
   const baseUrl = getSiteUrl(siteUrl)
@@ -199,8 +285,9 @@ export function buildItemListJsonLd(
 }
 
 export function buildCarProductJsonLd(
-  car: CarUnit,
-  siteUrl?: string
+  car: SeoCarInput,
+  siteUrl?: string,
+  showroom: ShowroomConfig = DEFAULT_SHOWROOM_CONFIG
 ): Record<string, unknown> {
   const baseUrl = getSiteUrl(siteUrl)
   const url = toAbsoluteUrl(`/mobil/${car.slug}`, baseUrl)
@@ -218,6 +305,10 @@ export function buildCarProductJsonLd(
     : ""
 
   const description = `${car.name} tahun ${car.year}, warna ${car.color}, transmisi ${car.transmission}${mileageSummary}. ${paymentSummary}. Lokasi unit di ${car.location}.`
+
+  const availability = car.status
+    ? AVAILABILITY_SCHEMA_MAP[car.status]
+    : "https://schema.org/InStock"
 
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -239,14 +330,45 @@ export function buildCarProductJsonLd(
       priceCurrency: "IDR",
       price: car.cashPrice,
       itemCondition: "https://schema.org/UsedCondition",
-      availability: "https://schema.org/InStock",
+      availability,
       url,
       seller: {
         "@type": "AutoDealer",
-        name: SHOWROOM.name,
+        name: showroom.name,
         url: baseUrl,
       },
     },
+  }
+
+  if (car.fuelType) {
+    jsonLd.fuelType = FUEL_TYPE_SCHEMA_MAP[car.fuelType]
+  }
+
+  if (car.engineCc !== null && car.engineCc !== undefined && car.engineCc > 0) {
+    jsonLd.vehicleEngine = {
+      "@type": "EngineSpecification",
+      engineDisplacement: {
+        "@type": "QuantitativeValue",
+        value: car.engineCc,
+        unitCode: "CMQ",
+      },
+    }
+  }
+
+  if (car.bodyType) {
+    jsonLd.bodyType = car.bodyType
+  }
+
+  if (
+    car.seatCapacity !== null &&
+    car.seatCapacity !== undefined &&
+    car.seatCapacity > 0
+  ) {
+    jsonLd.vehicleSeatingCapacity = car.seatCapacity
+  }
+
+  if (car.drivetrain) {
+    jsonLd.driveWheelConfiguration = car.drivetrain
   }
 
   if (odometerKm !== null) {
@@ -279,7 +401,7 @@ export function buildBreadcrumbJsonLd(
 }
 
 export function buildFaqPageJsonLd(
-  items: readonly ShowroomFaqItem[]
+  items: readonly Pick<ShowroomFaqItem, "question" | "answer">[]
 ): Record<string, unknown> {
   return {
     "@context": "https://schema.org",

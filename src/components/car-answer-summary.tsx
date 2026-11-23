@@ -1,12 +1,30 @@
-import { formatRupiah, formatShortJuta, type CarUnit } from "@/data/cars"
-import { SHOWROOM } from "@/data/showroom"
+import { useShowroom } from "@/components/showroom-context"
+import { formatRupiah, formatShortJuta } from "@/lib/domain/formatters"
+import type { CarUnit, FuelType } from "@/lib/domain/types"
 
 export interface CarAnswerSummaryProps {
   car: CarUnit
+  showroomName?: string
 }
 
-function buildSummaryParagraph(car: CarUnit): string {
-  const intro = `${car.name} tahun ${car.year} warna ${car.color} bertransmisi ${car.transmission} tersedia di ${SHOWROOM.name}, ${car.location}.`
+const FUEL_SUMMARY_LABELS: Record<FuelType, string> = {
+  bensin: "bensin",
+  diesel: "diesel",
+  hybrid: "hybrid",
+  phev: "plug-in hybrid (PHEV)",
+  ev: "listrik (EV)",
+}
+
+function buildSummaryParagraph(car: CarUnit, showroomName: string): string {
+  const fuelLabel = FUEL_SUMMARY_LABELS[car.fuelType]
+  const enginePhrase =
+    car.engineCc !== null && car.engineCc > 0
+      ? ` bermesin ${car.engineCc.toLocaleString("id-ID")} cc ${fuelLabel}`
+      : car.fuelType !== "bensin"
+        ? ` bertenaga ${fuelLabel}`
+        : ""
+
+  const intro = `${car.name} tahun ${car.year} warna ${car.color}${enginePhrase} bertransmisi ${car.transmission} tersedia di ${showroomName}, ${car.location}.`
 
   const primarySim = car.creditSimulations.at(0)
   let pricingSentence: string
@@ -18,19 +36,34 @@ function buildSummaryParagraph(car: CarUnit): string {
     pricingSentence = `Unit koleksi ini tersedia khusus pembelian cash (Special Price) seharga ${formatRupiah(car.cashPrice)}.`
   }
 
+  const verificationSource = car.mileageVerificationSource?.trim()
+  const verificationPhrase = verificationSource
+    ? ` (${verificationSource})`
+    : ""
+
   const mileageSentence = car.mileageVerified
-    ? `Jarak tempuh tercatat ${car.mileageLabel} dengan status plat ${car.plateInfo}.`
+    ? `Jarak tempuh tercatat ${car.mileageLabel}${verificationPhrase} dengan status plat ${car.plateInfo}.`
     : `Detail kilometer dapat ditanyakan langsung ke tim sales via WhatsApp, dengan status plat ${car.plateInfo}.`
 
-  const closingSentence = car.tradeInAvailable
-    ? "Melayani opsi tukar tambah."
-    : "Siap inspeksi langsung di showroom."
+  const warrantyInfo = car.warrantyInfo?.trim()
+  const warrantySentence = warrantyInfo ? `Tersedia ${warrantyInfo}. ` : ""
+
+  const closingSentence = `${warrantySentence}${
+    car.tradeInAvailable
+      ? "Melayani opsi tukar tambah."
+      : "Siap inspeksi langsung di showroom."
+  }`
 
   return `${intro} ${pricingSentence} ${mileageSentence} ${closingSentence}`
 }
 
-export function CarAnswerSummary({ car }: CarAnswerSummaryProps) {
-  const summaryText = buildSummaryParagraph(car)
+export function CarAnswerSummary({
+  car,
+  showroomName,
+}: CarAnswerSummaryProps) {
+  const showroom = useShowroom()
+  const resolvedShowroomName = showroomName?.trim() || showroom.name
+  const summaryText = buildSummaryParagraph(car, resolvedShowroomName)
 
   const keyFacts = [
     {
@@ -59,7 +92,7 @@ export function CarAnswerSummary({ car }: CarAnswerSummaryProps) {
     >
       <h2
         id="ringkasan-cepat-heading"
-        className="text-xs font-semibold tracking-wider text-primary uppercase"
+        className="text-sm font-semibold tracking-wider text-primary uppercase"
       >
         Ringkasan Unit
       </h2>
@@ -71,7 +104,7 @@ export function CarAnswerSummary({ car }: CarAnswerSummaryProps) {
       <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 sm:grid-cols-4">
         {keyFacts.map((fact) => (
           <div key={fact.label} className="min-w-0">
-            <dt className="text-xs text-muted-foreground">{fact.label}</dt>
+            <dt className="text-sm text-muted-foreground">{fact.label}</dt>
             <dd className="mt-0.5 text-sm font-semibold text-foreground tabular-nums">
               {fact.value}
             </dd>

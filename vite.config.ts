@@ -7,6 +7,9 @@ import { cloudflare } from "@cloudflare/vite-plugin"
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
+  server: {
+    allowedHosts: ["localhost", "dash.localhost", ".localhost"],
+  },
   plugins: [
     devtools(),
     cloudflare({ viteEnvironment: { name: "ssr" } }),

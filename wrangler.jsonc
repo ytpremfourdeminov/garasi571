@@ -3,5 +3,11 @@
   "name": "garasi571",
   "compatibility_date": "2026-11-23",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry"
+  "main": "@tanstack/react-start/server-entry",
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "garasi571-media",
+    },
+  ],
 }

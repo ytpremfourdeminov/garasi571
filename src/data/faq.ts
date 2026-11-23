@@ -1,3 +1,13 @@
+/**
+ * @module data/faq
+ * @description Arsip daftar FAQ statis awal Garasi 571.
+ *
+ * CATATAN ARSIP (Wave 4 / Issue #24):
+ * Data FAQ runtime kini diambil langsung dari Supabase PostgreSQL (`public.showroom_faqs`).
+ * File ini dipertahankan khusus sebagai sumber seed awal (`scripts/seed-initial-data.ts`).
+ * Jangan mengimpor `SHOWROOM_FAQS` langsung pada route atau komponen runtime.
+ */
+
 import { SHOWROOM } from "@/data/showroom"
 
 export interface ShowroomFaqItem {

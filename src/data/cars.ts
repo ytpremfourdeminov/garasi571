@@ -1,3 +1,16 @@
+/**
+ * @module data/cars
+ * @description Arsip data statis 9 unit awal Garasi 571.
+ *
+ * CATATAN ARSIP (Wave 4 / Issue #24):
+ * Data katalog runtime kini sepenuhnya berasal dari Supabase PostgreSQL (`public.cars`,
+ * `public.car_images`, `public.car_credit_simulations`) dan aset foto dilayani dari
+ * Cloudflare R2 (`garasi571-media`) melalui route `/media/$`.
+ *
+ * File ini dipertahankan khusus sebagai sumber data seed awal (`scripts/seed-initial-data.ts`)
+ * dan referensi tipe statis. Jangan mengimpor `CARS` langsung di komponen atau route runtime.
+ */
+
 export type CarCategory = "keluarga" | "harian" | "hobi-eropa"
 export type TransmissionGroup = "manual" | "automatic"
 export type PaymentMode = "cash-credit" | "cash-only"

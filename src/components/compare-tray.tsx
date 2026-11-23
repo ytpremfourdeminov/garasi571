@@ -1,10 +1,14 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowRight, GitCompareArrows, MessageCircle, Trash2, X } from "lucide-react"
-import { formatRupiah, formatShortJuta } from "@/data/cars"
-import { buildCarInquiryMessage } from "@/data/showroom"
+import {
+  buildCarInquiryMessage,
+  formatRupiah,
+  formatShortJuta,
+} from "@/lib/domain/formatters"
 import { useCompare } from "@/components/compare-context"
 import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { TruncatedTooltip } from "@/components/ui/tooltip"
 import {
   Dialog,
   DialogContent,
@@ -46,14 +50,14 @@ export function CompareTray() {
         >
           <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
             {isLimitWarning ? (
-              <p className="mb-2 text-xs font-medium text-[#F87171]">
+              <p className="mb-2 text-sm font-medium text-[#F87171]">
                 {announcement}
               </p>
             ) : null}
 
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-[#C7C2BC] uppercase">
+                <span className="mr-1 inline-flex items-center gap-1.5 text-sm font-semibold tracking-wider text-[#C7C2BC] uppercase">
                   <GitCompareArrows
                     className="size-4 text-[#F87171]"
                     aria-hidden="true"
@@ -66,7 +70,7 @@ export function CompareTray() {
                   return (
                     <div
                       key={car.slug}
-                      className="flex items-center gap-2 border border-[#34302C] bg-[#211F1D] pl-1.5 text-xs"
+                      className="flex items-center gap-2 border border-[#34302C] bg-[#211F1D] pl-1.5 text-sm"
                     >
                       {thumb ? (
                         <img
@@ -78,10 +82,15 @@ export function CompareTray() {
                         />
                       ) : null}
                       <div className="min-w-0 py-1 pr-1">
-                        <p className="max-w-36 truncate font-medium text-[#FAF9F7]">
+                        <TruncatedTooltip
+                          content={car.shortName}
+                          render={
+                            <p className="max-w-36 truncate font-medium text-[#FAF9F7]" />
+                          }
+                        >
                           {car.shortName}
-                        </p>
-                        <p className="text-[11px] text-[#C7C2BC] tabular-nums">
+                        </TruncatedTooltip>
+                        <p className="text-sm text-[#C7C2BC] tabular-nums">
                           {car.year}
                         </p>
                       </div>
@@ -89,7 +98,7 @@ export function CompareTray() {
                         type="button"
                         onClick={() => removeCompare(car.slug)}
                         aria-label={`Hapus ${car.shortName} dari perbandingan`}
-                        className="inline-flex size-11 shrink-0 items-center justify-center border-l border-[#34302C] text-[#C7C2BC] transition-colors hover:bg-[#2B2825] hover:text-[#FAF9F7] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#FAF9F7]"
+                        className="inline-flex size-11 shrink-0 items-center justify-center border-l border-[#34302C] text-[#C7C2BC] transition-colors hover:bg-[#2B2825] hover:text-[#FAF9F7] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#FAF9F7]"
                       >
                         <X className="size-4" aria-hidden="true" />
                       </button>
@@ -152,7 +161,7 @@ export function CompareTray() {
                   className="flex flex-col border border-border bg-card"
                 >
                   {cover ? (
-                    <div className="aspect-[4/3] w-full overflow-hidden border-b border-border bg-secondary">
+                    <div className="aspect-4/3 w-full overflow-hidden border-b border-border bg-secondary">
                       <img
                         src={cover.src}
                         alt={cover.alt}
@@ -166,7 +175,7 @@ export function CompareTray() {
                   <div className="flex flex-1 flex-col p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground">
                           {car.categoryLabel}, {car.year}
                         </p>
                         <h3 className="mt-0.5 font-heading text-base font-semibold leading-snug text-foreground">
@@ -186,7 +195,7 @@ export function CompareTray() {
 
                     <div className="mt-3 grid grid-cols-2 gap-2 border-y border-border py-3">
                       <div>
-                        <p className="text-[11px] font-medium text-muted-foreground uppercase">
+                        <p className="text-sm font-medium text-muted-foreground uppercase">
                           Harga Cash
                         </p>
                         <p className="mt-0.5 text-sm font-bold text-foreground tabular-nums">
@@ -195,7 +204,7 @@ export function CompareTray() {
                       </div>
 
                       <div>
-                        <p className="text-[11px] font-medium text-muted-foreground uppercase">
+                        <p className="text-sm font-medium text-muted-foreground uppercase">
                           Harga Kredit
                         </p>
                         <p className="mt-0.5 text-sm font-bold text-primary tabular-nums">
@@ -204,7 +213,7 @@ export function CompareTray() {
                             : "Khusus Cash"}
                         </p>
                         {car.creditPriceNote ? (
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-sm text-muted-foreground">
                             {car.creditPriceNote}
                           </p>
                         ) : null}
@@ -212,7 +221,7 @@ export function CompareTray() {
                     </div>
 
                     <div className="border-b border-border py-3">
-                      <p className="text-[11px] font-medium text-muted-foreground uppercase">
+                      <p className="text-sm font-medium text-muted-foreground uppercase">
                         Simulasi Resmi
                       </p>
                       {primarySim ? (
@@ -258,10 +267,10 @@ export function CompareTray() {
 
                     {car.highlights.length > 0 ? (
                       <div className="mt-3 border-t border-border pt-3">
-                        <p className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                        <p className="text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                           Kondisi Unggulan
                         </p>
-                        <ul className="mt-1.5 space-y-1 text-xs leading-relaxed text-foreground">
+                        <ul className="mt-1.5 space-y-1 text-sm leading-relaxed text-foreground">
                           {car.highlights.slice(0, 3).map((item) => (
                             <li key={item} className="flex items-start gap-2">
                               <span

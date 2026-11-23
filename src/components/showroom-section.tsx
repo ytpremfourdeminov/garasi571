@@ -8,17 +8,17 @@ import {
   MapPin,
   MessageCircle,
 } from "lucide-react"
-import { SHOWROOM, buildWhatsAppUrl } from "@/data/showroom"
+import { buildWhatsAppUrl } from "@/lib/domain/formatters"
+import { useShowroom } from "@/components/showroom-context"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { cn } from "cn"
 
-const SHOWROOM_VISIT_MESSAGE =
-  "Halo Garasi 571, saya berencana datang ke showroom Surakarta untuk cek unit langsung. Mohon informasi ketersediaan stok hari ini."
-
 export function ShowroomSection() {
+  const showroom = useShowroom()
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const [copyStatus, setCopyStatus] = React.useState("")
   const timerRef = React.useRef<number | null>(null)
+  const showroomVisitMessage = `Halo ${showroom.name}, saya berencana datang ke showroom ${showroom.city} untuk cek unit langsung. Mohon informasi unit yang tersedia hari ini.`
 
   React.useEffect(() => {
     return () => {
@@ -85,7 +85,7 @@ export function ShowroomSection() {
               strokeLinecap="square"
             />
           </svg>
-          <span className="font-heading text-xs font-bold tracking-widest text-primary uppercase tabular-nums">
+          <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
             03 / Showroom
           </span>
         </div>
@@ -95,19 +95,19 @@ export function ShowroomSection() {
             <div className="flex flex-1 flex-col">
               <div className="flex items-center gap-3">
                 <img
-                  src={SHOWROOM.logoSrc}
-                  alt="Logo Garasi 571"
+                  src={showroom.logoSrc}
+                  alt={`Logo ${showroom.name}`}
                   width={150}
                   height={150}
                   loading="lazy"
                   className="size-14 shrink-0 object-contain"
                 />
                 <div>
-                  <p className="font-heading text-base font-bold tracking-tight text-[#FAF9F7]">
-                    GARASI 571
+                  <p className="font-heading text-base font-bold tracking-tight text-[#FAF9F7] uppercase">
+                    {showroom.name}
                   </p>
-                  <p className="text-xs tracking-wider text-[#C7C2BC] uppercase">
-                    {SHOWROOM.city}
+                  <p className="text-sm tracking-wider text-[#C7C2BC] uppercase">
+                    {showroom.city}
                   </p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ export function ShowroomSection() {
                 id="showroom-heading"
                 className="mt-6 font-heading text-2xl font-bold tracking-tight text-[#FAF9F7] sm:text-3xl"
               >
-                Kunjungi Garasi 571
+                Kunjungi {showroom.name}
               </h2>
 
               <p className="mt-2.5 max-w-lg text-sm leading-relaxed text-[#C7C2BC]">
@@ -132,9 +132,9 @@ export function ShowroomSection() {
                       aria-hidden="true"
                     />
                     <div>
-                      <dt className="text-xs text-[#C7C2BC]">Lokasi</dt>
+                      <dt className="text-sm text-[#C7C2BC]">Lokasi</dt>
                       <dd className="font-medium text-[#FAF9F7]">
-                        {SHOWROOM.city}
+                        {showroom.address || showroom.city}
                       </dd>
                     </div>
                   </div>
@@ -145,11 +145,11 @@ export function ShowroomSection() {
                       aria-hidden="true"
                     />
                     <div>
-                      <dt className="text-xs text-[#C7C2BC]">
+                      <dt className="text-sm text-[#C7C2BC]">
                         Jam Operasional
                       </dt>
                       <dd className="font-medium text-[#FAF9F7] tabular-nums">
-                        {SHOWROOM.hours}
+                        {showroom.hours}
                       </dd>
                     </div>
                   </div>
@@ -160,15 +160,15 @@ export function ShowroomSection() {
                       aria-hidden="true"
                     />
                     <div>
-                      <dt className="text-xs text-[#C7C2BC]">Instagram</dt>
+                      <dt className="text-sm text-[#C7C2BC]">Instagram</dt>
                       <dd>
                         <a
-                          href={SHOWROOM.instagramUrl}
+                          href={showroom.instagramUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="-my-2.5 inline-flex items-center gap-1.5 py-2.5 font-medium text-[#FAF9F7] underline-offset-4 transition-colors hover:text-[#F87171] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FAF9F7]"
                         >
-                          <span>{SHOWROOM.instagramHandle}</span>
+                          <span>{showroom.instagramHandle}</span>
                           <ExternalLink
                             className="size-3.5"
                             aria-hidden="true"
@@ -182,15 +182,15 @@ export function ShowroomSection() {
                 <div className="flex flex-col overflow-hidden border border-[#FAF9F7]/20 bg-[#211F1D] sm:col-span-6">
                   <div className="relative aspect-[4/3] w-full flex-1 bg-[#211F1D] sm:aspect-auto sm:min-h-40">
                     <iframe
-                      title="Peta Lokasi Garasi 571 Surakarta"
-                      src={SHOWROOM.mapsEmbedUrl}
+                      title={`Peta Lokasi ${showroom.name} ${showroom.city}`}
+                      src={showroom.mapsEmbedUrl}
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
                       className="h-full w-full border-0"
                     />
                   </div>
                   <a
-                    href={SHOWROOM.mapsUrl}
+                    href={showroom.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
@@ -221,138 +221,152 @@ export function ShowroomSection() {
               </p>
 
               <div className="mt-5 space-y-3">
-                {SHOWROOM.sales.map((person) => {
-                  const isCopied = copiedId === person.id
-                  const whatsappHref = buildWhatsAppUrl(
-                    person.phoneE164,
-                    SHOWROOM_VISIT_MESSAGE
-                  )
+                {showroom.sales.length > 0 ? (
+                  showroom.sales.map((person) => {
+                    const isCopied = copiedId === person.id
+                    const whatsappHref = buildWhatsAppUrl(
+                      person.phoneE164,
+                      showroomVisitMessage
+                    )
 
-                  return (
-                    <article
-                      key={person.id}
-                      className="flex flex-col justify-between border border-foreground/20 bg-background p-4 shadow-[0_2px_0_0_rgba(22,21,20,0.06)] transition-colors hover:border-foreground/35"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="inline-flex items-center gap-1.5">
-                          <svg
-                            width="12"
-                            height="9"
-                            viewBox="0 0 20 14"
-                            fill="none"
-                            aria-hidden="true"
-                            className="shrink-0"
-                          >
-                            <path
-                              d="M5 1L1 13"
-                              stroke="#B91C1C"
-                              strokeWidth="2.2"
-                              strokeLinecap="square"
-                            />
-                            <path
-                              d="M12 1L8 13"
-                              stroke="#B91C1C"
-                              strokeWidth="2.2"
-                              strokeLinecap="square"
-                            />
-                            <path
-                              d="M19 1L15 13"
-                              stroke="#B91C1C"
-                              strokeWidth="2.2"
-                              strokeLinecap="square"
-                            />
-                          </svg>
-                          <span className="font-heading text-[10px] font-bold tracking-[0.14em] text-foreground uppercase">
-                            Garasi 571
+                    return (
+                      <article
+                        key={person.id}
+                        className="flex flex-col justify-between border border-foreground/20 bg-background p-4 shadow-[0_2px_0_0_rgba(22,21,20,0.06)] transition-colors hover:border-foreground/35"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="inline-flex items-center gap-1.5">
+                            <svg
+                              width="12"
+                              height="9"
+                              viewBox="0 0 20 14"
+                              fill="none"
+                              aria-hidden="true"
+                              className="shrink-0"
+                            >
+                              <path
+                                d="M5 1L1 13"
+                                stroke="#B91C1C"
+                                strokeWidth="2.2"
+                                strokeLinecap="square"
+                              />
+                              <path
+                                d="M12 1L8 13"
+                                stroke="#B91C1C"
+                                strokeWidth="2.2"
+                                strokeLinecap="square"
+                              />
+                              <path
+                                d="M19 1L15 13"
+                                stroke="#B91C1C"
+                                strokeWidth="2.2"
+                                strokeLinecap="square"
+                              />
+                            </svg>
+                            <span className="font-heading text-sm font-bold tracking-[0.14em] text-foreground uppercase">
+                              {showroom.name}
+                            </span>
+                          </div>
+                          <span className="text-sm font-medium tracking-[0.12em] text-muted-foreground uppercase">
+                            {showroom.city}
                           </span>
                         </div>
-                        <span className="text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
-                          Surakarta
-                        </span>
-                      </div>
 
-                      <div className="my-3">
-                        <p className="font-heading text-lg font-bold tracking-tight text-foreground">
-                          {person.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {person.role}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col gap-2.5 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
-                            WhatsApp
+                        <div className="my-3">
+                          <p className="font-heading text-lg font-bold tracking-tight text-foreground">
+                            {person.name}
                           </p>
-                          <p className="font-heading text-xs font-semibold text-foreground tabular-nums sm:text-sm">
-                            {person.phoneDisplay}
+                          <p className="text-sm text-muted-foreground">
+                            {person.role}
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-2 sm:shrink-0">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              handleCopyNumber(
-                                person.id,
-                                person.name,
-                                person.phoneDisplay
-                              )
-                            }
-                            aria-label={`Salin nomor ${person.name}`}
-                            className="min-h-11 flex-1 sm:min-h-9 sm:flex-none"
-                          >
-                            {isCopied ? (
-                              <>
-                                <Check
-                                  className="size-3.5 text-primary"
-                                  aria-hidden="true"
-                                />
-                                <span>Disalin</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="size-3.5" aria-hidden="true" />
-                                <span>Salin</span>
-                              </>
-                            )}
-                          </Button>
+                        <div className="flex flex-col gap-2.5 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
+                              WhatsApp
+                            </p>
+                            <p className="font-heading text-sm font-semibold text-foreground tabular-nums sm:text-sm">
+                              {person.phoneDisplay}
+                            </p>
+                          </div>
 
-                          <a
-                            href={whatsappHref}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Chat ${person.name} via WhatsApp`}
-                            className={cn(
-                              buttonVariants({ variant: "default", size: "sm" }),
-                              "min-h-11 flex-1 no-underline sm:min-h-9 sm:flex-none"
-                            )}
-                          >
-                            <MessageCircle
-                              className="size-3.5"
-                              aria-hidden="true"
-                            />
-                            <span>Chat</span>
-                            <ExternalLink
-                              className="size-3"
-                              aria-hidden="true"
-                            />
-                          </a>
+                          <div className="flex items-center gap-2 sm:shrink-0">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleCopyNumber(
+                                  person.id,
+                                  person.name,
+                                  person.phoneDisplay
+                                )
+                              }
+                              aria-label={`Salin nomor ${person.name}`}
+                              className="min-h-11 flex-1 sm:min-h-9 sm:flex-none"
+                            >
+                              {isCopied ? (
+                                <>
+                                  <Check
+                                    className="size-3.5 text-primary"
+                                    aria-hidden="true"
+                                  />
+                                  <span>Disalin</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy
+                                    className="size-3.5"
+                                    aria-hidden="true"
+                                  />
+                                  <span>Salin</span>
+                                </>
+                              )}
+                            </Button>
+
+                            <a
+                              href={whatsappHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Chat ${person.name} via WhatsApp`}
+                              className={cn(
+                                buttonVariants({
+                                  variant: "default",
+                                  size: "sm",
+                                }),
+                                "min-h-11 flex-1 no-underline sm:min-h-9 sm:flex-none"
+                              )}
+                            >
+                              <MessageCircle
+                                className="size-3.5"
+                                aria-hidden="true"
+                              />
+                              <span>Chat</span>
+                              <ExternalLink
+                                className="size-3"
+                                aria-hidden="true"
+                              />
+                            </a>
+                          </div>
                         </div>
-                      </div>
-                    </article>
-                  )
-                })}
+                      </article>
+                    )
+                  })
+                ) : (
+                  <div className="border border-border bg-background p-4 text-sm text-muted-foreground">
+                    Kontak tim sales belum tersedia saat ini. Kunjungi showroom
+                    kami atau hubungi lewat Instagram {showroom.instagramHandle}
+                    .
+                  </div>
+                )}
               </div>
             </div>
 
             <p
               role="status"
               aria-live="polite"
-              className="mt-4 min-h-5 text-xs font-medium text-primary"
+              className="mt-4 min-h-5 text-sm font-medium text-primary"
             >
               {copyStatus}
             </p>
