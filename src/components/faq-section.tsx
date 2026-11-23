@@ -66,7 +66,7 @@ export function FaqSection({ faqs = [] }: FaqSectionProps) {
               <Accordion className="border border-border bg-card">
                 {faqs.map((item) => (
                   <AccordionItem key={item.id} value={item.id}>
-                    <AccordionTrigger className="min-h-11 items-center gap-4 px-5 py-3.5 font-heading text-base font-semibold text-foreground hover:bg-secondary/60 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring **:data-[slot=accordion-trigger-icon]:text-primary">
+                    <AccordionTrigger className="min-h-11 items-center gap-4 px-5 py-3.5 font-heading text-base font-semibold text-foreground hover:bg-secondary/60 hover:no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring **:data-[slot=accordion-trigger-icon]:text-primary">
                       <span>{item.question}</span>
                     </AccordionTrigger>
 
