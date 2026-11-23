@@ -382,41 +382,42 @@ function CarDetailPage() {
           <div className="space-y-6 border border-border bg-card p-5 sm:p-6">
             {creditPrice !== null ? (
               <div className="space-y-4">
-                <div
-                  role="group"
-                  aria-label="Pilih skema pembayaran"
-                  className="grid grid-cols-2 gap-2"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={selectedScheme === "cash"}
-                    onClick={() => setSelectedScheme("cash")}
-                    className={cn(
-                      "min-h-11 border px-3 py-2 text-sm font-semibold transition-colors",
-                      selectedScheme === "cash"
-                        ? "border-[#161514] bg-[#161514] text-[#FAF9F7]"
-                        : "border-input bg-card text-foreground hover:bg-secondary",
-                    )}
+                <div>
+                  <div
+                    role="group"
+                    aria-label="Pilih skema pembayaran"
+                    className="grid grid-cols-2"
                   >
-                    Cash
-                  </button>
+                    <button
+                      type="button"
+                      aria-pressed={selectedScheme === "cash"}
+                      onClick={() => setSelectedScheme("cash")}
+                      className={cn(
+                        "min-h-11 border border-b-0 px-3 py-2 text-sm font-semibold transition-colors",
+                        selectedScheme === "cash"
+                          ? "border-[#161514] bg-[#161514] text-[#FAF9F7]"
+                          : "border-input bg-card text-foreground hover:bg-secondary",
+                      )}
+                    >
+                      Cash
+                    </button>
 
-                  <button
-                    type="button"
-                    aria-pressed={selectedScheme === "credit"}
-                    onClick={() => setSelectedScheme("credit")}
-                    className={cn(
-                      "min-h-11 border px-3 py-2 text-sm font-semibold transition-colors",
-                      selectedScheme === "credit"
-                        ? "border-[#161514] bg-[#161514] text-[#FAF9F7]"
-                        : "border-input bg-card text-foreground hover:bg-secondary",
-                    )}
-                  >
-                    Kredit
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      aria-pressed={selectedScheme === "credit"}
+                      onClick={() => setSelectedScheme("credit")}
+                      className={cn(
+                        "min-h-11 border border-b-0 border-l-0 px-3 py-2 text-sm font-semibold transition-colors",
+                        selectedScheme === "credit"
+                          ? "border-[#161514] bg-[#161514] text-[#FAF9F7]"
+                          : "border-input bg-card text-foreground hover:bg-secondary",
+                      )}
+                    >
+                      Kredit
+                    </button>
+                  </div>
 
-                <div className="border border-border bg-secondary p-4">
+                  <div className="border border-border bg-secondary p-4">
                   {selectedScheme === "cash" ? (
                     <>
                       <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
@@ -449,65 +450,61 @@ function CarDetailPage() {
                       </p>
                     </>
                   )}
+                  </div>
                 </div>
 
                 {car.creditSimulations.length > 0 ? (
-                  <div className="space-y-2.5">
-                    <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                      Simulasi Kredit Resmi
-                    </h2>
-                    <div className="space-y-2">
-                      {car.creditSimulations.map((sim) => (
-                        <div
-                          key={`${sim.label}-${sim.dp}-${sim.tenorYears}`}
-                          className="border border-border bg-background p-3.5"
-                        >
-                          <div className="flex flex-wrap items-baseline justify-between gap-2">
-                            <p className="text-xs font-semibold text-foreground">
-                              {sim.label}
-                            </p>
-                            {sim.provider ? (
-                              <span className="text-xs font-medium text-muted-foreground">
-                                {sim.provider}
-                              </span>
-                            ) : null}
-                          </div>
-
-                          <div className="mt-2 grid grid-cols-3 gap-2 text-xs tabular-nums">
-                            <div>
-                              <span className="block text-muted-foreground">
-                                DP
-                              </span>
-                              <span className="mt-0.5 block font-semibold text-foreground">
-                                {formatShortJuta(sim.dp)}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="block text-muted-foreground">
-                                Angsuran / bln
-                              </span>
-                              <span className="mt-0.5 block font-semibold text-primary">
-                                {sim.installmentLabel}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="block text-muted-foreground">
-                                Tenor
-                              </span>
-                              <span className="mt-0.5 block font-semibold text-foreground">
-                                {sim.tenorYears} tahun
-                              </span>
-                            </div>
-                          </div>
-
-                          {sim.note ? (
-                            <p className="mt-2 text-xs text-muted-foreground">
-                              {sim.note}
-                            </p>
+                  <div className="space-y-2">
+                    {car.creditSimulations.map((sim) => (
+                      <div
+                        key={`${sim.label}-${sim.dp}-${sim.tenorYears}`}
+                        className="border border-border bg-background p-3.5"
+                      >
+                        <div className="flex flex-wrap items-baseline justify-between gap-2">
+                          <p className="text-xs font-semibold text-foreground">
+                            {sim.label}
+                          </p>
+                          {sim.provider ? (
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {sim.provider}
+                            </span>
                           ) : null}
                         </div>
-                      ))}
-                    </div>
+
+                        <div className="mt-2 grid grid-cols-3 gap-2 tabular-nums">
+                          <div>
+                            <span className="block text-xs text-muted-foreground">
+                              DP
+                            </span>
+                            <span className="mt-0.5 block text-sm font-bold text-foreground sm:text-base">
+                              {formatShortJuta(sim.dp)}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-xs text-muted-foreground">
+                              Angsuran / bln
+                            </span>
+                            <span className="mt-0.5 block text-sm font-bold text-primary sm:text-base">
+                              {sim.installmentLabel}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-xs text-muted-foreground">
+                              Tenor
+                            </span>
+                            <span className="mt-0.5 block text-sm font-bold text-foreground sm:text-base">
+                              {sim.tenorYears} tahun
+                            </span>
+                          </div>
+                        </div>
+
+                        {sim.note ? (
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            {sim.note}
+                          </p>
+                        ) : null}
+                      </div>
+                    ))}
                   </div>
                 ) : null}
               </div>
@@ -531,42 +528,53 @@ function CarDetailPage() {
                 Konsultasi &amp; Jadwal Cek Unit
               </p>
 
-              <a
-                href={buildWhatsAppUrl(farrel.phoneE164, inquiryMessage)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: "default", size: "lg" }),
-                  "w-full justify-between no-underline",
-                )}
-              >
-                <span className="inline-flex items-center gap-2">
-                  <MessageCircle className="size-4" aria-hidden="true" />
-                  <span>Chat {farrel.name} via WhatsApp</span>
-                </span>
-                <ExternalLink className="size-4" aria-hidden="true" />
-              </a>
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                <a
+                  href={buildWhatsAppUrl(farrel.phoneE164, inquiryMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "default" }),
+                    "h-auto w-full justify-between gap-2 px-3 py-2.5 text-left whitespace-normal no-underline",
+                  )}
+                >
+                  <span className="inline-flex min-w-0 items-center gap-2.5">
+                    <MessageCircle className="size-4 shrink-0" aria-hidden="true" />
+                    <span className="flex min-w-0 flex-col">
+                      <span className="text-sm font-semibold leading-tight">
+                        {farrel.name}
+                      </span>
+                      <span className="mt-0.5 text-[11px] font-normal leading-tight opacity-85 tabular-nums">
+                        {farrel.phoneDisplay}
+                      </span>
+                    </span>
+                  </span>
+                  <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+                </a>
 
-              <a
-                href={buildWhatsAppUrl(abbad.phoneE164, inquiryMessage)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                  "w-full justify-between no-underline",
-                )}
-              >
-                <span className="inline-flex items-center gap-2">
-                  <MessageCircle className="size-4 text-primary" aria-hidden="true" />
-                  <span>Chat {abbad.name} via WhatsApp</span>
-                </span>
-                <ExternalLink className="size-4" aria-hidden="true" />
-              </a>
-
-              <p className="text-xs text-muted-foreground tabular-nums">
-                {farrel.name}: {farrel.phoneDisplay} • {abbad.name}:{" "}
-                {abbad.phoneDisplay}
-              </p>
+                <a
+                  href={buildWhatsAppUrl(abbad.phoneE164, inquiryMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "default" }),
+                    "h-auto w-full justify-between gap-2 px-3 py-2.5 text-left whitespace-normal no-underline",
+                  )}
+                >
+                  <span className="inline-flex min-w-0 items-center gap-2.5">
+                    <MessageCircle className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="flex min-w-0 flex-col">
+                      <span className="text-sm font-semibold leading-tight">
+                        {abbad.name}
+                      </span>
+                      <span className="mt-0.5 text-[11px] font-normal leading-tight text-muted-foreground tabular-nums">
+                        {abbad.phoneDisplay}
+                      </span>
+                    </span>
+                  </span>
+                  <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+                </a>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-2.5 border-t border-border pt-5 sm:grid-cols-2">
@@ -588,7 +596,7 @@ function CarDetailPage() {
                 ) : (
                   <>
                     <GitCompareArrows className="size-4" aria-hidden="true" />
-                    <span>+ Bandingkan</span>
+                    <span>Bandingkan Unit</span>
                   </>
                 )}
               </Button>
