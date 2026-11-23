@@ -30,7 +30,8 @@ function TabsList({
         data-variant={variant}
         className={cn(
           "flex w-full items-center overflow-x-auto rounded-none",
-          variant === "line" && "gap-1 border-b border-border bg-transparent",
+          variant === "line" &&
+            "gap-1 bg-transparent shadow-[inset_0_-1px_0_0_var(--border)]",
           variant === "boxed" && "gap-1 border border-border bg-secondary p-1",
           className
         )}
@@ -49,7 +50,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
       className={cn(
         "relative inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-none px-4 py-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors select-none hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
         variant === "line" &&
-          "-mb-px border-b-2 border-transparent data-active:border-primary data-active:font-semibold data-active:text-foreground aria-selected:border-primary aria-selected:font-semibold aria-selected:text-foreground",
+          "border-b-2 border-transparent data-active:border-primary data-active:font-semibold data-active:text-foreground aria-selected:border-primary aria-selected:font-semibold aria-selected:text-foreground",
         variant === "boxed" &&
           "border border-transparent data-active:border-border data-active:bg-card data-active:font-semibold data-active:text-foreground aria-selected:border-border aria-selected:bg-card aria-selected:font-semibold aria-selected:text-foreground",
         className
