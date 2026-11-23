@@ -43,7 +43,7 @@ function buildLlmsTxt(
     `- Katalog Utama: ${toAbsoluteUrl("/", baseUrl)}`,
     `- Katalog Lengkap (LLM): ${toAbsoluteUrl("/llms-full.txt", baseUrl)}`,
     "",
-    `## Stok Mobil Tersedia (${cars.length} Unit)`,
+    `## Unit Mobil Tersedia (${cars.length} Unit)`,
     "",
     ...carLines,
     "",

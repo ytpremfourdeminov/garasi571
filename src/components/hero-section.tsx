@@ -484,7 +484,7 @@ export function HeroSection({ cars, onApplyQuickFinder }: HeroSectionProps) {
                   {showroom.name}
                 </p>
                 <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight text-[#FAF9F7]">
-                  Stok Unit Sedang Diperbarui
+                  Daftar Unit Sedang Diperbarui
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-[#C7C2BC]">
                   Kunjungi showroom kami di {showroom.city} ({showroom.hours})

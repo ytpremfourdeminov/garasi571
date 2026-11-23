@@ -547,7 +547,7 @@ function DashTeamPage() {
                           <span className="text-muted-foreground">
                             {profile.role === "admin"
                               ? "Akses penuh"
-                              : "Stok & FAQ"}
+                              : "Unit & FAQ"}
                           </span>
                         )}
                       </div>

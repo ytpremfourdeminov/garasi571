@@ -35,7 +35,7 @@ export function WhatsAppDialogProvider({
 }) {
   const showroom = useShowroom()
   const defaultTitle = `Hubungi Tim Sales ${showroom.name}`
-  const defaultMessage = `Halo ${showroom.name}, saya tertarik melihat stok mobil bekas dan ingin konsultasi unit atau jadwal kunjungan showroom.`
+  const defaultMessage = `Halo ${showroom.name}, saya tertarik melihat unit mobil bekas yang tersedia dan ingin konsultasi atau jadwal kunjungan showroom.`
 
   const [open, setOpen] = React.useState(false)
   const [dialogOptions, setDialogOptions] =

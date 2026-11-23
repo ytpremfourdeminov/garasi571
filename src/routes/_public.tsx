@@ -131,7 +131,7 @@ function PublicNotFoundContent() {
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           Halaman atau unit yang Anda cari tidak tersedia atau tautannya sudah
-          berubah. Anda dapat kembali ke katalog stok atau langsung menanyakan
+          berubah. Anda dapat kembali ke katalog unit atau langsung menanyakan
           ketersediaan unit ke tim sales kami di {showroom.city}.
         </p>
 
@@ -152,9 +152,9 @@ function PublicNotFoundContent() {
             variant="outline"
             onClick={() =>
               openWhatsAppDialog({
-                title: "Tanya Ketersediaan Stok",
+                title: "Tanya Unit Tersedia",
                 description: `Hubungi tim sales ${showroom.name} (${showroom.city}) untuk menanyakan unit yang Anda cari.`,
-                message: `Halo ${showroom.name}, saya mencari unit mobil bekas di katalog Anda. Boleh info stok yang saat ini tersedia?`,
+                message: `Halo ${showroom.name}, saya mencari unit mobil bekas di katalog Anda. Boleh info unit yang saat ini tersedia?`,
               })
             }
           >
@@ -188,7 +188,7 @@ function PublicErrorBoundary({ reset }: ErrorComponentProps) {
   const fallbackWaUrl = primarySales
     ? buildWhatsAppUrl(
         primarySales.phoneE164,
-        `Halo ${showroom.name}, saya mengalami kendala saat membuka halaman katalog dan ingin menanyakan stok mobil bekas yang tersedia.`
+        `Halo ${showroom.name}, saya mengalami kendala saat membuka halaman katalog dan ingin menanyakan unit mobil bekas yang tersedia.`
       )
     : null
 

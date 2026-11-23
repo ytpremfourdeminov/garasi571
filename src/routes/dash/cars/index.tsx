@@ -869,7 +869,7 @@ function DashCarsPage() {
             Belum ada unit mobil di inventaris
           </h2>
           <p className="mt-1 max-w-md text-sm text-muted-foreground">
-            Mulai tambahkan stok showroom agar dapat dikelola dan ditayangkan di
+            Tambahkan unit showroom agar dapat dikelola dan ditayangkan di
             katalog website publik.
           </p>
           <Link
@@ -1328,7 +1328,7 @@ function DashCarsPage() {
                         htmlFor={`mobile-status-${car.id}`}
                         className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
                       >
-                        Status Stok
+                        Status Unit
                       </label>
                       <div className="mt-1 flex items-center gap-2">
                         <Select

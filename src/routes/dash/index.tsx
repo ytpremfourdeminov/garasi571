@@ -202,7 +202,7 @@ function DashOverviewPage() {
       <section className="border-b border-border pb-6">
         <div className="min-w-0">
           <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Ringkasan Stok &amp; Kelengkapan Unit
+            Ringkasan &amp; Kelengkapan Unit
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
             Total{" "}
@@ -222,7 +222,7 @@ function DashOverviewPage() {
       {/* 4 KPI Cards */}
       <section aria-labelledby="kpi-heading">
         <h2 id="kpi-heading" className="sr-only">
-          Ringkasan Status Stok Unit
+          Ringkasan Status Unit
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {kpiCards.map((card) => (
@@ -328,12 +328,12 @@ function DashOverviewPage() {
                   Kelola Inventaris
                 </TruncatedTooltip>
                 <TruncatedTooltip
-                  content="Ubah status stok & slot unggulan"
+                  content="Ubah status unit & unggulan beranda"
                   render={
                     <p className="truncate text-sm text-muted-foreground" />
                   }
                 >
-                  Ubah status stok &amp; slot unggulan
+                  Ubah status unit &amp; unggulan beranda
                 </TruncatedTooltip>
               </div>
             </div>

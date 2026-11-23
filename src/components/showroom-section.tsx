@@ -18,7 +18,7 @@ export function ShowroomSection() {
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const [copyStatus, setCopyStatus] = React.useState("")
   const timerRef = React.useRef<number | null>(null)
-  const showroomVisitMessage = `Halo ${showroom.name}, saya berencana datang ke showroom ${showroom.city} untuk cek unit langsung. Mohon informasi ketersediaan stok hari ini.`
+  const showroomVisitMessage = `Halo ${showroom.name}, saya berencana datang ke showroom ${showroom.city} untuk cek unit langsung. Mohon informasi unit yang tersedia hari ini.`
 
   React.useEffect(() => {
     return () => {

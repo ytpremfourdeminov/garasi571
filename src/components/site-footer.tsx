@@ -7,7 +7,7 @@ import { useWhatsAppDialog } from "@/components/whatsapp-dialog"
 export function SiteFooter() {
   const showroom = useShowroom()
   const { openWhatsAppDialog } = useWhatsAppDialog()
-  const defaultFooterWaMessage = `Halo ${showroom.name}, saya ingin menanyakan stok unit atau membuat janji kunjungan showroom.`
+  const defaultFooterWaMessage = `Halo ${showroom.name}, saya ingin menanyakan unit yang tersedia atau membuat janji kunjungan showroom.`
 
   return (
     <footer className="border-t border-border bg-secondary">

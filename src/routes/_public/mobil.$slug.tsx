@@ -158,7 +158,7 @@ function CarDetailNotFound() {
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           Unit mungkin sudah terjual atau tautan halaman tidak sesuai. Silakan
-          lihat stok aktif di katalog atau tanyakan rekomendasi unit serupa ke
+          lihat unit tersedia di katalog atau tanyakan rekomendasi unit serupa ke
           tim sales Garasi 571.
         </p>
 
@@ -180,11 +180,11 @@ function CarDetailNotFound() {
             variant="outline"
             onClick={() =>
               openWhatsAppDialog({
-                title: "Tanya Stok Tersedia",
+                title: "Tanya Unit Tersedia",
                 description:
                   "Hubungi tim sales Garasi 571 Surakarta untuk menanyakan unit yang siap cek di showroom.",
                 message:
-                  "Halo Garasi 571, unit yang saya buka tidak ditemukan di katalog. Boleh info stok mobil bekas yang saat ini ready di Surakarta?",
+                  "Halo Garasi 571, unit yang saya buka tidak ditemukan di katalog. Boleh info unit yang saat ini ready di Surakarta?",
               })
             }
           >

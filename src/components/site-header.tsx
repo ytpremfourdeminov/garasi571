@@ -32,7 +32,7 @@ export function SiteHeader() {
   const showroom = useShowroom()
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { openWhatsAppDialog } = useWhatsAppDialog()
-  const defaultInquiryMessage = `Halo ${showroom.name}, saya ingin menanyakan ketersediaan stok mobil bekas dan jadwal kunjungan showroom.`
+  const defaultInquiryMessage = `Halo ${showroom.name}, saya ingin menanyakan unit mobil bekas yang tersedia dan jadwal kunjungan showroom.`
 
   return (
     <>

@@ -173,7 +173,7 @@ export function CatalogSection({
   const emptyInquiryMessage =
     activeCriteriaDescriptions.length > 0
       ? `Halo Garasi 571, saya sedang mencari mobil bekas dengan kriteria: ${activeCriteriaDescriptions.join(", ")}. Apakah ada rekomendasi unit yang sesuai di showroom Surakarta?`
-      : "Halo Garasi 571, saya ingin menanyakan stok mobil bekas yang tersedia di showroom Surakarta."
+      : "Halo Garasi 571, saya ingin menanyakan unit mobil bekas yang tersedia di showroom Surakarta."
 
   return (
     <section

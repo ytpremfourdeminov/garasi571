@@ -1086,7 +1086,7 @@ export function CarIdentitySpecsForm({
 
           <FieldShell
             id="car-status"
-            label="Status Stok"
+            label="Status Unit"
             required
             error={errors?.status}
             hint="Hanya unit berstatus Ready (atau Booked/Sold sesuai kebijakan) yang tampil di situs publik."

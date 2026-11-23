@@ -136,7 +136,7 @@ function DashLoginPage() {
 
               <div className="mt-8 border-t border-[#2F2D2B] pt-6">
                 <h1 className="font-heading text-2xl font-bold tracking-tight text-[#FAF9F7] sm:text-3xl">
-                  Kelola Stok &amp; Katalog Showroom
+                  Kelola Unit &amp; Katalog Showroom
                 </h1>
                 <p className="mt-3 text-sm leading-relaxed text-[#C7C2BC]">
                   Ruang kerja tim Garasi 571 untuk memperbarui unit kendaraan,
