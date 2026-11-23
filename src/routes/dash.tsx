@@ -35,6 +35,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { TruncatedTooltip } from "@/components/ui/tooltip"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { StaffProfile } from "@/lib/domain/types"
 import { getPublicSiteOrigin, isDashHostname } from "@/lib/host"
 import {
@@ -196,7 +197,60 @@ export const Route = createFileRoute("/dash")({
     ],
   }),
   component: DashLayout,
+  pendingComponent: DashLayoutPending,
 })
+
+function DashLayoutPending() {
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Memuat dashboard"
+      className="flex min-h-svh w-full bg-background text-foreground"
+    >
+      <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-svh lg:w-64 lg:shrink-0 lg:flex-col lg:border-r lg:border-border lg:bg-card">
+        <div className="flex h-[72px] shrink-0 items-center border-b border-[#2F2D2B] bg-[#161514] px-4">
+          <Skeleton className="h-9 w-36 bg-[#242220]" />
+        </div>
+        <div className="space-y-2 border-b border-border bg-secondary/50 px-4 py-3.5">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-4 w-44" />
+        </div>
+        <div className="space-y-2 px-3 py-4">
+          {[0, 1, 2, 3, 4].map((idx) => (
+            <Skeleton key={idx} className="h-11 w-full" />
+          ))}
+        </div>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 flex h-[72px] shrink-0 items-center gap-3 border-b border-border bg-card px-4 sm:px-6 lg:px-8">
+          <Skeleton className="size-9" />
+          <span aria-hidden="true" className="h-4 w-px shrink-0 bg-border" />
+          <Skeleton className="h-5 w-44" />
+        </header>
+
+        <div className="mx-auto w-full max-w-6xl flex-1 space-y-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-64" />
+              <Skeleton className="h-5 w-80 max-w-full" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-36" />
+              <Skeleton className="h-10 w-40" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((idx) => (
+              <Skeleton key={idx} className="h-36 w-full border border-border" />
+            ))}
+          </div>
+          <Skeleton className="h-72 w-full border border-border" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 interface SidebarContentProps {
   staff: StaffProfile

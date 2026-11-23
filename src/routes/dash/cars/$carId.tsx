@@ -28,6 +28,7 @@ import { CarPricingCreditForm } from "@/components/dash/car-pricing-credit-form"
 import { CarStatusBadge } from "@/components/dash/car-status-badge"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { carUpsertSchema, type CarUpsertInput } from "@/lib/domain/schemas"
 import type {
@@ -85,7 +86,53 @@ export const Route = createFileRoute("/dash/cars/$carId")({
     ],
   }),
   component: EditCarPage,
+  pendingComponent: EditCarPending,
 })
+
+function EditCarPending() {
+  return (
+    <div aria-busy="true" aria-label="Memuat detail unit" className="space-y-6 pb-8">
+      <section className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-48" />
+          <Skeleton className="h-9 w-72 max-w-full" />
+          <Skeleton className="h-4 w-56" />
+        </div>
+        <div className="flex gap-2">
+          <Skeleton className="h-10 w-36" />
+          <Skeleton className="h-10 w-40" />
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="space-y-4 lg:col-span-8">
+          <Skeleton className="h-11 w-full border border-border" />
+          <div className="space-y-4 border border-border bg-card p-5 sm:p-6">
+            <Skeleton className="h-6 w-48" />
+            <div className="grid gap-4 md:grid-cols-2">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+            </div>
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+        <div className="lg:col-span-4">
+          <div className="space-y-4 border border-border bg-card p-5">
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-3 w-full" />
+            <div className="space-y-2 pt-2">
+              {[0, 1, 2, 3, 4, 5].map((idx) => (
+                <Skeleton key={idx} className="h-12 w-full" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const PRICING_FIELDS = new Set([
   "cashPrice",

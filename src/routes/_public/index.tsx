@@ -22,6 +22,7 @@ import { CatalogSection } from "@/components/catalog-section"
 import { CreditSection } from "@/components/credit-section"
 import { FaqSection } from "@/components/faq-section"
 import { ShowroomSection } from "@/components/showroom-section"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const HOME_TITLE = "Garasi 571 Surakarta | Katalog Mobil Bekas Pilihan"
 const HOME_DESCRIPTION =
@@ -156,7 +157,92 @@ export const Route = createFileRoute("/_public/")({
     }
   },
   component: HomePage,
+  pendingComponent: HomePending,
 })
+
+function HomePending() {
+  return (
+    <div aria-busy="true" aria-label="Memuat halaman utama">
+      <section className="border-b border-border bg-card">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-10">
+            <div className="space-y-5 lg:col-span-6">
+              <Skeleton className="h-6 w-44" />
+              <div className="space-y-2.5">
+                <Skeleton className="h-10 w-full max-w-md" />
+                <Skeleton className="h-10 w-4/5 max-w-sm" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-5 w-full max-w-lg" />
+                <Skeleton className="h-5 w-3/4 max-w-md" />
+              </div>
+              <div className="border border-border bg-background p-4">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Skeleton className="h-11 w-full" />
+                  <Skeleton className="h-11 w-full" />
+                  <Skeleton className="h-11 w-full" />
+                </div>
+                <Skeleton className="mt-3 h-11 w-full" />
+              </div>
+              <div className="flex flex-wrap gap-4 pt-1">
+                <Skeleton className="h-5 w-36" />
+                <Skeleton className="h-5 w-36" />
+              </div>
+            </div>
+
+            <div className="lg:col-span-6">
+              <div className="border border-border bg-[#161514]">
+                <div className="grid grid-cols-3 border-b border-[#2F2D2B]">
+                  <Skeleton className="h-14 rounded-none bg-[#1F1E1C]" />
+                  <Skeleton className="h-14 rounded-none border-l border-[#2F2D2B] bg-[#1F1E1C]" />
+                  <Skeleton className="h-14 rounded-none border-l border-[#2F2D2B] bg-[#1F1E1C]" />
+                </div>
+                <Skeleton className="aspect-[4/3] w-full bg-[#242220]" />
+                <div className="space-y-2.5 border-t border-[#2F2D2B] p-4 sm:p-5">
+                  <Skeleton className="h-5 w-3/5 bg-[#242220]" />
+                  <Skeleton className="h-7 w-2/5 bg-[#242220]" />
+                  <Skeleton className="h-4 w-4/5 bg-[#242220]" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="space-y-3 border-b border-border pb-6">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-8 w-64" />
+        </div>
+
+        <div className="mt-6 border border-border bg-card p-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2].map((idx) => (
+            <div key={idx} className="border border-border bg-card">
+              <Skeleton className="aspect-[16/10] w-full" />
+              <div className="space-y-3 p-4">
+                <Skeleton className="h-5 w-4/5" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-7 w-2/5" />
+                <div className="border-t border-border pt-3">
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
 
 function HomePage() {
   const { cars, faqs } = Route.useLoaderData()

@@ -24,6 +24,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CompareTray } from "@/components/compare-tray"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export const Route = createFileRoute("/_public")({
   loader: async () => {
@@ -41,9 +42,43 @@ export const Route = createFileRoute("/_public")({
     return { showroom, cars }
   },
   component: PublicLayout,
+  pendingComponent: PublicLayoutPending,
   notFoundComponent: PublicNotFound,
   errorComponent: PublicErrorBoundary,
 })
+
+function PublicLayoutPending() {
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Memuat halaman"
+      className="flex min-h-svh flex-col bg-background text-foreground"
+    >
+      <header className="sticky top-0 z-40 h-16 border-b border-[#2F2D2B] bg-[#161514]">
+        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Skeleton className="h-8 w-40 bg-[#242220]" />
+          <div className="hidden items-center gap-4 md:flex">
+            <Skeleton className="h-5 w-20 bg-[#242220]" />
+            <Skeleton className="h-5 w-20 bg-[#242220]" />
+            <Skeleton className="h-5 w-20 bg-[#242220]" />
+          </div>
+        </div>
+      </header>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-6">
+            <Skeleton className="h-10 w-4/5" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-44 w-full" />
+          </div>
+          <div className="lg:col-span-6">
+            <Skeleton className="aspect-[4/3] w-full" />
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
 
 function PublicLayout() {
   const { showroom, cars } = Route.useLoaderData()

@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { slugifyText } from "@/lib/domain/formatters"
@@ -76,7 +77,33 @@ export const Route = createFileRoute("/dash/faqs")({
     ],
   }),
   component: DashFaqsPage,
+  pendingComponent: DashFaqsPending,
 })
+
+function DashFaqsPending() {
+  return (
+    <div aria-busy="true" aria-label="Memuat daftar FAQ" className="space-y-6">
+      <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <Skeleton className="h-9 w-52" />
+        <Skeleton className="h-10 w-36" />
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 sm:max-w-lg">
+        {[0, 1, 2].map((idx) => (
+          <Skeleton key={idx} className="h-20 w-full border border-border" />
+        ))}
+      </div>
+
+      <Skeleton className="h-18 w-full border border-border" />
+
+      <div className="space-y-3">
+        {[0, 1, 2, 3].map((idx) => (
+          <Skeleton key={idx} className="h-32 w-full border border-border" />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function DashFaqsPage() {
   const initialFaqs = Route.useLoaderData()

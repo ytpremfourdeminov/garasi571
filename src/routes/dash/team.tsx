@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
@@ -86,7 +87,45 @@ export const Route = createFileRoute("/dash/team")({
     ],
   }),
   component: DashTeamPage,
+  pendingComponent: DashTeamPending,
 })
+
+function DashTeamPending() {
+  return (
+    <div aria-busy="true" aria-label="Memuat daftar tim" className="space-y-6">
+      <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <Skeleton className="h-9 w-64" />
+        <Skeleton className="h-7 w-32" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[0, 1, 2, 3].map((idx) => (
+          <Skeleton key={idx} className="h-20 w-full border border-border" />
+        ))}
+      </div>
+
+      <Skeleton className="h-36 w-full border border-border" />
+
+      <section className="border border-border bg-card">
+        <div className="border-b border-border bg-secondary/40 px-5 py-4">
+          <Skeleton className="h-6 w-48" />
+        </div>
+        <div className="divide-y divide-border p-5">
+          {[0, 1, 2].map((idx) => (
+            <div key={idx} className="flex items-center justify-between gap-4 py-3">
+              <div className="space-y-1.5">
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-4 w-52" />
+              </div>
+              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-6 w-20" />
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
 
 function DashTeamPage() {
   const { staff: currentStaff } = Route.useRouteContext()

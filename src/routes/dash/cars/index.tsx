@@ -36,6 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
@@ -141,7 +142,67 @@ export const Route = createFileRoute("/dash/cars/")({
     ],
   }),
   component: DashCarsPage,
+  pendingComponent: DashCarsPending,
 })
+
+function DashCarsPending() {
+  return (
+    <div aria-busy="true" aria-label="Memuat inventaris mobil" className="space-y-6">
+      <section className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <Skeleton className="h-9 w-52" />
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Skeleton className="h-11 w-44" />
+          <Skeleton className="h-11 w-40" />
+        </div>
+      </section>
+
+      <section className="border border-border bg-card p-4">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
+          <Skeleton className="h-11 md:col-span-5" />
+          <Skeleton className="h-11 md:col-span-3" />
+          <Skeleton className="h-11 md:col-span-3" />
+          <Skeleton className="h-11 md:col-span-1" />
+        </div>
+      </section>
+
+      <section className="hidden border border-border bg-card lg:block">
+        <div className="border-b border-border px-4 py-3">
+          <Skeleton className="h-5 w-full" />
+        </div>
+        <div className="divide-y divide-border">
+          {[0, 1, 2, 3, 4].map((idx) => (
+            <div key={idx} className="flex items-center gap-4 px-4 py-4">
+              <Skeleton className="h-14 w-20 shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-64" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+              <Skeleton className="h-10 w-28" />
+              <Skeleton className="h-10 w-36" />
+              <Skeleton className="h-10 w-28" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-3 lg:hidden">
+        {[0, 1, 2].map((idx) => (
+          <div key={idx} className="space-y-3 border border-border bg-card p-4">
+            <div className="flex gap-3">
+              <Skeleton className="h-16 w-24 shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-28" />
+                <Skeleton className="h-5 w-48" />
+              </div>
+            </div>
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-11 w-full" />
+          </div>
+        ))}
+      </section>
+    </div>
+  )
+}
 
 const STATUS_FILTER_ITEMS: Record<StatusFilter, string> = {
   all: "Semua Status",

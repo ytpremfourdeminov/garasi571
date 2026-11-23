@@ -31,6 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { TruncatedTooltip } from "@/components/ui/tooltip"
@@ -149,7 +150,51 @@ export const Route = createFileRoute("/dash/showroom")({
     ],
   }),
   component: DashShowroomPage,
+  pendingComponent: DashShowroomPending,
 })
+
+function DashShowroomPending() {
+  return (
+    <div aria-busy="true" aria-label="Memuat pengaturan showroom" className="space-y-8">
+      <div className="border-b border-border pb-5">
+        <Skeleton className="h-9 w-72 max-w-full" />
+      </div>
+
+      <section className="border border-border bg-card">
+        <div className="border-b border-border bg-secondary/40 px-5 py-4 sm:px-6">
+          <Skeleton className="h-6 w-44" />
+        </div>
+        <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-7">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+            </div>
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+          </div>
+          <div className="space-y-4 lg:col-span-5">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-56 w-full" />
+          </div>
+        </div>
+      </section>
+
+      <section className="border border-border bg-card">
+        <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-4 sm:px-6">
+          <Skeleton className="h-6 w-56" />
+          <Skeleton className="h-10 w-44" />
+        </div>
+        <div className="space-y-3 p-5 sm:p-6">
+          {[0, 1].map((idx) => (
+            <Skeleton key={idx} className="h-24 w-full" />
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
 
 function DashShowroomPage() {
   const { staff } = Route.useRouteContext()
