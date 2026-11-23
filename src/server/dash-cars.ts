@@ -157,7 +157,7 @@ async function resolveUniqueCarSlug(
   }
 
   return pickUniqueSlug(
-    (data ?? []).map((row) => row.slug),
+    data.map((row) => row.slug),
     baseSlug,
     "unit"
   )

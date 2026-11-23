@@ -76,7 +76,7 @@ export const upsertFaqFn = createServerFn({ method: "POST" })
     }
 
     const resolvedSlug = pickUniqueSlug(
-      (matchingSlugs ?? []).map((row) => row.slug),
+      matchingSlugs.map((row) => row.slug),
       baseSlug,
       "faq"
     )

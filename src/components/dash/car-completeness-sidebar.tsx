@@ -47,12 +47,10 @@ export function scrollToCarField(targetId?: string) {
   window.requestAnimationFrame(() => {
     window.setTimeout(() => {
       const target = targetId
-        ? ((document.querySelector(
+        ? (document.querySelector<HTMLElement>(
             `[data-completeness-id="${targetId}"]`
-          ) as HTMLElement | null) ?? document.getElementById(targetId))
-        : (document.querySelector(
-            '[data-slot="tabs-list"]'
-          ) as HTMLElement | null)
+          ) ?? document.getElementById(targetId))
+        : document.querySelector<HTMLElement>('[data-slot="tabs-list"]')
 
       if (!target) return
 

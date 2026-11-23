@@ -55,8 +55,7 @@ export function pickUniqueSlug(
     return normalizedBase
   }
 
-  let suffix = 2
-  while (true) {
+  for (let suffix = 2; ; suffix += 1) {
     const suffixStr = `-${suffix}`
     const trimmedBase =
       normalizedBase
@@ -66,7 +65,6 @@ export function pickUniqueSlug(
     if (!taken.has(candidate)) {
       return candidate
     }
-    suffix += 1
   }
 }
 

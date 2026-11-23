@@ -152,7 +152,7 @@ export const upsertSalesContactFn = createServerFn({ method: "POST" })
     }
 
     const resolvedSlug = pickUniqueSlug(
-      (matchingSlugs ?? []).map((row) => row.slug),
+      matchingSlugs.map((row) => row.slug),
       baseSlug,
       "sales"
     )
