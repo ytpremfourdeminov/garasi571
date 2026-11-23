@@ -79,7 +79,7 @@ function TableHead({
     <th
       data-slot="table-head"
       className={cn(
-        "h-11 px-3.5 text-left align-middle text-sm font-semibold tracking-wider whitespace-nowrap text-muted-foreground uppercase [&:has([role=checkbox])]:pr-0",
+        "h-11 px-3.5 text-left align-middle text-sm font-semibold tracking-wider whitespace-nowrap text-muted-foreground uppercase has-[[role=checkbox]]:pr-0",
         numeric && "text-right tabular-nums",
         className
       )}
@@ -99,7 +99,7 @@ function TableCell({
     <td
       data-slot="table-cell"
       className={cn(
-        "px-3.5 py-3 align-middle text-sm text-foreground [&:has([role=checkbox])]:pr-0",
+        "px-3.5 py-3 align-middle text-sm text-foreground has-[[role=checkbox]]:pr-0",
         numeric && "text-right tabular-nums",
         className
       )}
