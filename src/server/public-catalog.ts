@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start"
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start"
 import { z } from "zod"
 import { getSimilarCars } from "@/lib/domain/formatters"
 import {
@@ -56,45 +56,47 @@ function mapCarRowWithRelations(row: DbCarWithRelations): CarUnit {
   )
 }
 
-export async function fetchPublicShowroom(): Promise<ShowroomConfig> {
-  try {
-    const supabase = getSupabasePublicClient<Database>()
-    const [settingsResult, salesResult] = await Promise.all([
-      supabase
-        .from("showroom_settings")
-        .select("*")
-        .eq("id", 1)
-        .maybeSingle(),
-      supabase
-        .from("sales_contacts")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true }),
-    ])
+export const fetchPublicShowroom = createServerOnlyFn(
+  async (): Promise<ShowroomConfig> => {
+    try {
+      const supabase = getSupabasePublicClient<Database>()
+      const [settingsResult, salesResult] = await Promise.all([
+        supabase
+          .from("showroom_settings")
+          .select("*")
+          .eq("id", 1)
+          .maybeSingle(),
+        supabase
+          .from("sales_contacts")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+      ])
 
-    if (settingsResult.error || salesResult.error) {
+      if (settingsResult.error || salesResult.error) {
+        throwPublicError("Gagal memuat profil showroom.")
+      }
+
+      const salesRows = salesResult.data
+      if (!settingsResult.data) {
+        return {
+          ...FALLBACK_SHOWROOM_SETTINGS,
+          sales: salesRows.map(mapDbSalesContactToDomain),
+        }
+      }
+
+      return mapDbShowroomToDomain(settingsResult.data, salesRows)
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Gagal memuat profil showroom."
+      ) {
+        throw error
+      }
       throwPublicError("Gagal memuat profil showroom.")
     }
-
-    const salesRows = salesResult.data
-    if (!settingsResult.data) {
-      return {
-        ...FALLBACK_SHOWROOM_SETTINGS,
-        sales: salesRows.map(mapDbSalesContactToDomain),
-      }
-    }
-
-    return mapDbShowroomToDomain(settingsResult.data, salesRows)
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message === "Gagal memuat profil showroom."
-    ) {
-      throw error
-    }
-    throwPublicError("Gagal memuat profil showroom.")
-  }
-}
+  },
+)
 
 export const getPublicShowroomFn = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -102,38 +104,38 @@ export const getPublicShowroomFn = createServerFn({ method: "GET" }).handler(
   },
 )
 
-export async function fetchPublicCars(options?: {
-  includeSold?: boolean
-}): Promise<CarUnit[]> {
-  try {
-    const supabase = getSupabasePublicClient<Database>()
-    const statuses = options?.includeSold
-      ? [...PUBLIC_ALL_VISIBLE_STATUSES]
-      : [...PUBLIC_ACTIVE_STATUSES]
+export const fetchPublicCars = createServerOnlyFn(
+  async (options?: { includeSold?: boolean }): Promise<CarUnit[]> => {
+    try {
+      const supabase = getSupabasePublicClient<Database>()
+      const statuses = options?.includeSold
+        ? [...PUBLIC_ALL_VISIBLE_STATUSES]
+        : [...PUBLIC_ACTIVE_STATUSES]
 
-    const { data, error } = await supabase
-      .from("cars")
-      .select("*, car_images(*), car_credit_simulations(*)")
-      .in("status", statuses)
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false })
+      const { data, error } = await supabase
+        .from("cars")
+        .select("*, car_images(*), car_credit_simulations(*)")
+        .in("status", statuses)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false })
 
-    if (error) {
+      if (error) {
+        throwPublicError("Gagal memuat daftar unit katalog.")
+      }
+
+      const rows: DbCarWithRelations[] = data
+      return rows.map(mapCarRowWithRelations)
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Gagal memuat daftar unit katalog."
+      ) {
+        throw error
+      }
       throwPublicError("Gagal memuat daftar unit katalog.")
     }
-
-    const rows: DbCarWithRelations[] = data
-    return rows.map(mapCarRowWithRelations)
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message === "Gagal memuat daftar unit katalog."
-    ) {
-      throw error
-    }
-    throwPublicError("Gagal memuat daftar unit katalog.")
-  }
-}
+  },
+)
 
 const getPublicCarsInputSchema = z
   .object({
@@ -147,43 +149,45 @@ export const getPublicCarsFn = createServerFn({ method: "GET" })
     return fetchPublicCars(data)
   })
 
-export async function fetchPublicCarBySlug(
-  slug: string,
-): Promise<{ car: CarUnit; similarCars: CarUnit[] } | null> {
-  const normalizedSlug = slug.trim()
-  if (!normalizedSlug) {
-    return null
-  }
-
-  try {
-    const supabase = getSupabasePublicClient<Database>()
-    const { data, error } = await supabase
-      .from("cars")
-      .select("*, car_images(*), car_credit_simulations(*)")
-      .eq("slug", normalizedSlug)
-      .in("status", [...PUBLIC_ALL_VISIBLE_STATUSES])
-      .maybeSingle()
-
-    if (error) {
-      throwPublicError("Gagal memuat detail unit.")
-    }
-
-    if (!data) {
+export const fetchPublicCarBySlug = createServerOnlyFn(
+  async (
+    slug: string,
+  ): Promise<{ car: CarUnit; similarCars: CarUnit[] } | null> => {
+    const normalizedSlug = slug.trim()
+    if (!normalizedSlug) {
       return null
     }
 
-    const car = mapCarRowWithRelations(data)
-    const activeCars = await fetchPublicCars({ includeSold: false })
-    const similarCars = getSimilarCars(car, activeCars, 3)
+    try {
+      const supabase = getSupabasePublicClient<Database>()
+      const { data, error } = await supabase
+        .from("cars")
+        .select("*, car_images(*), car_credit_simulations(*)")
+        .eq("slug", normalizedSlug)
+        .in("status", [...PUBLIC_ALL_VISIBLE_STATUSES])
+        .maybeSingle()
 
-    return { car, similarCars }
-  } catch (error) {
-    if (error instanceof Error && error.message === "Gagal memuat detail unit.") {
-      throw error
+      if (error) {
+        throwPublicError("Gagal memuat detail unit.")
+      }
+
+      if (!data) {
+        return null
+      }
+
+      const car = mapCarRowWithRelations(data)
+      const activeCars = await fetchPublicCars({ includeSold: false })
+      const similarCars = getSimilarCars(car, activeCars, 3)
+
+      return { car, similarCars }
+    } catch (error) {
+      if (error instanceof Error && error.message === "Gagal memuat detail unit.") {
+        throw error
+      }
+      throwPublicError("Gagal memuat detail unit.")
     }
-    throwPublicError("Gagal memuat detail unit.")
-  }
-}
+  },
+)
 
 const getPublicCarBySlugInputSchema = z.object({
   slug: z.string().min(1),
@@ -195,27 +199,29 @@ export const getPublicCarBySlugFn = createServerFn({ method: "GET" })
     return fetchPublicCarBySlug(data.slug)
   })
 
-export async function fetchPublicFaqs(): Promise<ShowroomFaqItem[]> {
-  try {
-    const supabase = getSupabasePublicClient<Database>()
-    const { data, error } = await supabase
-      .from("showroom_faqs")
-      .select("*")
-      .eq("is_published", true)
-      .order("sort_order", { ascending: true })
+export const fetchPublicFaqs = createServerOnlyFn(
+  async (): Promise<ShowroomFaqItem[]> => {
+    try {
+      const supabase = getSupabasePublicClient<Database>()
+      const { data, error } = await supabase
+        .from("showroom_faqs")
+        .select("*")
+        .eq("is_published", true)
+        .order("sort_order", { ascending: true })
 
-    if (error) {
+      if (error) {
+        throwPublicError("Gagal memuat daftar FAQ.")
+      }
+
+      return data.map(mapDbFaqToDomain)
+    } catch (error) {
+      if (error instanceof Error && error.message === "Gagal memuat daftar FAQ.") {
+        throw error
+      }
       throwPublicError("Gagal memuat daftar FAQ.")
     }
-
-    return data.map(mapDbFaqToDomain)
-  } catch (error) {
-    if (error instanceof Error && error.message === "Gagal memuat daftar FAQ.") {
-      throw error
-    }
-    throwPublicError("Gagal memuat daftar FAQ.")
-  }
-}
+  },
+)
 
 export const getPublicFaqsFn = createServerFn({ method: "GET" }).handler(
   async () => {

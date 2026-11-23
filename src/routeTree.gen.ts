@@ -9,19 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as PublicRouteImport } from './routes/_public'
 import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as DashLoginRouteImport } from './routes/dash_.login'
 import { Route as MediaSplatRouteImport } from './routes/media.$'
-import { Route as MobilSlugRouteImport } from './routes/mobil.$slug'
+import { Route as PublicMobilSlugRouteImport } from './routes/_public/mobil.$slug'
 import { Route as ApiDashMediaUploadRouteImport } from './routes/api/dash.media.upload'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LlmsFullDottxtRoute = LlmsFullDottxtRouteImport.update({
@@ -44,6 +44,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicRoute,
+} as any)
 const DashLoginRoute = DashLoginRouteImport.update({
   id: '/dash_/login',
   path: '/dash/login',
@@ -54,10 +59,10 @@ const MediaSplatRoute = MediaSplatRouteImport.update({
   path: '/media/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MobilSlugRoute = MobilSlugRouteImport.update({
+const PublicMobilSlugRoute = PublicMobilSlugRouteImport.update({
   id: '/mobil/$slug',
   path: '/mobil/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
 } as any)
 const ApiDashMediaUploadRoute = ApiDashMediaUploadRouteImport.update({
   id: '/api/dash/media/upload',
@@ -66,37 +71,38 @@ const ApiDashMediaUploadRoute = ApiDashMediaUploadRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof PublicIndexRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dash/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
-  '/mobil/$slug': typeof MobilSlugRoute
+  '/mobil/$slug': typeof PublicMobilSlugRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dash/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
-  '/mobil/$slug': typeof MobilSlugRoute
+  '/': typeof PublicIndexRoute
+  '/mobil/$slug': typeof PublicMobilSlugRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_public': typeof PublicRouteWithChildren
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dash_/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
-  '/mobil/$slug': typeof MobilSlugRoute
+  '/_public/': typeof PublicIndexRoute
+  '/_public/mobil/$slug': typeof PublicMobilSlugRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
 }
 export interface FileRouteTypes {
@@ -113,47 +119,47 @@ export interface FileRouteTypes {
     | '/api/dash/media/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/llms-full.txt'
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/dash/login'
     | '/media/$'
+    | '/'
     | '/mobil/$slug'
     | '/api/dash/media/upload'
   id:
     | '__root__'
-    | '/'
+    | '/_public'
     | '/llms-full.txt'
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/dash_/login'
     | '/media/$'
-    | '/mobil/$slug'
+    | '/_public/'
+    | '/_public/mobil/$slug'
     | '/api/dash/media/upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  PublicRoute: typeof PublicRouteWithChildren
   LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   DashLoginRoute: typeof DashLoginRoute
   MediaSplatRoute: typeof MediaSplatRoute
-  MobilSlugRoute: typeof MobilSlugRoute
   ApiDashMediaUploadRoute: typeof ApiDashMediaUploadRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/llms-full.txt': {
@@ -184,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_public/': {
+      id: '/_public/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/dash_/login': {
       id: '/dash_/login'
       path: '/dash/login'
@@ -198,12 +211,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediaSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mobil/$slug': {
-      id: '/mobil/$slug'
+    '/_public/mobil/$slug': {
+      id: '/_public/mobil/$slug'
       path: '/mobil/$slug'
       fullPath: '/mobil/$slug'
-      preLoaderRoute: typeof MobilSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicMobilSlugRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/api/dash/media/upload': {
       id: '/api/dash/media/upload'
@@ -215,15 +228,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface PublicRouteChildren {
+  PublicIndexRoute: typeof PublicIndexRoute
+  PublicMobilSlugRoute: typeof PublicMobilSlugRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicIndexRoute: PublicIndexRoute,
+  PublicMobilSlugRoute: PublicMobilSlugRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  PublicRoute: PublicRouteWithChildren,
   LlmsFullDottxtRoute: LlmsFullDottxtRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   DashLoginRoute: DashLoginRoute,
   MediaSplatRoute: MediaSplatRoute,
-  MobilSlugRoute: MobilSlugRoute,
   ApiDashMediaUploadRoute: ApiDashMediaUploadRoute,
 }
 export const routeTree = rootRouteImport
