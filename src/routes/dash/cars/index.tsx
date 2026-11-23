@@ -702,13 +702,7 @@ function DashCarsPage() {
       >
         <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
           <div className="md:col-span-5">
-            <label
-              htmlFor="inventory-search"
-              className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
-            >
-              Cari Unit
-            </label>
-            <div className="relative mt-1.5">
+            <div className="relative">
               <Search
                 className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
                 aria-hidden="true"
@@ -716,6 +710,7 @@ function DashCarsPage() {
               <Input
                 id="inventory-search"
                 type="search"
+                aria-label="Cari unit"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Nama unit, merek, tahun, warna, atau plat..."
@@ -735,12 +730,6 @@ function DashCarsPage() {
           </div>
 
           <div className="md:col-span-3">
-            <label
-              htmlFor="inventory-status-filter"
-              className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
-            >
-              Status
-            </label>
             <Select
               items={STATUS_FILTER_ITEMS}
               value={statusFilter}
@@ -751,7 +740,8 @@ function DashCarsPage() {
             >
               <SelectTrigger
                 id="inventory-status-filter"
-                className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                aria-label="Filter status unit"
+                className="min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -769,12 +759,6 @@ function DashCarsPage() {
           </div>
 
           <div className="md:col-span-3">
-            <label
-              htmlFor="inventory-category-filter"
-              className="block text-sm font-semibold tracking-wider text-muted-foreground uppercase"
-            >
-              Kategori
-            </label>
             <Select
               items={CATEGORY_FILTER_ITEMS}
               value={categoryFilter}
@@ -785,7 +769,8 @@ function DashCarsPage() {
             >
               <SelectTrigger
                 id="inventory-category-filter"
-                className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+                aria-label="Filter kategori unit"
+                className="min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
               >
                 <SelectValue />
               </SelectTrigger>
