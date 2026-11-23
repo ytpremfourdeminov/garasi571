@@ -268,16 +268,7 @@ function DashOverviewPage() {
       </section>
 
       {/* Quick Shortcuts */}
-      <section aria-labelledby="shortcuts-heading" className="space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2
-            id="shortcuts-heading"
-            className="font-heading text-sm font-bold tracking-[0.16em] text-muted-foreground uppercase"
-          >
-            Aksi Cepat
-          </h2>
-        </div>
-
+      <section aria-label="Aksi Cepat">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Link
             to="/dash/cars/new"
