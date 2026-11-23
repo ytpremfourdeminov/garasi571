@@ -10,8 +10,11 @@ alter table public.showroom_settings enable row level security;
 alter table public.sales_contacts enable row level security;
 alter table public.showroom_faqs enable row level security;
 
--- Helper function returning 'admin' | 'sales' | null ONLY when profiles.is_active = true
-create or replace function public.current_staff_role()
+-- Helper function in private schema returning 'admin' | 'sales' | null ONLY when profiles.is_active = true
+create schema if not exists private;
+grant usage on schema private to anon, authenticated;
+
+create or replace function private.current_staff_role()
 returns text
 language sql
 stable
@@ -25,7 +28,8 @@ as $$
   limit 1;
 $$;
 
-grant execute on function public.current_staff_role() to anon, authenticated;
+revoke all on function private.current_staff_role() from public;
+grant execute on function private.current_staff_role() to anon, authenticated;
 
 -- ============================================================================
 -- 1. profiles
@@ -39,7 +43,7 @@ for select
 to authenticated
 using (
   id = (select auth.uid())
-  or (select public.current_staff_role()) = 'admin'
+  or (select private.current_staff_role()) = 'admin'
 );
 
 drop policy if exists profiles_update_policy on public.profiles;
@@ -47,8 +51,8 @@ create policy profiles_update_policy
 on public.profiles
 for update
 to authenticated
-using ((select public.current_staff_role()) = 'admin')
-with check ((select public.current_staff_role()) = 'admin');
+using ((select private.current_staff_role()) = 'admin')
+with check ((select private.current_staff_role()) = 'admin');
 
 -- ============================================================================
 -- 2. cars
@@ -62,7 +66,7 @@ on public.cars
 for select
 using (
   status in ('ready', 'booked', 'sold')
-  or (select public.current_staff_role()) in ('sales', 'admin')
+  or (select private.current_staff_role()) in ('sales', 'admin')
 );
 
 drop policy if exists cars_insert_policy on public.cars;
@@ -70,22 +74,22 @@ create policy cars_insert_policy
 on public.cars
 for insert
 to authenticated
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists cars_update_policy on public.cars;
 create policy cars_update_policy
 on public.cars
 for update
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'))
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'))
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists cars_delete_policy on public.cars;
 create policy cars_delete_policy
 on public.cars
 for delete
 to authenticated
-using ((select public.current_staff_role()) = 'admin');
+using ((select private.current_staff_role()) = 'admin');
 
 -- ============================================================================
 -- 3. car_images
@@ -97,7 +101,7 @@ create policy car_images_select_policy
 on public.car_images
 for select
 using (
-  (select public.current_staff_role()) in ('sales', 'admin')
+  (select private.current_staff_role()) in ('sales', 'admin')
   or exists (
     select 1
     from public.cars c
@@ -111,22 +115,22 @@ create policy car_images_insert_policy
 on public.car_images
 for insert
 to authenticated
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists car_images_update_policy on public.car_images;
 create policy car_images_update_policy
 on public.car_images
 for update
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'))
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'))
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists car_images_delete_policy on public.car_images;
 create policy car_images_delete_policy
 on public.car_images
 for delete
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'));
 
 -- ============================================================================
 -- 4. car_credit_simulations
@@ -138,7 +142,7 @@ create policy car_credit_simulations_select_policy
 on public.car_credit_simulations
 for select
 using (
-  (select public.current_staff_role()) in ('sales', 'admin')
+  (select private.current_staff_role()) in ('sales', 'admin')
   or exists (
     select 1
     from public.cars c
@@ -152,22 +156,22 @@ create policy car_credit_simulations_insert_policy
 on public.car_credit_simulations
 for insert
 to authenticated
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists car_credit_simulations_update_policy on public.car_credit_simulations;
 create policy car_credit_simulations_update_policy
 on public.car_credit_simulations
 for update
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'))
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'))
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists car_credit_simulations_delete_policy on public.car_credit_simulations;
 create policy car_credit_simulations_delete_policy
 on public.car_credit_simulations
 for delete
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'));
 
 -- ============================================================================
 -- 5. showroom_settings
@@ -185,22 +189,22 @@ create policy showroom_settings_insert_policy
 on public.showroom_settings
 for insert
 to authenticated
-with check ((select public.current_staff_role()) = 'admin');
+with check ((select private.current_staff_role()) = 'admin');
 
 drop policy if exists showroom_settings_update_policy on public.showroom_settings;
 create policy showroom_settings_update_policy
 on public.showroom_settings
 for update
 to authenticated
-using ((select public.current_staff_role()) = 'admin')
-with check ((select public.current_staff_role()) = 'admin');
+using ((select private.current_staff_role()) = 'admin')
+with check ((select private.current_staff_role()) = 'admin');
 
 drop policy if exists showroom_settings_delete_policy on public.showroom_settings;
 create policy showroom_settings_delete_policy
 on public.showroom_settings
 for delete
 to authenticated
-using ((select public.current_staff_role()) = 'admin');
+using ((select private.current_staff_role()) = 'admin');
 
 -- ============================================================================
 -- 6. sales_contacts
@@ -214,7 +218,7 @@ on public.sales_contacts
 for select
 using (
   is_active = true
-  or (select public.current_staff_role()) in ('sales', 'admin')
+  or (select private.current_staff_role()) in ('sales', 'admin')
 );
 
 drop policy if exists sales_contacts_insert_policy on public.sales_contacts;
@@ -222,22 +226,22 @@ create policy sales_contacts_insert_policy
 on public.sales_contacts
 for insert
 to authenticated
-with check ((select public.current_staff_role()) = 'admin');
+with check ((select private.current_staff_role()) = 'admin');
 
 drop policy if exists sales_contacts_update_policy on public.sales_contacts;
 create policy sales_contacts_update_policy
 on public.sales_contacts
 for update
 to authenticated
-using ((select public.current_staff_role()) = 'admin')
-with check ((select public.current_staff_role()) = 'admin');
+using ((select private.current_staff_role()) = 'admin')
+with check ((select private.current_staff_role()) = 'admin');
 
 drop policy if exists sales_contacts_delete_policy on public.sales_contacts;
 create policy sales_contacts_delete_policy
 on public.sales_contacts
 for delete
 to authenticated
-using ((select public.current_staff_role()) = 'admin');
+using ((select private.current_staff_role()) = 'admin');
 
 -- ============================================================================
 -- 7. showroom_faqs
@@ -250,7 +254,7 @@ on public.showroom_faqs
 for select
 using (
   is_published = true
-  or (select public.current_staff_role()) in ('sales', 'admin')
+  or (select private.current_staff_role()) in ('sales', 'admin')
 );
 
 drop policy if exists showroom_faqs_insert_policy on public.showroom_faqs;
@@ -258,19 +262,19 @@ create policy showroom_faqs_insert_policy
 on public.showroom_faqs
 for insert
 to authenticated
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists showroom_faqs_update_policy on public.showroom_faqs;
 create policy showroom_faqs_update_policy
 on public.showroom_faqs
 for update
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'))
-with check ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'))
+with check ((select private.current_staff_role()) in ('sales', 'admin'));
 
 drop policy if exists showroom_faqs_delete_policy on public.showroom_faqs;
 create policy showroom_faqs_delete_policy
 on public.showroom_faqs
 for delete
 to authenticated
-using ((select public.current_staff_role()) in ('sales', 'admin'));
+using ((select private.current_staff_role()) in ('sales', 'admin'));

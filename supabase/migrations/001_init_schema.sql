@@ -33,7 +33,9 @@ for each row
 execute function public.set_updated_at();
 
 -- Automatically provision inactive sales profile upon auth.users signup
-create or replace function public.handle_new_user()
+create schema if not exists private;
+
+create or replace function private.handle_new_user()
 returns trigger
 language plpgsql
 security definer
@@ -55,11 +57,13 @@ begin
 end;
 $$;
 
+revoke all on function private.handle_new_user() from public, anon, authenticated;
+
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row
-execute function public.handle_new_user();
+execute function private.handle_new_user();
 
 -- 2. Cars Inventory (40-point research schema + existing CarUnit compatibility)
 create table if not exists public.cars (
