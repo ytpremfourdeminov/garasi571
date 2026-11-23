@@ -14,6 +14,7 @@ import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as DashLoginRouteImport } from './routes/dash_.login'
 import { Route as MediaSplatRouteImport } from './routes/media.$'
 import { Route as MobilSlugRouteImport } from './routes/mobil.$slug'
 import { Route as ApiDashMediaUploadRouteImport } from './routes/api/dash.media.upload'
@@ -43,6 +44,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashLoginRoute = DashLoginRouteImport.update({
+  id: '/dash_/login',
+  path: '/dash/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MediaSplatRoute = MediaSplatRouteImport.update({
   id: '/media/$',
   path: '/media/$',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dash/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
   '/mobil/$slug': typeof MobilSlugRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dash/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
   '/mobil/$slug': typeof MobilSlugRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dash_/login': typeof DashLoginRoute
   '/media/$': typeof MediaSplatRoute
   '/mobil/$slug': typeof MobilSlugRoute
   '/api/dash/media/upload': typeof ApiDashMediaUploadRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/dash/login'
     | '/media/$'
     | '/mobil/$slug'
     | '/api/dash/media/upload'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/dash/login'
     | '/media/$'
     | '/mobil/$slug'
     | '/api/dash/media/upload'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/dash_/login'
     | '/media/$'
     | '/mobil/$slug'
     | '/api/dash/media/upload'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  DashLoginRoute: typeof DashLoginRoute
   MediaSplatRoute: typeof MediaSplatRoute
   MobilSlugRoute: typeof MobilSlugRoute
   ApiDashMediaUploadRoute: typeof ApiDashMediaUploadRoute
@@ -171,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dash_/login': {
+      id: '/dash_/login'
+      path: '/dash/login'
+      fullPath: '/dash/login'
+      preLoaderRoute: typeof DashLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/media/$': {
       id: '/media/$'
       path: '/media/$'
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   LlmsDottxtRoute: LlmsDottxtRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  DashLoginRoute: DashLoginRoute,
   MediaSplatRoute: MediaSplatRoute,
   MobilSlugRoute: MobilSlugRoute,
   ApiDashMediaUploadRoute: ApiDashMediaUploadRoute,
