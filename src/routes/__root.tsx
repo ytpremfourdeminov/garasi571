@@ -1,6 +1,30 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import * as React from "react"
+import {
+  HeadContent,
+  Link,
+  Scripts,
+  createRootRoute,
+} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
+import {
+  AlertTriangle,
+  ArrowLeft,
+  MessageCircle,
+  RefreshCw,
+} from "lucide-react"
+import { cn } from "cn"
+import { SHOWROOM, buildWhatsAppUrl } from "@/data/showroom"
+import {
+  WhatsAppDialogProvider,
+  useWhatsAppDialog,
+} from "@/components/whatsapp-dialog"
+import { CompareProvider, useCompare } from "@/components/compare-context"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { CompareTray } from "@/components/compare-tray"
+import { Button, buttonVariants } from "@/components/ui/button"
 
 import appCss from "../styles.css?url"
 
@@ -15,7 +39,24 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Garasi 571 Surakarta | Katalog Mobil Bekas Pilihan",
+      },
+      {
+        name: "description",
+        content:
+          "Pilihan mobil bekas siap pakai di Garasi 571 Surakarta. Tersedia cash, kredit, dan tukar tambah, buka setiap hari 08:00 - 16:00 WIB.",
+      },
+      {
+        property: "og:site_name",
+        content: "Garasi 571",
+      },
+      {
+        property: "og:locale",
+        content: "id_ID",
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
       },
     ],
     links: [
@@ -23,38 +64,186 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: appCss,
       },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "/favicon.png",
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
     ],
   }),
-  notFoundComponent: () => (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>404</h1>
-      <p>The requested page could not be found.</p>
-    </main>
-  ),
+  notFoundComponent: RootNotFound,
+  errorComponent: RootErrorBoundary,
   shellComponent: RootDocument,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="id">
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
-        <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "Tanstack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        <WhatsAppDialogProvider>
+          <CompareProvider>
+            <AppShell>{children}</AppShell>
+          </CompareProvider>
+        </WhatsAppDialogProvider>
+
+        {import.meta.env.DEV ? (
+          <TanStackDevtools
+            config={{
+              position: "bottom-right",
+            }}
+            plugins={[
+              {
+                name: "TanStack Router",
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+        ) : null}
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function AppShell({ children }: { children: React.ReactNode }) {
+  const { selectedCars } = useCompare()
+
+  return (
+    <div
+      className={cn(
+        "flex min-h-svh flex-col bg-background text-foreground",
+        selectedCars.length > 0 && "pb-44 sm:pb-32 lg:pb-24",
+      )}
+    >
+      <SiteHeader />
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
+      <SiteFooter />
+      <CompareTray />
+    </div>
+  )
+}
+
+function RootNotFound() {
+  const { openWhatsAppDialog } = useWhatsAppDialog()
+
+  return (
+    <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      <div className="border border-border bg-card p-6 sm:p-8">
+        <p className="text-xs font-semibold tracking-wider text-primary uppercase">
+          404
+        </p>
+        <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Halaman Tidak Ditemukan
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Halaman atau unit yang Anda cari tidak tersedia atau tautannya sudah
+          berubah. Anda dapat kembali ke katalog stok atau langsung menanyakan
+          ketersediaan unit ke tim sales kami di Surakarta.
+        </p>
+
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Link
+            to="/"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "no-underline",
+            )}
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span>Kembali ke Katalog</span>
+          </Link>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              openWhatsAppDialog({
+                title: "Tanya Ketersediaan Stok",
+                description:
+                  "Hubungi tim sales Garasi 571 Surakarta untuk menanyakan unit yang Anda cari.",
+                message:
+                  "Halo Garasi 571, saya mencari unit mobil bekas di katalog Anda. Boleh info stok yang saat ini tersedia?",
+              })
+            }
+          >
+            <MessageCircle className="size-4" aria-hidden="true" />
+            <span>Hubungi WhatsApp</span>
+          </Button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function RootErrorBoundary({ reset }: ErrorComponentProps) {
+  const primarySales = SHOWROOM.sales[0]
+  const fallbackWaUrl = buildWhatsAppUrl(
+    primarySales.phoneE164,
+    "Halo Garasi 571, saya mengalami kendala saat membuka halaman katalog dan ingin menanyakan stok mobil bekas yang tersedia.",
+  )
+
+  const handleReload = () => {
+    reset()
+    if (typeof window !== "undefined") {
+      window.location.reload()
+    }
+  }
+
+  return (
+    <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      <div className="border border-border bg-card p-6 sm:p-8">
+        <div className="inline-flex size-11 items-center justify-center border border-border bg-secondary text-primary">
+          <AlertTriangle className="size-5" aria-hidden="true" />
+        </div>
+        <h1 className="mt-4 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Terjadi Kendala Saat Memuat Halaman
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Maaf, halaman belum dapat ditampilkan saat ini. Silakan muat ulang
+          halaman, kembali ke beranda, atau hubungi tim sales Garasi 571 melalui
+          WhatsApp.
+        </p>
+
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Button type="button" variant="default" onClick={handleReload}>
+            <RefreshCw className="size-4" aria-hidden="true" />
+            <span>Muat Ulang Halaman</span>
+          </Button>
+
+          <Link
+            to="/"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "no-underline",
+            )}
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span>Kembali ke Beranda</span>
+          </Link>
+
+          <a
+            href={fallbackWaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "no-underline",
+            )}
+          >
+            <MessageCircle className="size-4" aria-hidden="true" />
+            <span>Hubungi WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </section>
   )
 }
