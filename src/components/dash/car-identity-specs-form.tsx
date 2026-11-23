@@ -25,6 +25,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  useStableDialogData,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
@@ -307,8 +308,14 @@ function StringListEditor({
     onChange(next)
   }
 
+  const [deletePointIndex, setDeletePointIndex] = React.useState<number | null>(
+    null
+  )
+  const displayedDeletePointIndex = useStableDialogData(deletePointIndex)
+
   const handleRemoveAt = (index: number) => {
     onChange(items.filter((_, idx) => idx !== index))
+    setDeletePointIndex(null)
   }
 
   const handleMove = (index: number, direction: -1 | 1) => {
@@ -431,7 +438,7 @@ function StringListEditor({
                           size="icon"
                           disabled={disabled}
                           aria-label={`Hapus poin ${index + 1}`}
-                          onClick={() => handleRemoveAt(index)}
+                          onClick={() => setDeletePointIndex(index)}
                           className="text-muted-foreground hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash2 className="size-4" aria-hidden="true" />
@@ -561,6 +568,43 @@ function StringListEditor({
               onClick={() => handleApplyPaste("append")}
             >
               Tambahkan ({parsedPasteItems.length})
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={deletePointIndex !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeletePointIndex(null)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Hapus Poin Ini?</DialogTitle>
+            <DialogDescription>
+              {displayedDeletePointIndex !== null &&
+              items[displayedDeletePointIndex]?.trim()
+                ? `Poin "${items[displayedDeletePointIndex]}" akan dihapus dari ${title}.`
+                : `Poin #${displayedDeletePointIndex !== null ? displayedDeletePointIndex + 1 : ""} akan dihapus dari ${title}.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Batal
+            </DialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                if (deletePointIndex !== null) {
+                  handleRemoveAt(deletePointIndex)
+                }
+              }}
+            >
+              <Trash2 className="size-4" aria-hidden="true" />
+              <span>Ya, Hapus Poin</span>
             </Button>
           </DialogFooter>
         </DialogContent>

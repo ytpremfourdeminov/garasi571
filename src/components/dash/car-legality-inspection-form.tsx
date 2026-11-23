@@ -15,6 +15,16 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  useStableDialogData,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -377,10 +387,17 @@ export function CarLegalityInspectionForm({
     onChange({ recentMaintenance: next })
   }
 
+  const [deleteConfirm, setDeleteConfirm] = React.useState<{
+    kind: "maintenance" | "imperfection"
+    index: number
+  } | null>(null)
+  const displayedDeleteConfirm = useStableDialogData(deleteConfirm)
+
   function handleRemoveMaintenanceItem(index: number) {
     onChange({
       recentMaintenance: recentMaintenance.filter((_, i) => i !== index),
     })
+    setDeleteConfirm(null)
   }
 
   function handleAddImperfection() {
@@ -410,6 +427,7 @@ export function CarLegalityInspectionForm({
     onChange({
       imperfections: imperfections.filter((_, i) => i !== index),
     })
+    setDeleteConfirm(null)
   }
 
   const plateInfoError = getFieldError(errors, "plateInfo")
@@ -1602,7 +1620,9 @@ export function CarLegalityInspectionForm({
                             variant="ghost"
                             size="icon"
                             disabled={disabled}
-                            onClick={() => handleRemoveMaintenanceItem(index)}
+                            onClick={() =>
+                              setDeleteConfirm({ kind: "maintenance", index })
+                            }
                             aria-label={`Hapus peremajaan part nomor ${index + 1}`}
                             className="text-muted-foreground hover:text-destructive"
                           >
@@ -1736,7 +1756,9 @@ export function CarLegalityInspectionForm({
                         variant="ghost"
                         size="sm"
                         disabled={disabled}
-                        onClick={() => handleRemoveImperfection(index)}
+                        onClick={() =>
+                          setDeleteConfirm({ kind: "imperfection", index })
+                        }
                         aria-label={`Hapus catatan minus nomor ${index + 1}`}
                         className="text-muted-foreground hover:text-destructive"
                       >
@@ -1847,6 +1869,55 @@ export function CarLegalityInspectionForm({
           )}
         </div>
       </section>
+
+      <Dialog
+        open={Boolean(deleteConfirm)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteConfirm(null)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {displayedDeleteConfirm?.kind === "maintenance"
+                ? "Hapus Catatan Peremajaan Part?"
+                : "Hapus Catatan Minus?"}
+            </DialogTitle>
+            <DialogDescription>
+              {displayedDeleteConfirm?.kind === "maintenance"
+                ? recentMaintenance[displayedDeleteConfirm.index]?.trim()
+                  ? `Catatan "${recentMaintenance[displayedDeleteConfirm.index]}" akan dihapus dari daftar peremajaan.`
+                  : `Catatan peremajaan #${displayedDeleteConfirm.index + 1} akan dihapus dari daftar.`
+                : displayedDeleteConfirm
+                  ? imperfections[displayedDeleteConfirm.index]?.area?.trim()
+                    ? `Catatan minus pada area "${imperfections[displayedDeleteConfirm.index].area}" akan dihapus dari daftar.`
+                    : `Catatan minus #${displayedDeleteConfirm.index + 1} akan dihapus dari daftar.`
+                  : ""}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Batal
+            </DialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                if (!deleteConfirm) return
+                if (deleteConfirm.kind === "maintenance") {
+                  handleRemoveMaintenanceItem(deleteConfirm.index)
+                } else {
+                  handleRemoveImperfection(deleteConfirm.index)
+                }
+              }}
+            >
+              <Trash2 className="size-4" aria-hidden="true" />
+              <span>Ya, Hapus</span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

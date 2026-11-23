@@ -18,6 +18,16 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  useStableDialogData,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -342,9 +352,11 @@ export function CarMediaManager({
   const [deletingImageId, setDeletingImageId] = React.useState<string | null>(
     null
   )
-  const [confirmDeleteId, setConfirmDeleteId] = React.useState<string | null>(
-    null
-  )
+  const [deleteTarget, setDeleteTarget] = React.useState<{
+    img: CarImage
+    index: number
+  } | null>(null)
+  const displayedDeleteTarget = useStableDialogData(deleteTarget)
 
   const [errorBanner, setErrorBanner] = React.useState<string | null>(null)
   const [statusNotice, setStatusNotice] = React.useState<string | null>(null)
@@ -364,7 +376,7 @@ export function CarMediaManager({
       setDraftImages(images)
       setPersistedMetaById(buildPersistedMetaMap(images))
       setUploadQueue([])
-      setConfirmDeleteId(null)
+      setDeleteTarget(null)
       setDeletingImageId(null)
       setErrorBanner(null)
       setStatusNotice(null)
@@ -840,7 +852,7 @@ export function CarMediaManager({
       })
 
       emitImages(nextList)
-      setConfirmDeleteId(null)
+      setDeleteTarget(null)
       setStatusNotice("Foto berhasil dihapus dari galeri dan penyimpanan.")
     } catch (err) {
       setErrorBanner(
@@ -848,6 +860,7 @@ export function CarMediaManager({
       )
     } finally {
       setDeletingImageId(null)
+      setDeleteTarget(null)
     }
   }
 
@@ -1248,7 +1261,6 @@ export function CarMediaManager({
               const cardKey = getImageKey(img, index)
               const isDeletingThis =
                 Boolean(img.id) && deletingImageId === img.id
-              const isConfirmingDelete = confirmDeleteId === cardKey
               const isAltMissing = img.alt.trim().length === 0
               const angleFieldId = `car-img-angle-${cardKey}`
               const altFieldId = `car-img-alt-${cardKey}`
@@ -1439,11 +1451,7 @@ export function CarMediaManager({
                               variant="outline"
                               size="icon"
                               disabled={isBusy || isDeletingThis || !img.id}
-                              onClick={() =>
-                                setConfirmDeleteId(
-                                  isConfirmingDelete ? null : cardKey
-                                )
-                              }
+                              onClick={() => setDeleteTarget({ img, index })}
                               aria-label={`Hapus foto #${index + 1}`}
                               className="text-destructive hover:border-destructive hover:bg-destructive/10"
                             >
@@ -1454,46 +1462,6 @@ export function CarMediaManager({
                         </Tooltip>
                       </div>
                     </div>
-
-                    {/* Inline Delete Confirmation */}
-                    {isConfirmingDelete ? (
-                      <div
-                        role="alertdialog"
-                        aria-label={`Konfirmasi hapus foto #${index + 1}`}
-                        className="border border-destructive/40 bg-destructive/5 p-3"
-                      >
-                        <p className="text-sm font-medium text-[#991B1B]">
-                          Hapus foto ini secara permanen?
-                        </p>
-                        <div className="mt-2.5 flex items-center gap-2">
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            disabled={isDeletingThis}
-                            onClick={() => void handleConfirmDelete(img)}
-                            className="flex-1"
-                          >
-                            {isDeletingThis ? (
-                              <Loader2
-                                className="size-4 animate-spin"
-                                aria-hidden
-                              />
-                            ) : (
-                              <Trash2 className="size-4" aria-hidden />
-                            )}
-                            {isDeletingThis ? "Menghapus..." : "Ya, Hapus"}
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            disabled={isDeletingThis}
-                            onClick={() => setConfirmDeleteId(null)}
-                          >
-                            Batal
-                          </Button>
-                        </div>
-                      </div>
-                    ) : null}
                   </div>
                 </article>
               )
@@ -1524,6 +1492,55 @@ export function CarMediaManager({
           </div>
         ) : null}
       </div>
+
+      <Dialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open && deletingImageId === null) {
+            setDeleteTarget(null)
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Hapus Foto Secara Permanen?</DialogTitle>
+            <DialogDescription>
+              Foto #{displayedDeleteTarget ? displayedDeleteTarget.index + 1 : ""}{" "}
+              akan dihapus secara permanen dari galeri unit ini. Tindakan ini
+              tidak dapat dibatalkan.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <DialogClose
+              render={
+                <Button variant="outline" disabled={deletingImageId !== null} />
+              }
+            >
+              Batal
+            </DialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={deletingImageId !== null || !deleteTarget}
+              onClick={() => {
+                if (deleteTarget) {
+                  void handleConfirmDelete(deleteTarget.img)
+                }
+              }}
+            >
+              {deletingImageId !== null ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <Trash2 className="size-4" aria-hidden="true" />
+              )}
+              <span>
+                {deletingImageId !== null ? "Menghapus..." : "Ya, Hapus Foto"}
+              </span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }

@@ -22,6 +22,16 @@ import type { PaymentMode } from "@/lib/domain/types"
 import { formatRupiah, formatShortJuta } from "@/lib/domain/formatters"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  useStableDialogData,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -344,6 +354,13 @@ export function CarPricingCreditForm({
     })
   }
 
+  const [deleteSimulationIndex, setDeleteSimulationIndex] = React.useState<
+    number | null
+  >(null)
+  const displayedDeleteSimulationIndex = useStableDialogData(
+    deleteSimulationIndex
+  )
+
   const handleRemoveSimulation = (index: number) => {
     if (disabled) return
     setLocalKeys((prev) => padKeys(prev).filter((_, idx) => idx !== index))
@@ -351,6 +368,7 @@ export function CarPricingCreditForm({
     onChange({
       creditSimulations: normalizeSortOrder(next),
     })
+    setDeleteSimulationIndex(null)
   }
 
   const handleMoveSimulation = (index: number, direction: -1 | 1) => {
@@ -1081,7 +1099,7 @@ export function CarPricingCreditForm({
                                 variant="outline"
                                 size="icon"
                                 disabled={disabled}
-                                onClick={() => handleRemoveSimulation(index)}
+                                onClick={() => setDeleteSimulationIndex(index)}
                                 aria-label={`Hapus paket simulasi ${index + 1}`}
                                 className="text-destructive hover:border-destructive hover:bg-destructive/10"
                               >
@@ -1402,6 +1420,48 @@ export function CarPricingCreditForm({
           </div>
         </section>
       )}
+
+      <Dialog
+        open={deleteSimulationIndex !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteSimulationIndex(null)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Hapus Paket Simulasi Kredit?</DialogTitle>
+            <DialogDescription>
+              Paket simulasi{" "}
+              {displayedDeleteSimulationIndex !== null
+                ? `#${displayedDeleteSimulationIndex + 1}${
+                    simulations[displayedDeleteSimulationIndex]?.label
+                      ? ` (${simulations[displayedDeleteSimulationIndex]?.label})`
+                      : ""
+                  }`
+                : ""}{" "}
+              akan dihapus dari daftar.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Batal
+            </DialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                if (deleteSimulationIndex !== null) {
+                  handleRemoveSimulation(deleteSimulationIndex)
+                }
+              }}
+            >
+              <Trash2 className="size-4" aria-hidden="true" />
+              <span>Ya, Hapus Paket</span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

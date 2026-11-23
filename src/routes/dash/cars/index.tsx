@@ -34,6 +34,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  useStableDialogData,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -307,6 +308,7 @@ function DashCarsPage() {
   >({})
   const [feedback, setFeedback] = React.useState<FeedbackState | null>(null)
   const [deleteTarget, setDeleteTarget] = React.useState<CarUnit | null>(null)
+  const displayedDeleteTarget = useStableDialogData(deleteTarget)
   const [deleteError, setDeleteError] = React.useState<string | null>(null)
   const [isDeleting, setIsDeleting] = React.useState(false)
   const [publicSiteOrigin, setPublicSiteOrigin] = React.useState(() =>
@@ -1571,15 +1573,15 @@ function DashCarsPage() {
               </DialogDescription>
             </DialogHeader>
 
-            {deleteTarget ? (
+            {displayedDeleteTarget ? (
               <div className="mt-4 border border-border bg-secondary/45 p-3.5 text-sm">
                 <p className="font-heading font-bold text-foreground">
-                  {deleteTarget.name}
+                  {displayedDeleteTarget.name}
                 </p>
                 <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
-                  {deleteTarget.year} &middot;{" "}
-                  {getCategoryLabel(deleteTarget.category)} &middot;{" "}
-                  {formatRupiah(deleteTarget.cashPrice)}
+                  {displayedDeleteTarget.year} &middot;{" "}
+                  {getCategoryLabel(displayedDeleteTarget.category)} &middot;{" "}
+                  {formatRupiah(displayedDeleteTarget.cashPrice)}
                 </p>
               </div>
             ) : null}

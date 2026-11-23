@@ -21,6 +21,16 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  useStableDialogData,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
@@ -342,9 +352,16 @@ export function CarEvInsightsForm({
     }
   }
 
+  const [deleteConfirm, setDeleteConfirm] = React.useState<{
+    kind: "evSpecs" | "video" | "issue"
+    index?: number
+  } | null>(null)
+  const displayedDeleteConfirm = useStableDialogData(deleteConfirm)
+
   function handleClearEvSpecs() {
     if (disabled) return
     onChange({ evSpecs: null })
+    setDeleteConfirm(null)
   }
 
   function handleEvNumberChange(
@@ -402,6 +419,7 @@ export function CarEvInsightsForm({
     updateCreatorInsights({
       commonIssuesChecked: serializeIssueTags(next),
     })
+    setDeleteConfirm(null)
   }
 
   const evSpecsError = getFieldError(errors, "evSpecs")
@@ -515,7 +533,7 @@ export function CarEvInsightsForm({
                   variant="outline"
                   size="sm"
                   disabled={disabled}
-                  onClick={handleClearEvSpecs}
+                  onClick={() => setDeleteConfirm({ kind: "evSpecs" })}
                   className="shrink-0 border-amber-800/40 bg-white text-amber-950 hover:bg-amber-100"
                 >
                   <Trash2 className="size-3.5" aria-hidden="true" />
@@ -977,7 +995,7 @@ export function CarEvInsightsForm({
                       size="icon"
                       disabled={disabled}
                       aria-label="Hapus tautan video"
-                      onClick={() => onChange({ videoWalkaroundUrl: null })}
+                      onClick={() => setDeleteConfirm({ kind: "video" })}
                     >
                       <X className="size-4" aria-hidden="true" />
                     </Button>
@@ -1168,7 +1186,7 @@ export function CarEvInsightsForm({
                       type="button"
                       disabled={disabled}
                       aria-label={`Hapus poin ${item}`}
-                      onClick={() => handleRemoveIssue(idx)}
+                      onClick={() => setDeleteConfirm({ kind: "issue", index: idx })}
                       className="inline-flex size-6 shrink-0 cursor-pointer items-center justify-center text-emerald-800 transition-colors hover:bg-emerald-200/70 hover:text-emerald-950 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <X className="size-3.5" aria-hidden="true" />
@@ -1275,6 +1293,59 @@ export function CarEvInsightsForm({
           </div>
         </div>
       </section>
+
+      <Dialog
+        open={Boolean(deleteConfirm)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteConfirm(null)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {displayedDeleteConfirm?.kind === "evSpecs"
+                ? "Bersihkan Data Spesifikasi EV?"
+                : displayedDeleteConfirm?.kind === "video"
+                  ? "Hapus Tautan Video?"
+                  : "Hapus Poin Pengecekan?"}
+            </DialogTitle>
+            <DialogDescription>
+              {displayedDeleteConfirm?.kind === "evSpecs"
+                ? "Seluruh data spesifikasi baterai EV yang tersimpan sebelumnya akan dibersihkan dari unit ini."
+                : displayedDeleteConfirm?.kind === "video"
+                  ? "Tautan video walkaround & review unit akan dihapus."
+                  : displayedDeleteConfirm?.index !== undefined &&
+                      issueItems[displayedDeleteConfirm.index]
+                    ? `Poin "${issueItems[displayedDeleteConfirm.index]}" akan dihapus dari daftar titik kritis yang sudah dicek.`
+                    : "Poin pengecekan akan dihapus dari daftar."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Batal
+            </DialogClose>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                if (!deleteConfirm) return
+                if (deleteConfirm.kind === "evSpecs") {
+                  handleClearEvSpecs()
+                } else if (deleteConfirm.kind === "video") {
+                  onChange({ videoWalkaroundUrl: null })
+                  setDeleteConfirm(null)
+                } else if (deleteConfirm.index !== undefined) {
+                  handleRemoveIssue(deleteConfirm.index)
+                }
+              }}
+            >
+              <Trash2 className="size-4" aria-hidden="true" />
+              <span>Ya, Hapus</span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

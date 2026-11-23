@@ -30,6 +30,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  useStableDialogData,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -256,6 +257,7 @@ function DashShowroomPage() {
   const [deleteTarget, setDeleteTarget] = React.useState<SalesContact | null>(
     null
   )
+  const displayedDeleteTarget = useStableDialogData(deleteTarget)
   const [isDeletingSales, setIsDeletingSales] = React.useState(false)
 
   React.useEffect(() => {
@@ -1573,10 +1575,10 @@ function DashShowroomPage() {
             <DialogDescription>
               Kontak{" "}
               <strong className="font-semibold text-foreground">
-                {deleteTarget?.name}
+                {displayedDeleteTarget?.name}
               </strong>{" "}
-              ({deleteTarget?.phoneDisplay}) akan dihapus permanen dari daftar
-              showroom. Tindakan ini tidak dapat dibatalkan.
+              ({displayedDeleteTarget?.phoneDisplay}) akan dihapus permanen dari
+              daftar showroom. Tindakan ini tidak dapat dibatalkan.
             </DialogDescription>
           </DialogHeader>
 

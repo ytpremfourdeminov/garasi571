@@ -23,6 +23,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  useStableDialogData,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -139,6 +140,7 @@ function DashFaqsPage() {
 
   const [deleteTarget, setDeleteTarget] =
     React.useState<ShowroomFaqItem | null>(null)
+  const displayedDeleteTarget = useStableDialogData(deleteTarget)
   const [isDeleting, setIsDeleting] = React.useState(false)
 
   React.useEffect(() => {
@@ -811,7 +813,7 @@ function DashFaqsPage() {
             <DialogDescription>
               FAQ{" "}
               <strong className="font-semibold text-foreground">
-                &ldquo;{deleteTarget?.question}&rdquo;
+                &ldquo;{displayedDeleteTarget?.question}&rdquo;
               </strong>{" "}
               akan dihapus permanen dari daftar showroom. Tindakan ini tidak
               dapat dibatalkan.
