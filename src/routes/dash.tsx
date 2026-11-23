@@ -33,6 +33,14 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
   Sheet,
   SheetClose,
   SheetContent,
@@ -541,6 +549,7 @@ function DashLayout() {
 
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
+  const [logoutDialogOpen, setLogoutDialogOpen] = React.useState(false)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false)
   const [logoutError, setLogoutError] = React.useState<string | null>(null)
   const [publicSiteUrl, setPublicSiteUrl] = React.useState(() =>
@@ -553,12 +562,18 @@ function DashLayout() {
     }
   }, [])
 
+  const handleOpenLogoutDialog = () => {
+    setLogoutError(null)
+    setLogoutDialogOpen(true)
+  }
+
   const handleLogout = async () => {
     setLogoutError(null)
     setIsLoggingOut(true)
 
     try {
       await logoutFn()
+      setLogoutDialogOpen(false)
       setMobileNavOpen(false)
       await router.invalidate()
       await router.navigate({
@@ -616,7 +631,7 @@ function DashLayout() {
           publicSiteUrl={publicSiteUrl}
           isLoggingOut={isLoggingOut}
           logoutError={logoutError}
-          onLogout={handleLogout}
+          onLogout={handleOpenLogoutDialog}
           collapsed={sidebarCollapsed}
         />
       </aside>
@@ -654,7 +669,7 @@ function DashLayout() {
                   publicSiteUrl={publicSiteUrl}
                   isLoggingOut={isLoggingOut}
                   logoutError={logoutError}
-                  onLogout={handleLogout}
+                  onLogout={handleOpenLogoutDialog}
                   onNavigate={() => setMobileNavOpen(false)}
                   showDrawerClose={true}
                 />
@@ -728,6 +743,77 @@ function DashLayout() {
           </div>
         </div>
       </div>
+
+      <Dialog
+        open={logoutDialogOpen}
+        onOpenChange={(open) => {
+          if (isLoggingOut) return
+          setLogoutDialogOpen(open)
+          if (!open) setLogoutError(null)
+        }}
+      >
+        <DialogContent
+          showCloseButton={!isLoggingOut}
+          className="max-w-sm p-6 sm:p-8"
+        >
+          <div className="flex flex-col items-center text-center">
+            <img
+              src="/images/brand/logout-bye.png"
+              alt=""
+              aria-hidden="true"
+              width={500}
+              height={500}
+              className="mx-auto mb-4 h-44 w-auto object-contain"
+            />
+
+            <DialogHeader className="items-center gap-2 pr-0 text-center">
+              <DialogTitle className="text-center text-2xl font-bold">
+                Sampai Jumpa Lagi!
+              </DialogTitle>
+              <DialogDescription className="max-w-[260px] text-center text-sm leading-relaxed text-muted-foreground">
+                Apakah Anda yakin ingin keluar dari sesi dashboard ini?
+              </DialogDescription>
+            </DialogHeader>
+
+            {logoutError ? (
+              <p
+                role="alert"
+                className="mt-4 w-full border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-sm text-[#991B1B]"
+              >
+                {logoutError}
+              </p>
+            ) : null}
+
+            <DialogFooter className="mt-6 w-full flex-row items-center justify-center gap-3 sm:justify-center">
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={isLoggingOut}
+                onClick={() => setLogoutDialogOpen(false)}
+                className="min-w-28 text-primary hover:bg-primary/10 hover:text-primary"
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                variant="default"
+                disabled={isLoggingOut}
+                onClick={handleLogout}
+                className="min-w-32"
+              >
+                {isLoggingOut ? (
+                  <>
+                    <Spinner className="size-4" />
+                    <span>Keluar...</span>
+                  </>
+                ) : (
+                  "Ya, Keluar"
+                )}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
