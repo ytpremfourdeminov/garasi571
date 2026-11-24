@@ -16,6 +16,10 @@ import {
   Upload,
   X,
 } from "lucide-react"
+import {
+  FormSectionAccordion,
+  FormSectionAccordionItem,
+} from "@/components/dash/form-section-accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -859,9 +863,18 @@ export function CarMediaManager({
     }
   }
 
+  const [openSections, setOpenSections] = React.useState<string[]>([
+    "mandatory-angles",
+    "upload-zone",
+    "gallery",
+  ])
+
   const handleSelectChecklistAngle = (tag: ImageAngleTag) => {
     if (disabled || isUploading) return
     setUploadAngleTag(tag)
+    setOpenSections((prev) =>
+      prev.includes("upload-zone") ? prev : [...prev, "upload-zone"]
+    )
   }
 
   const hasFinishedQueueItems = uploadQueue.some(
@@ -874,25 +887,31 @@ export function CarMediaManager({
       aria-label="Manajemen Galeri Foto Unit"
       className="space-y-6"
     >
-      {/* Research Mandatory Angle Checklist */}
-      <div className="border border-border bg-card p-4 sm:p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
-          <h3 className="text-base font-semibold text-foreground">
-            6 Sudut Wajib
-          </h3>
-          <Badge
-            variant={
-              completedMandatoryCount === MANDATORY_ANGLE_OPTIONS.length
-                ? "success"
-                : "warning"
-            }
-            className="tabular-nums"
-          >
-            {completedMandatoryCount}/{MANDATORY_ANGLE_OPTIONS.length} Lengkap
-          </Badge>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
+      <FormSectionAccordion
+        defaultValue={["mandatory-angles", "upload-zone", "gallery"]}
+        value={openSections}
+        onValueChange={setOpenSections}
+      >
+        {/* Research Mandatory Angle Checklist */}
+        <FormSectionAccordionItem
+          value="mandatory-angles"
+          eyebrow="01 / Sudut Wajib"
+          title="Checklist 6 Sudut Foto"
+          badge={
+            <Badge
+              variant={
+                completedMandatoryCount === MANDATORY_ANGLE_OPTIONS.length
+                  ? "success"
+                  : "warning"
+              }
+              className="tabular-nums"
+            >
+              {completedMandatoryCount}/{MANDATORY_ANGLE_OPTIONS.length} Lengkap
+            </Badge>
+          }
+          contentClassName="p-4 sm:p-5"
+        >
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
           {MANDATORY_ANGLE_OPTIONS.map((item) => {
             const count = angleCounts[item.tag]
             const isComplete = count > 0
@@ -974,40 +993,37 @@ export function CarMediaManager({
               </span>
             </button>
           ) : null}
-        </div>
-      </div>
-
-      {/* Upload Dropzone */}
-      <div className="border border-border bg-card p-4 sm:p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h3 className="text-base font-semibold text-foreground">
-              Unggah Foto Unit
-            </h3>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              Mendukung JPG, PNG, atau WebP, maksimal 5 MB per foto.
-            </p>
           </div>
+        </FormSectionAccordionItem>
 
-          <div className="w-full sm:w-64">
-            <label
-              htmlFor={`upload-angle-${carId}`}
-              className="block text-sm font-semibold text-foreground"
-            >
-              Tag sudut untuk unggahan baru
-            </label>
-            <Select
-              items={ANGLE_SELECT_ITEMS}
-              value={uploadAngleTag}
-              disabled={disabled || isUploading}
-              onValueChange={(value) => {
-                if (!value) return
-                setUploadAngleTag(value)
-              }}
-            >
-              <SelectTrigger
-                id={`upload-angle-${carId}`}
-                className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
+        {/* Upload Dropzone */}
+        <FormSectionAccordionItem
+          value="upload-zone"
+          eyebrow="02 / Unggah"
+          title="Tambah Foto Unit"
+          description="JPG, PNG, atau WebP · maks. 5 MB/foto."
+          contentClassName="p-4 sm:p-5"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="w-full sm:w-64">
+              <label
+                htmlFor={`upload-angle-${carId}`}
+                className="block text-sm font-semibold text-foreground"
+              >
+                Tag sudut untuk unggahan baru
+              </label>
+              <Select
+                items={ANGLE_SELECT_ITEMS}
+                value={uploadAngleTag}
+                disabled={disabled || isUploading}
+                onValueChange={(value) => {
+                  if (!value) return
+                  setUploadAngleTag(value)
+                }}
+              >
+                <SelectTrigger
+                  id={`upload-angle-${carId}`}
+                  className="mt-1.5 min-h-11 w-full bg-card px-3 text-sm text-foreground data-[size=default]:h-11"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -1165,27 +1181,29 @@ export function CarMediaManager({
             </ul>
           </div>
         ) : null}
-      </div>
+        </FormSectionAccordionItem>
 
-      {/* Gallery Header & Save Controls */}
-      <div className="border border-border bg-card p-4 sm:p-5">
-        <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h3 className="text-base font-semibold text-foreground">
-              Galeri Foto ({draftImages.length})
-            </h3>
-            {isDirty ? (
+        {/* Gallery Header & Save Controls */}
+        <FormSectionAccordionItem
+          value="gallery"
+          eyebrow="03 / Galeri"
+          title={`Foto Unit (${draftImages.length})`}
+          badge={
+            isDirty ? (
               <Badge variant="warning">Belum disimpan</Badge>
             ) : draftImages.length > 0 ? (
               <Badge variant="secondary">Tersinkron</Badge>
-            ) : null}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+            ) : null
+          }
+          contentClassName="space-y-4 p-4 sm:p-5"
+        >
+        {draftImages.length > 0 && (
+          <div className="flex flex-wrap items-center justify-end gap-2">
             {isDirty ? (
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 disabled={isBusy}
                 onClick={handleResetChanges}
               >
@@ -1196,6 +1214,7 @@ export function CarMediaManager({
 
             <Button
               type="button"
+              size="sm"
               variant={isDirty ? "default" : "outline"}
               disabled={
                 isBusy || !isDirty || draftImages.length === 0 || hasInvalidAlt
@@ -1210,11 +1229,10 @@ export function CarMediaManager({
               {isSaving ? "Menyimpan..." : "Simpan Galeri"}
             </Button>
           </div>
-        </div>
-
+        )}
         {/* Gallery Grid or Empty State */}
         {draftImages.length === 0 ? (
-          <div className="mt-5 border border-dashed border-border bg-background px-6 py-10 text-center">
+          <div className="border border-dashed border-border bg-background px-6 py-10 text-center">
             <p className="text-sm font-semibold text-foreground">
               Belum ada foto
             </p>
@@ -1224,7 +1242,7 @@ export function CarMediaManager({
             </p>
           </div>
         ) : (
-          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {draftImages.map((img, index) => {
               const cardKey = getImageKey(img, index)
               const isDeletingThis =
@@ -1464,7 +1482,8 @@ export function CarMediaManager({
             </Button>
           </div>
         ) : null}
-      </div>
+        </FormSectionAccordionItem>
+      </FormSectionAccordion>
 
       <Dialog
         open={Boolean(deleteTarget)}

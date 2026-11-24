@@ -13,6 +13,10 @@ import {
   Star,
   Trash2,
 } from "lucide-react"
+import {
+  FormSectionAccordion,
+  FormSectionAccordionItem,
+} from "@/components/dash/form-section-accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -153,47 +157,6 @@ function parseBulkLines(raw: string): string[] {
         .trim()
     )
     .filter((line) => line.length > 0)
-}
-
-interface SectionHeaderProps {
-  headingId: string
-  index: string
-  title: string
-  description?: string
-  badge?: React.ReactNode
-}
-
-function SectionHeader({
-  headingId,
-  index,
-  title,
-  description,
-  badge,
-}: SectionHeaderProps) {
-  return (
-    <div className="flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
-      <div>
-        <div className="flex items-center gap-2">
-          <span className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
-            {index}
-          </span>
-          <span className="h-3 w-px bg-border" aria-hidden="true" />
-          <h3
-            id={headingId}
-            className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg"
-          >
-            {title}
-          </h3>
-        </div>
-        {description ? (
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-sm">
-            {description}
-          </p>
-        ) : null}
-      </div>
-      {badge ? <div className="shrink-0">{badge}</div> : null}
-    </div>
-  )
 }
 
 interface FieldShellProps {
@@ -681,30 +644,34 @@ export function CarIdentitySpecsForm({
   }
 
   return (
-    <div className="space-y-6">
+    <FormSectionAccordion
+      defaultValue={[
+        "identity",
+        "specs",
+        "odometer",
+        "highlights",
+        "conditions",
+      ]}
+    >
       {/* SECTION A — IDENTITAS UNIT */}
-      <section
-        aria-labelledby="section-identity-heading"
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="identity"
+        headingId="section-identity-heading"
+        eyebrow="01 / Profil"
+        title="Identitas Unit"
+        badge={
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge variant={statusMeta.variant}>{statusMeta.label}</Badge>
+            {value.isFeatured ? (
+              <Badge variant="primary" className="tabular-nums">
+                <Star className="size-3" aria-hidden="true" />
+                Hero #{value.featuredOrder ?? 1}
+              </Badge>
+            ) : null}
+          </div>
+        }
       >
-        <SectionHeader
-          headingId="section-identity-heading"
-          index="01 / IDENTITAS"
-          title="Identitas Unit"
-          badge={
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Badge variant={statusMeta.variant}>{statusMeta.label}</Badge>
-              {value.isFeatured ? (
-                <Badge variant="primary" className="tabular-nums">
-                  <Star className="size-3" aria-hidden="true" />
-                  Hero #{value.featuredOrder ?? 1}
-                </Badge>
-              ) : null}
-            </div>
-          }
-        />
-
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           <FieldShell
             id="car-brand"
             label="Merek"
@@ -1118,20 +1085,16 @@ export function CarIdentitySpecsForm({
             ) : null}
           </div>
         </div>
-      </section>
+      </FormSectionAccordionItem>
 
       {/* SECTION B — SPESIFIKASI TEKNIS */}
-      <section
-        aria-labelledby="section-specs-heading"
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="specs"
+        headingId="section-specs-heading"
+        eyebrow="02 / Teknis"
+        title="Spesifikasi Mesin & Dimensi"
       >
-        <SectionHeader
-          headingId="section-specs-heading"
-          index="02 / SPESIFIKASI"
-          title="Spesifikasi Teknis"
-        />
-
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           <FieldShell
             id="car-transmission"
             label="Detail Transmisi"
@@ -1287,33 +1250,29 @@ export function CarIdentitySpecsForm({
             </Select>
           </FieldShell>
         </div>
-      </section>
+      </FormSectionAccordionItem>
 
       {/* SECTION C — ODOMETER & VERIFIKASI */}
-      <section
-        aria-labelledby="section-odometer-heading"
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="odometer"
+        headingId="section-odometer-heading"
+        eyebrow="03 / Jarak Tempuh"
+        title="Odometer & Verifikasi"
+        badge={
+          value.mileageVerified ? (
+            <Badge variant="success">
+              <ShieldCheck className="size-3" aria-hidden="true" />
+              Odometer Terverifikasi
+            </Badge>
+          ) : (
+            <Badge variant="secondary">
+              <Gauge className="size-3" aria-hidden="true" />
+              Belum Diverifikasi
+            </Badge>
+          )
+        }
       >
-        <SectionHeader
-          headingId="section-odometer-heading"
-          index="03 / ODOMETER"
-          title="Odometer & Verifikasi"
-          badge={
-            value.mileageVerified ? (
-              <Badge variant="success">
-                <ShieldCheck className="size-3" aria-hidden="true" />
-                Odometer Terverifikasi
-              </Badge>
-            ) : (
-              <Badge variant="secondary">
-                <Gauge className="size-3" aria-hidden="true" />
-                Belum Diverifikasi
-              </Badge>
-            )
-          }
-        />
-
-        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           <FieldShell
             id="car-mileage-km"
             label="Angka Odometer (KM)"
@@ -1446,35 +1405,31 @@ export function CarIdentitySpecsForm({
             </FieldShell>
           </div>
         </div>
-      </section>
+      </FormSectionAccordionItem>
 
       {/* SECTION D — HIGHLIGHTS KEUNGGULAN UTAMA */}
-      <section
-        aria-labelledby="section-highlights-heading"
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="highlights"
+        headingId="section-highlights-heading"
+        eyebrow="04 / Highlights"
+        title="Keunggulan Utama"
+        badge={
+          <Badge
+            variant={
+              value.highlights.filter((item) => item.trim().length > 0)
+                .length >= 3
+                ? "success"
+                : "secondary"
+            }
+            className="tabular-nums"
+          >
+            <Sparkles className="size-3" aria-hidden="true" />
+            {value.highlights.filter((item) => item.trim().length > 0).length}
+            /3+ Poin
+          </Badge>
+        }
       >
-        <SectionHeader
-          headingId="section-highlights-heading"
-          index="04 / HIGHLIGHTS"
-          title="Highlights Keunggulan Utama"
-          badge={
-            <Badge
-              variant={
-                value.highlights.filter((item) => item.trim().length > 0)
-                  .length >= 3
-                  ? "success"
-                  : "secondary"
-              }
-              className="tabular-nums"
-            >
-              <Sparkles className="size-3" aria-hidden="true" />
-              {value.highlights.filter((item) => item.trim().length > 0).length}
-              /3+ Poin
-            </Badge>
-          }
-        />
-
-        <div className="mt-4">
+        <div>
           <StringListEditor
             idPrefix="car-highlights"
             fieldKey="highlights"
@@ -1490,35 +1445,31 @@ export function CarIdentitySpecsForm({
             disabled={disabled}
           />
         </div>
-      </section>
+      </FormSectionAccordionItem>
 
       {/* SECTION E — KONDISI FISIK & KELENGKAPAN */}
-      <section
-        aria-labelledby="section-conditions-heading"
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="conditions"
+        headingId="section-conditions-heading"
+        eyebrow="05 / Kondisi"
+        title="Fisik, Mesin & Interior"
+        badge={
+          <Badge
+            variant={
+              value.conditions.filter((item) => item.trim().length > 0)
+                .length >= 4
+                ? "success"
+                : "secondary"
+            }
+            className="tabular-nums"
+          >
+            <ListChecks className="size-3" aria-hidden="true" />
+            {value.conditions.filter((item) => item.trim().length > 0).length}
+            /4+ Poin
+          </Badge>
+        }
       >
-        <SectionHeader
-          headingId="section-conditions-heading"
-          index="05 / KONDISI"
-          title="Kondisi Fisik & Kelengkapan"
-          badge={
-            <Badge
-              variant={
-                value.conditions.filter((item) => item.trim().length > 0)
-                  .length >= 4
-                  ? "success"
-                  : "secondary"
-              }
-              className="tabular-nums"
-            >
-              <ListChecks className="size-3" aria-hidden="true" />
-              {value.conditions.filter((item) => item.trim().length > 0).length}
-              /4+ Poin
-            </Badge>
-          }
-        />
-
-        <div className="mt-4">
+        <div>
           <StringListEditor
             idPrefix="car-conditions"
             fieldKey="conditions"
@@ -1534,7 +1485,7 @@ export function CarIdentitySpecsForm({
             disabled={disabled}
           />
         </div>
-      </section>
-    </div>
+      </FormSectionAccordionItem>
+    </FormSectionAccordion>
   )
 }

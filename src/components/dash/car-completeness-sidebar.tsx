@@ -54,21 +54,36 @@ export function scrollToCarField(targetId?: string) {
 
       if (!target) return
 
-      target.scrollIntoView({ behavior: "smooth", block: "center" })
-
-      const focusable = target.matches(
-        'input, select, textarea, button, [role="combobox"], [role="switch"]'
+      const accordionItem = target.closest<HTMLElement>(
+        '[data-slot="accordion-item"]'
       )
-        ? target
-        : target.querySelector<HTMLElement>(
-            'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [role="combobox"], [role="switch"]'
-          )
-
-      if (focusable) {
-        window.setTimeout(() => {
-          focusable.focus({ preventScroll: true })
-        }, 200)
+      const closedTrigger = accordionItem?.querySelector<HTMLButtonElement>(
+        '[data-slot="accordion-trigger"][aria-expanded="false"]'
+      )
+      if (closedTrigger) {
+        closedTrigger.click()
       }
+
+      window.setTimeout(
+        () => {
+          target.scrollIntoView({ behavior: "smooth", block: "center" })
+
+          const focusable = target.matches(
+            'input, select, textarea, button, [role="combobox"], [role="switch"]'
+          )
+            ? target
+            : target.querySelector<HTMLElement>(
+                'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [role="combobox"], [role="switch"]'
+              )
+
+          if (focusable) {
+            window.setTimeout(() => {
+              focusable.focus({ preventScroll: true })
+            }, 200)
+          }
+        },
+        closedTrigger ? 80 : 0
+      )
     }, 40)
   })
 }

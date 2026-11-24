@@ -12,6 +12,10 @@ import {
   Trash2,
   Wrench,
 } from "lucide-react"
+import {
+  FormSectionAccordion,
+  FormSectionAccordionItem,
+} from "@/components/dash/form-section-accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DatePicker } from "@/components/ui/date-picker"
@@ -266,40 +270,6 @@ function buildSuggestedPlateInfo(value: CarUpsertInput): string | null {
   return parts.length > 0 ? parts.join(" - ") : null
 }
 
-function SectionHeader({
-  eyebrow,
-  title,
-  description,
-  icon: Icon,
-  trailing,
-}: {
-  eyebrow: string
-  title: string
-  description?: string
-  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>
-  trailing?: React.ReactNode
-}) {
-  return (
-    <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
-      <div className="space-y-1">
-        <div className="flex items-center gap-2 text-sm font-semibold tracking-[0.14em] text-primary uppercase">
-          <Icon className="size-3.5 shrink-0" aria-hidden={true} />
-          <span>{eyebrow}</span>
-        </div>
-        <h3 className="font-heading text-lg font-bold tracking-tight text-foreground">
-          {title}
-        </h3>
-        {description ? (
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {description}
-          </p>
-        ) : null}
-      </div>
-      {trailing ? <div className="shrink-0">{trailing}</div> : null}
-    </div>
-  )
-}
-
 function FieldError({ id, message }: { id?: string; message?: string }) {
   if (!message) return null
   return (
@@ -474,18 +444,23 @@ export function CarLegalityInspectionForm({
 
   return (
     <div className="space-y-6">
-      {/* Section A: Legalitas, Plat & Pajak */}
-      <section
-        aria-labelledby={`${idPrefix}-sec-a-title`}
-        className="space-y-5 border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordion
+        defaultValue={[
+          "legality-tax",
+          "documents",
+          "inspection",
+          "reconditioning",
+        ]}
       >
-        <div id={`${idPrefix}-sec-a-title`}>
-          <SectionHeader
-            eyebrow="Bagian A · Legalitas & Pajak"
-            title="Legalitas, Plat Nomor & Status Pajak"
-            icon={FileCheck2}
-          />
-        </div>
+        {/* Section A: Legalitas, Plat & Pajak */}
+        <FormSectionAccordionItem
+          value="legality-tax"
+          headingId={`${idPrefix}-sec-a-title`}
+          eyebrow="01 / Legalitas"
+          title="Plat Nomor, Kepemilikan & Pajak"
+          icon={FileCheck2}
+          contentClassName="space-y-5"
+        >
 
         {/* Ringkasan Plat (tampil di kartu katalog) */}
         <div className="space-y-1.5">
@@ -937,28 +912,25 @@ export function CarLegalityInspectionForm({
             />
           </div>
         </div>
-      </section>
+        </FormSectionAccordionItem>
 
-      {/* Section B: Checklist 7 Dokumen & Bawaan */}
-      <section
-        aria-labelledby={`${idPrefix}-sec-b-title`}
-        className="space-y-5 border border-border bg-card p-5 sm:p-6"
-      >
-        <div id={`${idPrefix}-sec-b-title`}>
-          <SectionHeader
-            eyebrow="Bagian B · Dokumen & Bawaan"
-            title="Checklist Dokumen & Kelengkapan"
-            icon={ClipboardCheck}
-            trailing={
-              <Badge
-                variant={requiredDocsChecked ? "success" : "warning"}
-                className="tabular-nums"
-              >
-                {checkedDocsCount}/7 Tersedia
-              </Badge>
-            }
-          />
-        </div>
+        {/* Section B: Checklist 7 Dokumen & Bawaan */}
+        <FormSectionAccordionItem
+          value="documents"
+          headingId={`${idPrefix}-sec-b-title`}
+          eyebrow="02 / Dokumen"
+          title="Kelengkapan Surat & Bawaan"
+          icon={ClipboardCheck}
+          badge={
+            <Badge
+              variant={requiredDocsChecked ? "success" : "warning"}
+              className="tabular-nums"
+            >
+              {checkedDocsCount}/7 Tersedia
+            </Badge>
+          }
+          contentClassName="space-y-5"
+        >
 
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -1061,20 +1033,17 @@ export function CarLegalityInspectionForm({
             )
           })}
         </div>
-      </section>
+        </FormSectionAccordionItem>
 
-      {/* Section C: Laporan Inspeksi & Garansi Showroom */}
-      <section
-        aria-labelledby={`${idPrefix}-sec-c-title`}
-        className="space-y-5 border border-border bg-card p-5 sm:p-6"
-      >
-        <div id={`${idPrefix}-sec-c-title`}>
-          <SectionHeader
-            eyebrow="Bagian C · Inspeksi & Garansi"
-            title="Laporan Inspeksi Teknis & Garansi Showroom"
-            icon={ShieldCheck}
-          />
-        </div>
+        {/* Section C: Laporan Inspeksi & Garansi Showroom */}
+        <FormSectionAccordionItem
+          value="inspection"
+          headingId={`${idPrefix}-sec-c-title`}
+          eyebrow="03 / Inspeksi"
+          title="Kondisi Teknis & Garansi Showroom"
+          icon={ShieldCheck}
+          contentClassName="space-y-5"
+        >
 
         <FieldError message={inspectionSummaryError} />
 
@@ -1452,20 +1421,17 @@ export function CarLegalityInspectionForm({
             />
           </div>
         </div>
-      </section>
+        </FormSectionAccordionItem>
 
-      {/* Section D: Peremajaan Part & Transparansi Minus */}
-      <section
-        aria-labelledby={`${idPrefix}-sec-d-title`}
-        className="space-y-6 border border-border bg-card p-5 sm:p-6"
-      >
-        <div id={`${idPrefix}-sec-d-title`}>
-          <SectionHeader
-            eyebrow="Bagian D · Rekondisi & Transparansi"
-            title="Peremajaan Part & Catatan Minus Jujur"
-            icon={Wrench}
-          />
-        </div>
+        {/* Section D: Peremajaan Part & Transparansi Minus */}
+        <FormSectionAccordionItem
+          value="reconditioning"
+          headingId={`${idPrefix}-sec-d-title`}
+          eyebrow="04 / Rekondisi"
+          title="Peremajaan Part & Catatan Minus"
+          icon={Wrench}
+          contentClassName="space-y-6"
+        >
 
         {/* Sub-block D1: Recent Maintenance */}
         <div className="space-y-3">
@@ -1792,7 +1758,8 @@ export function CarLegalityInspectionForm({
             </div>
           )}
         </div>
-      </section>
+        </FormSectionAccordionItem>
+      </FormSectionAccordion>
 
       <Dialog
         open={Boolean(deleteConfirm)}

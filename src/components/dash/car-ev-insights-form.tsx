@@ -19,6 +19,10 @@ import {
   X,
   Zap,
 } from "lucide-react"
+import {
+  FormSectionAccordion,
+  FormSectionAccordionItem,
+} from "@/components/dash/form-section-accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -214,47 +218,6 @@ function getSohStatus(soh: number | null | undefined): {
   if (soh >= 90) return { label: "Sangat Sehat", variant: "success" }
   if (soh >= 80) return { label: "Kondisi Baik", variant: "warning" }
   return { label: "Perlu Catatan", variant: "destructive" }
-}
-
-interface SectionHeaderProps {
-  headingId: string
-  index: string
-  title: string
-  description?: string
-  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>
-  trailing?: React.ReactNode
-}
-
-function SectionHeader({
-  headingId,
-  index,
-  title,
-  description,
-  icon: Icon,
-  trailing,
-}: SectionHeaderProps) {
-  return (
-    <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
-      <div className="space-y-1">
-        <div className="flex items-center gap-2 text-sm font-bold tracking-[0.14em] text-primary uppercase">
-          <Icon className="size-3.5 shrink-0" aria-hidden={true} />
-          <span>{index}</span>
-        </div>
-        <h3
-          id={headingId}
-          className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg"
-        >
-          {title}
-        </h3>
-        {description ? (
-          <p className="text-sm leading-relaxed text-muted-foreground sm:text-sm">
-            {description}
-          </p>
-        ) : null}
-      </div>
-      {trailing ? <div className="shrink-0">{trailing}</div> : null}
-    </div>
-  )
 }
 
 function FieldError({ id, message }: { id?: string; message?: string }) {
@@ -453,36 +416,36 @@ export function CarEvInsightsForm({
 
   return (
     <div className="space-y-6">
-      {/* SECTION 01 — EV & HYBRID SPECS (CONDITIONAL) */}
-      <section
-        aria-labelledby={`${idPrefix}-ev-heading`}
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordion
+        defaultValue={["ev-specs", "video-walkaround", "creator-insights"]}
       >
-        <SectionHeader
+        {/* SECTION 01 — EV & HYBRID SPECS (CONDITIONAL) */}
+        <FormSectionAccordionItem
+          value="ev-specs"
           headingId={`${idPrefix}-ev-heading`}
-          index="01 / EV & HYBRID"
+          eyebrow="01 / EV & Hybrid"
           title="Spesifikasi Baterai & Pengisian"
           icon={BatteryCharging}
-          trailing={
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant={isElectrified ? "primary" : "secondary"}>
-                <Zap className="size-3" aria-hidden="true" />
-                {FUEL_LABELS[value.fuelType]}
-              </Badge>
-              {isHybrid ? (
-                <Switch
-                  checked={isEvSectionOpen}
-                  disabled={disabled}
-                  aria-label="Aktifkan spesifikasi baterai Hybrid"
-                  onCheckedChange={handleHybridToggle}
-                />
-              ) : null}
-            </div>
+          badge={
+            <Badge variant={isElectrified ? "primary" : "secondary"}>
+              <Zap className="size-3" aria-hidden="true" />
+              {FUEL_LABELS[value.fuelType]}
+            </Badge>
           }
-        />
+          actions={
+            isHybrid ? (
+              <Switch
+                checked={isEvSectionOpen}
+                disabled={disabled}
+                aria-label="Aktifkan spesifikasi baterai Hybrid"
+                onCheckedChange={handleHybridToggle}
+              />
+            ) : null
+          }
+        >
 
         {!isElectrified ? (
-          <div className="mt-5 space-y-3">
+          <div className="space-y-3">
             <div className="flex items-start gap-3 border border-border bg-secondary/40 p-4 text-sm leading-relaxed text-muted-foreground">
               <Info
                 className="mt-0.5 size-4 shrink-0 text-foreground"
@@ -901,30 +864,26 @@ export function CarEvInsightsForm({
             <FieldError message={evSpecsError} />
           </div>
         )}
-      </section>
+      </FormSectionAccordionItem>
 
       {/* SECTION 02 — VIDEO WALKAROUND */}
-      <section
-        aria-labelledby={`${idPrefix}-video-heading`}
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="video-walkaround"
+        headingId={`${idPrefix}-video-heading`}
+        eyebrow="02 / Video"
+        title="Walkaround & Review"
+        description="YouTube, Instagram Reels, atau TikTok."
+        icon={Video}
+        badge={
+          videoPlatform ? (
+            <Badge variant={videoPlatform.variant}>
+              <PlayCircle className="size-3" aria-hidden="true" />
+              {videoPlatform.label}
+            </Badge>
+          ) : null
+        }
       >
-        <SectionHeader
-          headingId={`${idPrefix}-video-heading`}
-          index="02 / VIDEO WALKAROUND"
-          title="Video Walkaround & Review"
-          description="Tautkan video YouTube, Instagram Reels, atau TikTok."
-          icon={Video}
-          trailing={
-            videoPlatform ? (
-              <Badge variant={videoPlatform.variant}>
-                <PlayCircle className="size-3" aria-hidden="true" />
-                {videoPlatform.label}
-              </Badge>
-            ) : null
-          }
-        />
-
-        <div className="mt-5 space-y-2">
+        <div className="space-y-2">
           <label
             htmlFor={`${idPrefix}-video-url`}
             className="block text-sm font-semibold tracking-wider text-foreground uppercase"
@@ -995,29 +954,25 @@ export function CarEvInsightsForm({
             message={videoUrlError}
           />
         </div>
-      </section>
+      </FormSectionAccordionItem>
 
       {/* SECTION 03 — CREATOR / EXPERT INSIGHTS */}
-      <section
-        aria-labelledby={`${idPrefix}-insights-heading`}
-        className="border border-border bg-card p-5 sm:p-6"
+      <FormSectionAccordionItem
+        value="creator-insights"
+        headingId={`${idPrefix}-insights-heading`}
+        eyebrow="03 / Insight"
+        title="Catatan Ahli & Pemakaian Riil"
+        icon={Sparkles}
+        badge={
+          issueItems.length > 0 ? (
+            <Badge variant="success" className="tabular-nums">
+              <CheckCircle2 className="size-3" aria-hidden="true" />
+              {issueItems.length} titik dicek
+            </Badge>
+          ) : null
+        }
       >
-        <SectionHeader
-          headingId={`${idPrefix}-insights-heading`}
-          index="03 / INSIGHT AHLI"
-          title="Catatan Ahli & Pemakaian Riil"
-          icon={Sparkles}
-          trailing={
-            issueItems.length > 0 ? (
-              <Badge variant="success" className="tabular-nums">
-                <CheckCircle2 className="size-3" aria-hidden="true" />
-                {issueItems.length} titik dicek
-              </Badge>
-            ) : null
-          }
-        />
-
-        <div className="mt-5 space-y-6">
+        <div className="space-y-6">
           {/* Konsumsi BBM & Biaya Perawatan */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="space-y-1.5">
@@ -1259,7 +1214,8 @@ export function CarEvInsightsForm({
             <FieldError message={expertNotesError} />
           </div>
         </div>
-      </section>
+      </FormSectionAccordionItem>
+      </FormSectionAccordion>
 
       <Dialog
         open={Boolean(deleteConfirm)}
