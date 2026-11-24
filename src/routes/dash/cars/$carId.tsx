@@ -523,7 +523,7 @@ function EditCarPage() {
             )}
           >
             <ExternalLink className="size-4" aria-hidden="true" />
-            <span>Pratinjau Publik</span>
+            <span>Lihat Halaman Unit</span>
           </a>
 
           <Button

@@ -20,6 +20,10 @@ import type {
 } from "@/lib/domain/schemas"
 import type { PaymentMode } from "@/lib/domain/types"
 import { formatRupiah, formatShortJuta } from "@/lib/domain/formatters"
+import {
+  FormSectionAccordion,
+  FormSectionAccordionItem,
+} from "@/components/dash/form-section-accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -431,29 +435,22 @@ export function CarPricingCreditForm({
 
   return (
     <div className="space-y-6">
-      {/* SECTION A — Skema Pembayaran & Harga */}
-      <section
-        aria-labelledby={`${baseId}-section-a-heading`}
-        className="border border-border bg-card"
+      <FormSectionAccordion
+        defaultValue={["pricing-scheme", "credit-simulations"]}
       >
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-secondary/50 px-5 py-4">
-          <div className="space-y-1">
-            <p className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
-              01 / Skema &amp; Harga
-            </p>
-            <h3
-              id={`${baseId}-section-a-heading`}
-              className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg"
-            >
-              Skema Pembayaran &amp; Harga Unit
-            </h3>
-          </div>
-          <Badge variant={isCashCredit ? "primary" : "default"}>
-            {isCashCredit ? "Cash & Kredit" : "Cash Only"}
-          </Badge>
-        </div>
-
-        <div className="space-y-6 p-5">
+        {/* SECTION A — Skema Pembayaran & Harga */}
+        <FormSectionAccordionItem
+          value="pricing-scheme"
+          headingId={`${baseId}-section-a-heading`}
+          eyebrow="01 / Harga"
+          title="Skema Pembayaran & Harga Unit"
+          badge={
+            <Badge variant={isCashCredit ? "primary" : "default"}>
+              {isCashCredit ? "Cash & Kredit" : "Cash Only"}
+            </Badge>
+          }
+          contentClassName="space-y-6"
+        >
           {/* Payment Mode Segmented Toggle */}
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
@@ -886,49 +883,39 @@ export function CarPricingCreditForm({
               {errors.tradeInAvailable}
             </p>
           )}
-        </div>
-      </section>
+        </FormSectionAccordionItem>
 
-      {/* SECTION B — Repeater Simulasi Kredit Leasing */}
-      {isCashCredit && (
-        <section
-          data-completeness-id="pricing-simulations"
-          aria-labelledby={`${baseId}-section-b-heading`}
-          className="border border-border bg-card"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-secondary/50 px-5 py-4">
-            <div className="space-y-1">
-              <p className="font-heading text-sm font-bold tracking-widest text-primary uppercase tabular-nums">
-                02 / Simulasi Kredit Leasing
-              </p>
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h3
-                  id={`${baseId}-section-b-heading`}
-                  className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg"
+        {/* SECTION B — Repeater Simulasi Kredit Leasing */}
+        {isCashCredit && (
+          <FormSectionAccordionItem
+            value="credit-simulations"
+            completenessId="pricing-simulations"
+            headingId={`${baseId}-section-b-heading`}
+            eyebrow="02 / Kredit Leasing"
+            title="Paket Simulasi Kredit"
+            badge={
+              <Badge
+                variant={simulations.length > 0 ? "success" : "warning"}
+                className="tabular-nums"
+              >
+                {simulations.length} Paket
+              </Badge>
+            }
+            contentClassName="space-y-4"
+          >
+            {simulations.length > 0 && (
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleAddSimulation}
+                  disabled={disabled}
                 >
-                  Daftar Paket Simulasi Kredit
-                </h3>
-                <Badge
-                  variant={simulations.length > 0 ? "success" : "warning"}
-                  className="tabular-nums"
-                >
-                  {simulations.length} Paket
-                </Badge>
+                  <Plus className="size-4" aria-hidden="true" />
+                  Tambah Simulasi
+                </Button>
               </div>
-            </div>
-
-            <Button
-              type="button"
-              onClick={handleAddSimulation}
-              disabled={disabled}
-              className="shrink-0"
-            >
-              <Plus className="size-4" aria-hidden="true" />
-              Tambah Simulasi
-            </Button>
-          </div>
-
-          <div className="space-y-4 p-5">
+            )}
             {errors?.creditSimulations && (
               <p
                 role="alert"
@@ -1383,10 +1370,9 @@ export function CarPricingCreditForm({
                 </div>
               </div>
             )}
-
-          </div>
-        </section>
-      )}
+          </FormSectionAccordionItem>
+        )}
+      </FormSectionAccordion>
 
       <Dialog
         open={deleteSimulationIndex !== null}
