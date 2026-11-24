@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --port 3009",
+    "dev": "vite dev --port 3003",
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",

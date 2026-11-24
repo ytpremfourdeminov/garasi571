@@ -117,7 +117,7 @@ export interface ServerEnv {
 
 type CloudflareEnvRecord = Record<string, unknown>
 
-const DEFAULT_LOCAL_SITE_URL = "http://localhost:3009"
+const DEFAULT_LOCAL_SITE_URL = "http://localhost:3003"
 const DEFAULT_PROD_SITE_URL = "https://garasi571.deminov.biz.id"
 
 async function loadCloudflareEnv(): Promise<CloudflareEnvRecord | undefined> {
